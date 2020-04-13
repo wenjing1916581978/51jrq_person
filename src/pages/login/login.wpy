@@ -1,0 +1,446 @@
+<style lang='scss'>
+    .head-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 80rpx;
+        align-items: center;
+        image {
+            width: 40rpx;
+            height: 28rpx;
+            margin: 0rpx 30rpx;
+        }
+        .head-img {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .image {
+                width: 120rpx;
+                height: 120rpx;
+                border-radius: 50%;
+            }
+            view {
+                margin-top: 20rpx;
+                color: #353535;
+                font-size: 28rpx;
+                text-align: center;
+            }
+        }
+    }
+    form {
+        view {
+            border-bottom: 2rpx solid #f1f1f1;
+            font-size: 28rpx;
+            margin: 0rpx 40rpx;
+            color: #353535;
+            .pholder {
+               color: #b2b2b2;
+            }
+            input {
+                height: 90rpx;
+            }
+        }
+        .telephone {
+            margin-top: 60rpx;
+        }
+        .verifycode {
+            margin-top: 10rpx;
+            position: relative;
+            display: flex;
+            input{
+            flex:1;
+            }
+        }
+        .save-btn{
+          background:linear-gradient(to right, #FF9E00, #FFBD00);
+          height:80rpx;
+          border-radius:16rpx;
+          text-align:center;
+          line-height:80rpx;
+          font-size:32rpx;
+          color:#ffffff;
+          margin:32rpx 28rpx 0;
+          border:none;
+        }
+    }
+    .opera{
+        display: flex;
+        flex-direction: row;
+        margin: 0 28rpx;
+        view {
+            font-size: 28rpx;
+            flex: 1;
+            margin-top: 30rpx;
+            color: #888;
+            &:nth-child(2){
+              text-align: right;
+            }
+        }
+    }
+    .warnword {
+        color: red;
+        font-size: 24rpx;
+        text-align: center;
+        margin-top: 30rpx;
+    }
+    .toregister{
+      font-size:24rpx;
+      text-align: center;
+      margin-top: 28rpx;
+      position: fixed;
+      bottom: 30rpx;
+      color: #5E5E5E;
+      text-align: center;
+      width: 100%;
+      navigator{
+        color: #FF9E00;
+        text-decoration: underline;
+        display: inline-block;
+      }
+    }
+    .forgetpassword{
+      text-align: right;
+      border-bottom: 0;
+      line-height: 34rpx;
+      margin-top: 32rpx;
+      color: #FF9E00;
+      font-size: 24rpx;
+    }
+    .logintype{
+      color: blue;
+      text-align: center;
+      line-height: 80rpx;
+      font-size: 24rpx;
+    }
+    .switch {
+        display: flex;
+        flex-direction: row;
+        width: 226rpx;
+        position: fixed;
+        bottom: 120rpx;
+        left: 50%;
+        margin-left: -113rpx;
+        .icon {
+            width: 36rpx;
+            height: 36rpx;
+            background: #ff9e00;
+            border-radius: 50%;
+        }
+        .word {
+            font-size: 28rpx;
+            color: #333333;
+            margin-left: 20rpx;
+            text-decoration: underline;
+        }
+    }
+    .send-code{
+        margin-top: 18rpx;
+        right: 0rpx;
+        width: 140rpx;
+        height: 50rpx;
+        border: #ff9e00 solid 1rpx;
+        color: #ff9e00;
+        font-size: 24rpx;
+        border-radius: 10rpx;
+        line-height: 50rpx;
+        text-align: center;
+        z-index: 2;
+        background-color: none;
+        padding-left: 0;
+        padding-right: 0;
+        background: #ffffff;
+        &[disabled]{
+          border: #999999 solid 1rpx!important;
+          color: #999999!important;
+          background: #ffffff;
+        }
+    }
+</style>
+
+<template>
+    <view>
+        <view class="head-container">
+          <view class="head-img">
+              <open-data class="image" type="userAvatarUrl"></open-data>
+              <view><open-data type="userNickName"></open-data></view>
+          </view>
+          <image src="/images/icons/connect.png"></image>
+            <!-- <image src="/images/icons/connect.png"></image> -->
+            <view class="head-img">
+                <image class="image" src="/images/icons/logo.png"></image>
+                <!-- <view>51金融圈</view> -->
+            </view>
+        </view>
+        <form bindsubmit="formSubmit" wx:if="{{loginType==1}}">
+            <view class="telephone">
+                <input placeholder-class="phcolor" type="text" name="username" placeholder="请输入手机号" value="{{username}}" bindinput="inputChange" data-name="username" />
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="password" name="passwd" placeholder="请输入密码" />
+            </view>
+            <view class="forgetpassword" bindtap="goForgotPage">忘记密码？</view>
+            <button class="save-btn" formType="submit">进入小程序</button>
+        </form>
+
+        <form bindsubmit="formSubmit" wx:else="{{loginType==2}}">
+            <view class="telephone">
+                <input bindinput='inputChange' value="{{phone}}" data-name="phone" placeholder-class="phcolor" type="text" name="username" placeholder="请输入手机号" />
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="text" name="vcode" placeholder="请输入验证码" value="{{vcode}}" bindinput="inputChange" data-name="vcode" />
+                <button @tap="sendCode" disabled="{{disabled}}" class="send-code">{{buttonvalue}}</button>
+            </view>
+            <button class="save-btn" formType="submit">进入小程序</button>
+        </form>
+        <view class="logintype" wx:if="{{loginType==1}}" data-index="2" @tap="toggle">验证码登录</view>
+        <view class="logintype" wx:if="{{loginType==2}}" data-index="1" @tap="toggle">账号登录</view>
+
+        <view class="switch" @tap="switchapplet">
+            <view class="icon"></view>
+            <view class="word">切换至企业版</view>
+        </view>
+        <view class="toregister">
+          <text>还没有帐号？</text>
+          <navigator url="/pages/login/regist" hover-class="none">立即注册</navigator>
+        </view>
+    </view>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import {
+    LOGIN_INFO
+} from '../../utils/constants';
+
+// md5加密
+const code = require('../../utils/md5.js');
+
+export default class LoginPage extends wepy.page {
+
+    data = {
+        // nickname:'',
+        // headimg:'',
+        warnword:'',
+        username:'',
+        phone:'',
+        loginType:'1',
+        vcode:'',
+        deviceToken:'',
+        buttonvalue:'发送验证码',
+        disabled:false,
+        wait:60,
+    }
+
+    config = {
+        navigationBarTitleText: '',
+        enablePullDownRefresh: false
+    }
+    onLoad () {
+        const that = this;
+        // 获取登录信息
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                if(res.data.returnCode=="AAAAAAA"){
+                    // 跳转到home页
+                    wx.switchTab({
+                        url: '../home/home'
+                    });
+                }
+            }
+        })
+    }
+    countdown() {
+        var that = this
+        if (that.wait == 0) {
+            that.disabled=false;
+            that.buttonvalue='重新发送';
+            this.wait=60;
+            that.$apply();
+        } else {
+          that.disabled=true;
+          that.wait--
+          that.buttonvalue="已发送(" + that.wait + ")";
+          that.$apply();
+            setTimeout(function() {
+                    that.countdown()
+                },
+                1000)
+        }
+    }
+    methods = {
+      switchapplet(){
+        wx.navigateToMiniProgram({
+            appId: 'wxd7928bf1898a30cd',
+            path: 'pages/joblist/joblist',
+            extraData: {},
+            envVersion: 'trail',
+            success(res) {
+              // 打开成功
+            },fail(){
+
+            }
+        })
+      },
+      inputChange(e){
+          this[e.currentTarget.dataset.name]=e.detail.value
+          this.$apply()
+      },
+      toggle(e){
+        var index = e.currentTarget.dataset.index
+        this.loginType=index
+        this.$apply()
+      },
+
+      // 发送验证码
+      sendCode () {
+          const that = this;
+          var phone=that.phone.replace(/\s/g, "");//去除空格
+          //校验手机号，号段主要有(不包括上网卡)：130~139、150~153，155~159，180~189、170~171、176~178。14号段为上网卡专属号段
+          let regs = /^((13[0-9])|(17[0-1,6-8])|(15[^4,\\D])|(18[0-9]))\d{8}$/;
+          if(phone.length==''){
+            tip.error('手机号不为空')
+            return false
+          }else if(!regs.test(phone)){
+            tip.error('手机号格式不正确')
+            return false
+          }
+          that.getLoginCode({"phone":that.phone},"D0002").then(data=>{
+              if(data.data.returnCode != "AAAAAAA" ){
+                  tip.error(data.data.returnMsg);
+              }else{
+                  that.countdown()
+              }
+              that.$apply();
+          })
+      },
+        // 提交表单
+        formSubmit (e) {
+
+
+          const that = this;
+
+            var phone=e.detail.value.username.replace(/\s/g, "");//去除空格
+            let data = {
+                "username": e.detail.value.username,
+                "passwd":that.loginType==1? code.hex_md5(e.detail.value.passwd):'',
+                "loginType":that.loginType,
+                "vcode":that.loginType==1?'':that.vcode,
+                "deviceToken":'',
+            }
+            let regs = /^((13[0-9])|(17[0-1,6-8])|(15[^4,\\D])|(18[0-9]))\d{8}$/;
+            if(that.loginType==2){
+
+              if(phone.length==''){
+                tip.error('手机号不为空')
+                return false
+              }else if(!regs.test(phone)){
+                tip.error('手机号格式不正确')
+                return false
+              }else if(e.detail.value.vcode==''){
+                tip.error('验证码不能为空')
+                return false
+              }
+            }else{
+              if(phone.length==''){
+                tip.error('手机号不为空')
+                return false
+              }else if(!regs.test(phone)){
+                tip.error('手机号格式不正确')
+                return false
+              }else if(e.detail.value.passwd==''){
+                tip.error('请输入密码')
+                return false
+              }
+            }
+
+
+            wx.showLoading({
+                title: '登录中',
+            })
+
+
+            this.login(data).then(data=>{
+                if(data.data.returnCode == "AAAAAAA") {
+                    // 存储信息到本地
+                    let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+                    loginInfo.tokenKey = data.data.tokenKey;
+                    loginInfo.token = data.data.token;
+                    loginInfo.headimg = data.data.data.headimg;
+                    wx.setStorageSync(LOGIN_INFO, loginInfo);
+
+                    wx.setStorage({
+                        key:'loginData',
+                        data:data.data
+                    });
+                    // 跳转到home页
+                    wx.switchTab({
+                        url: '../personal/personal'
+                    });
+
+                }else{
+                    tip.error(data.data.returnMsg);
+                    that.$apply();
+                }
+                wx.hideLoading()
+            })
+        },
+        // 忘记密码页面
+        goForgotPage(){
+            wx.navigateTo({
+                url: 'forgot'
+            });
+        }
+    }
+    //获取登录验证码
+    async getLoginCode(data,code) {
+        const json = await api.getLoginCode({
+        query: {
+                "head": {
+                    "transcode": code,
+                    "type": "h"
+                },
+                "data": data
+            }
+        })
+        return json;
+    }
+    //用户登录
+    async login(data) {
+        const json = await api.loginIn({
+        query: {
+                head: {
+                    "transcode": "D0001",
+                    "type": "h"
+                },
+                data: data
+            }
+        })
+        return json;
+    }
+    counttime(){
+        const that = this
+        var countdown = 60;
+        (function settime() {
+            if (countdown == 0) {
+                that.codeObj.value = "发送验证码";
+                that.codeObj.status = true;
+                countdown = 60;
+                that.$apply();
+                return;
+            } else {
+                that.codeObj.status = false;
+                that.codeObj.value="重发(" + countdown + ")";
+                countdown--;
+                that.$apply();
+            }
+            setTimeout(function() {
+                settime()
+            },1000)
+        })()
+    }
+}
+</script>

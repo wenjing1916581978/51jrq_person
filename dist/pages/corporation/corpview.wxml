@@ -1,0 +1,93 @@
+
+  <view class="corp-view">
+        <view class="head">
+            <view class="corp-brief">
+                <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
+                <view class="corp-type">{{corpInfo.city}} | {{corpInfo.scope}} | {{corpInfo.industry}}</view>
+            </view>
+            <image src="{{corpInfo.logo ? corpInfo.logo:'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}" mode="aspectFill"/>
+        </view>
+        <view class="gray-blank"/>
+        <view class="corp-intro">
+            <view class="title">公司简介</view>
+            <view class="gray-line"/>
+            <text class="introduce"  wx:if="{{isFold}}">
+                {{corpInfoBrief}}
+            </text>
+            <text class="introduce"  wx:else="{{isFold}}">
+                {{corpInfo.description}}
+            </text>
+            <view class="fold-block" wx:if="{{descFoldShow}}">
+                <view class="foldbtn" catchtap="foldFn" wx:if="{{isFold}}">展开</view>
+                <view class="foldbtn" catchtap="foldFn" wx:else>收起</view>
+            </view>
+            <view class="mblog" wx:if="{{corpInfo.mblog}}">
+                <image src="{{corpInfo.mblog}}" mode="aspectFill"/>
+            </view>
+        </view>
+        <view class="gray-blank"/>
+        <view class="corp-address">
+            <view class="title">公司地址</view>
+            <view class="gray-line"/>
+            <view class="address" bindtap="goMap" data-wpygomap-a="{{corpInfo.address}}">
+                <image src="/images/icons/location_blue.png"/>
+                <view class="addr-info">{{corpInfo.address}}</view>
+            </view>
+        </view>
+        <view class="gray-blank"/>
+        <view class="corp-jobs">
+            <view class="title">该公司发布的所有职位</view>
+            <view class="gray-line"/>
+            <block wx:for="{{companyJobs}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                <view class="job-item" bindtap="goJobView" data-wpygojobview-a="{{item.corpid}}" data-wpygojobview-b="{{item.jobid}}">
+                    <view class="job-content">
+                        <view class="one">
+                            <view class="position">{{item.jobname}}</view>
+                            <view class="salary">{{item.salary}}</view>
+                        </view>
+                        <view class="two">
+                            <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
+                        </view>
+                        <view class="three">
+                            <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
+                            <view class="up-date">{{item.createdate}}</view>
+                        </view>
+                    </view>
+                    <view class="gray-line"/>
+                </view>
+            </block>
+        </view>
+        <!-- <navigationload v-bind:syncLoadShow.sync="showPageLoading"></navigationload> -->
+        
+    <view hidden="{{!showShareBtn}}">
+        <view class="share-container {{$shareminipro$isIpx?'fix-iphonex-button':''}}">
+            <image class="share-btn" catchtap="$shareminipro$openActionSheet" src="/images/icons/share.png"/>
+        </view>
+        <action-sheet hidden="{{$shareminipro$actionSheetHidden}}" bindchange="$shareminipro$actionSheetbindchange" class="sheet-list">
+            <action-sheet-item>
+                <button class="sheet-btn sheet-item" open-type="share" catchtap="$shareminipro$bindMenu0">
+                    <image src="/images/icons/friend-icon.png" class="share-icon"/>
+                    <text open-type="share">转发给好友或群聊</text>
+                </button>
+                <view class="sheet-item" catchtap="$shareminipro$bindMenu1">
+                    <image src="/images/icons/moments-icon.png" class="share-icon"/>
+                    <text>生成朋友圈分享图</text>
+                </view>
+                <view class="sheet-item" catchtap="$shareminipro$bindMenu2">
+                    <image src="/images/icons/public-icon.png" class="share-icon"/>
+                    <text>生成公众号分享图</text>
+                </view>
+            </action-sheet-item>
+            <action-sheet-cancel>取消</action-sheet-cancel> 
+        </action-sheet>
+        <view  wx:if="{{$shareminipro$isShowMyCanvasScreen}}">
+            <view class="bomb-screen"/>
+            <canvas canvas-id="myCanvas" hidden="{{$shareminipro$true}}" style="width: {{$shareminipro$ctxWidth}}px; height: {{$shareminipro$ctxHeight}}px; background-color: #ffffff;"/>
+        </view>        
+        <view  wx:if="{{$shareminipro$isShowPubCanvasScreen}}">
+            <view class="bomb-screen"/>
+            <canvas canvas-id="pubCanvas" hidden="{{$shareminipro$true}}" style="width: {{$shareminipro$ctxPubWidth}}px; height: {{$shareminipro$ctxPubHeight}}px; background-color: #ffffff;"/>
+        </view>
+    </view>
+
+  </view>

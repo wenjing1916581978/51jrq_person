@@ -1,0 +1,46 @@
+<style lang="scss">
+
+</style>
+
+<template>
+  
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class IndexPage extends wepy.page {
+  onLoad(options) {
+      console.log(options)
+      // options 中的 scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
+    let sceneArgs = decodeURIComponent(options.scene);
+    if (sceneArgs != 'undefined') {  //hv*cid=42&jid=1180015
+      console.log('进入判断',sceneArgs)    
+      let args_arr = [], params_arr = [];
+      args_arr = sceneArgs.split('*');
+      let _type = args_arr[0];
+      params_arr = args_arr[1].split('&');
+      let paramObj = new Object();
+      if (_type == 'hv') {
+        for (let i = 0; i < params_arr.length; i++) {
+          paramObj[params_arr[i].split('=')[0]] = params_arr[i].split('=')[1];
+        }
+        let param = `corpid=${paramObj["cid"]}&jobid=${paramObj["jid"]}`;
+        wx.redirectTo({ url: `../home/homeview?${param}`});
+      } if (_type == 'cv') {
+        for (let i = 0; i < params_arr.length; i++) {
+          paramObj[params_arr[i].split('=')[0]] = params_arr[i].split('=')[1];
+        }
+        let param = `companyid=${paramObj["cpid"]}`;
+        wx.redirectTo({ url: `../corporation/corpview?${param}`});  
+      }
+    }else{
+      console.log('进入首页')
+      wx.switchTab({  
+        url: '../home/home',
+      })
+    }
+  }
+}
+</script>
+
+

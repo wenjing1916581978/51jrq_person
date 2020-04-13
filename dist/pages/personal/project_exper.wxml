@@ -1,0 +1,47 @@
+
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">项目名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="projectname" value="{{projectname}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">公司名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="companyname" value="{{companyname}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">开始时间</view>
+                <picker name="starttime" mode="date" value="{{starttime}}" bindchange="bindDateChange1">
+                    <view class="picker">
+                        {{starttime?starttime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">结束时间</view>
+                <picker name="endtime" mode="date" value="{{endtime}}" bindchange="bindDateChange2">
+                    <view class="picker">
+                        {{endtime?endtime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+
+        </view>
+    </view>
+    <view class="work-content">
+        项目描述/职责：
+    </view>
+    <view class="big">
+        <view class="section">
+            <textarea maxlength="-1" name="projectremark" value="{{projectremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"/>
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>

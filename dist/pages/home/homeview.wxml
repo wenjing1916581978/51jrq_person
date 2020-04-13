@@ -1,0 +1,160 @@
+
+  <view class="homeview-container" style="min-height:{{windowHeight+10}}">
+      <view class="jobbrief-container">
+        <view class="posi-container">
+            <view class="posi-name-sal">
+                <text class="posi-name">{{jobInfo.jobname}}</text>
+                <text class="posi-sal">{{jobInfo.salary}}</text>
+            </view>
+            <view class="posi-duty">
+                <text>{{jobInfo.jobcity}}</text>
+                <!-- <text class="ver">|</text>
+                <text>{{}}</text> -->
+                <text class="ver"  wx:if="{{jobInfo.workyears}}">|</text>
+                <text>{{jobInfo.workyears}}</text>
+                <text class="ver"  wx:if="{{jobInfo.ebid}}">|</text>
+                <text>{{jobInfo.ebid}}</text>
+            </view>
+        </view>
+        <!-- <posinameduty v-bind:syncJobInfo.sync="jobInfo"></posinameduty> -->
+        <view class="weal-container">
+          <block wx:for="{{jobInfo.weal}}" wx:for-index="index" wx:for-item="weal" wx:key="key">
+            <text>{{weal}}</text>
+          </block>
+        </view>
+        <view class="gray-line"/>
+        <view class="corp-brief" bindtap="goCorpView" data-wpygocorpview-a="{{corpInfo.corpid}}">
+          <view class="corp-content">
+            <image class="logo" src="{{corpInfo.mlogo ? corpInfo.mlogo : 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"/>
+            <view class="corp-info">
+                <text class="corp-name">{{corpInfo.corpname}}</text>
+                <view class="corp-size-type">
+                    <view class="corp-size">
+                      <text>{{corpInfo.industry}}</text>
+                    </view>
+                </view>
+            </view>
+          </view>
+          <view class="arrow-right">></view>
+        </view>
+      </view>
+      <view class="gray-blank"/>
+      <view class="jobdec-container">
+          <text class="dec-title">职位描述：</text>
+          <view class="gray-line"/>
+          <text class="dec-content" wx:if="{{isFold}}">
+              {{jobdescriptionBrief}}
+          </text>
+          <text class="dec-content" wx:else="{{isFold}}">
+              {{jobInfo.jobdescription}}
+          </text>
+          <view class="fold-block" wx:if="{{descFoldShow}}">
+            <text class="foldbtn" catchtap="foldFn" wx:if="{{isFold}}">展开</text>
+            <text class="foldbtn" catchtap="foldFn" wx:else>收起</text>
+          </view>
+      </view>
+      <view class="gray-blank"/>
+      <view class="corp-address">
+        <view class="title">工作地址</view>
+        <view class="gray-line"/>
+        <view class="address" bindtap="goMap" data-wpygomap-a="{{corpInfo.address}}">
+            <image src="/images/icons/location_pink.png"/>
+            <text class="addr-info">{{corpInfo.address}}</text>
+        </view>
+      </view>
+      <view class="gray-blank"/>
+      <view class="relatedjob-container">
+        <text class="rel-title">相关职位推荐</text>
+        <block wx:for="{{relatedJobs}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+          
+    <view class="recomm-container" bindtap="$relatedjob$goToHomeView" data-com-index="{{index}}" data-wpygotohomeview-a="{{item.corpid}}" data-wpygotohomeview-b="{{item.id}}">
+        <view class="gray-line"/>
+        <view class="posi-name-sal">
+            <text class="posi-name">{{item.jobname}}</text>
+            <text class="posi-sal">{{item.salary}}</text>
+        </view>
+        <text class="corpname">{{item.corpname}}</text>
+        <view class="posi-duty">
+            <text>{{item.jobcity}}</text>
+            <!-- <text class="ver">|</text>
+            <text>{{}}</text> -->
+            <text class="ver"  wx:if="{{item.jobcity}}">|</text>
+            <text>{{item.workyears}}</text>
+            <text class="ver"  wx:if="{{item.workyears}}">|</text>
+            <text>{{item.ebid}}</text>
+        </view>
+    </view>
+
+        </block>
+      </view>
+      <view class="fixed-foot-bar {{isIpx?'fix-iphonex-button':''}}">
+        <view class="tr-collect">
+          <image wx:if="{{isFav}}" catchtap="onCollectionFn" src="/images/icons/like_hl.png"/>
+          <image wx:else catchtap="onCollectionFn" src="/images/icons/like.png"/>
+        </view>
+        <view class="tr-post">
+          <button wx:if="{{isDelivery}}" catchtap="onDeliverFn" class="btn posted-btn">已投递</button>
+          <button wx:else catchtap="onDeliverFn" class="btn post-btn">投递职位</button>
+        </view>
+      </view>
+      <image src="/images/icons/list-icon.png" class="tolist" bindtap="tolist" animation="{{ani}}"/>
+      <!-- <image src='/images/icons/list-icon.png' class="tolist" bindtap="tolist" wx:if="{{tolist}}" animation="{{ani}}"></image> -->
+
+      
+    <view hidden="{{!showShareBtn}}">
+        <view class="share-container {{$shareminipro$isIpx?'fix-iphonex-button':''}}">
+            <image class="share-btn" catchtap="$shareminipro$openActionSheet" src="/images/icons/share.png"/>
+        </view>
+        <action-sheet hidden="{{$shareminipro$actionSheetHidden}}" bindchange="$shareminipro$actionSheetbindchange" class="sheet-list">
+            <action-sheet-item>
+                <button class="sheet-btn sheet-item" open-type="share" catchtap="$shareminipro$bindMenu0">
+                    <image src="/images/icons/friend-icon.png" class="share-icon"/>
+                    <text open-type="share">转发给好友或群聊</text>
+                </button>
+                <view class="sheet-item" catchtap="$shareminipro$bindMenu1">
+                    <image src="/images/icons/moments-icon.png" class="share-icon"/>
+                    <text>生成朋友圈分享图</text>
+                </view>
+                <view class="sheet-item" catchtap="$shareminipro$bindMenu2">
+                    <image src="/images/icons/public-icon.png" class="share-icon"/>
+                    <text>生成公众号分享图</text>
+                </view>
+            </action-sheet-item>
+            <action-sheet-cancel>取消</action-sheet-cancel> 
+        </action-sheet>
+        <view  wx:if="{{$shareminipro$isShowMyCanvasScreen}}">
+            <view class="bomb-screen"/>
+            <canvas canvas-id="myCanvas" hidden="{{$shareminipro$true}}" style="width: {{$shareminipro$ctxWidth}}px; height: {{$shareminipro$ctxHeight}}px; background-color: #ffffff;"/>
+        </view>        
+        <view  wx:if="{{$shareminipro$isShowPubCanvasScreen}}">
+            <view class="bomb-screen"/>
+            <canvas canvas-id="pubCanvas" hidden="{{$shareminipro$true}}" style="width: {{$shareminipro$ctxPubWidth}}px; height: {{$shareminipro$ctxPubHeight}}px; background-color: #ffffff;"/>
+        </view>
+    </view>
+
+      
+    <view class="sel-resume-container">
+        <view  wx:if="{{$selresumeorg$isShowSelContainer}}" class="bomb-screen">
+            <view class="sel-box">
+                <view class="lists">
+                    <block wx:for="{{$selresumeorg$resumeList}}" wx:for-index="$selresumeorg$index" wx:for-item="$selresumeorg$item" wx:key="$selresumeorg$index">
+                        <view class="list-item" catchtap="$selresumeorg$chooseResume" data-wpychooseresume-a="{{$selresumeorg$index}}" data-wpychooseresume-b="{{$selresumeorg$item.resumeid}}" data-wpychooseresume-c="{{$selresumeorg$item.percent}}">
+                            <text>{{$selresumeorg$item.resumename}}</text>
+                            <view class="seled-check">
+                                <image src="/images/icons/no-sel.png" class="icon-sel"/>
+                                <image wx:if="{{$selresumeorg$selIndex==$selresumeorg$index}}" src="/images/icons/sel.png" class="icon-gou"/>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+                <view class="confirm-box">
+                    <view class="btn-cancel" catchtap="$selresumeorg$cancelFn">取消</view>
+                    <view class="btn-confirm" catchtap="$selresumeorg$confirmFn">确认</view>
+                </view>
+            </view>
+        </view>
+    </view>
+        
+    
+
+  </view>

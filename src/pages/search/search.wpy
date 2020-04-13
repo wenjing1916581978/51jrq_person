@@ -1,0 +1,699 @@
+<style lang="scss">
+    $themeColor: #FF9E00;
+    .jrq-cell {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        height: 100rpx;
+        line-height: 100rpx;
+        &:not(:last-child){
+          &:after {
+              content: " ";
+              position: absolute;
+              left: 0;
+              bottom: 0;
+              right: 0;
+              height: 1px;
+              border-bottom: 1px solid #e5e5e5;
+              color: #e5e5e5;
+              -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+              -webkit-transform: scaleY(0.5);
+              transform: scaleY(0.5);
+              z-index: 2;
+          }
+        }
+
+        text {
+            color: #353535;
+            font-size: 28rpx;
+        }
+        .cancel-box {
+            width: 50rpx;
+            text-align: center;
+        }
+        .cancel-img {
+            width: 16rpx;
+            height: 16rpx;
+        }
+        .arrow-img {
+            width: 10rpx;
+            height: 16rpx;
+        }
+    }
+    .jrq-bd {
+        flex: 1;
+    }
+    .search-bd {
+        padding-left: 32rpx;
+        padding-right: 32rpx;
+    }
+    .wx-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 30rpx;
+        text {
+            margin-left: 10rpx;
+            color: #b2b2b2;
+            font-size: 24rpx;
+            flex:1;
+        }
+    }
+    .badges-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-top: 15rpx;
+        margin-left: -15rpx;
+        .weui-badge {
+            padding: 0 20rpx;
+            line-height: 44rpx;
+            margin-bottom: 20rpx;
+            margin-left: 15rpx;
+            background-color: #FFF;
+            border: 1px solid $themeColor;
+            color: $themeColor;
+        }
+    }
+    .his-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 5rpx;
+    }
+    .radio-search {
+        display: flex;
+        flex-direction: column;
+        .num {
+            margin-left: 10rpx;
+            color: #a0a0a0;
+            font-size: 24rpx;
+        }
+    }
+    .select-area {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        margin-top: 20rpx;
+        height: 80rpx;
+        line-height: 80rpx;
+        border-bottom: 1px solid #e1e1e1;
+        .jobpicker {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 150rpx;
+            justify-content:space-between;
+            text {
+                color: #888;
+                font-size: 28rpx;
+            }
+            image {
+                width: 16rpx;
+                height: 10rpx;
+            }
+        }
+    }
+    .empty-placeholder {
+        margin-top:150rpx;
+        width: 100%;
+        text-align: center;
+        text {
+            color: #666;
+            font-size: 40rpx;
+            margin-left: 30rpx;
+        }
+    }
+
+    .icon-xl {
+        width: 176rpx;
+        height: 220rpx;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .txt {
+        font-size: 26rpx;
+        color: #888888;
+        margin-top: 36rpx;
+    }
+    .emtybtn{
+      background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAACuElEQVRYR+2XP2hTURTGvy+k1Fiw4uJQHdTFQaQKuin+AUERXVqlxtaU3Oc/FMXJsbuDRSjqu/eGaEy1iINDRVQQnUt1sHTxD+rmJII2pe07ktpIEkKT915oO7y3Pd453/lx7r3nfo9Y4Q9XOB8iwLArFKiDSqkekuf8FPc8z7XWDvvJKcYGBcySPOOnmIjcN8b4ygkMmEql1sbj8U4/gLOzs++z2exPPzmBAf0WCRNfscTJZHJNIpHYGUYwbO7U1NR4Pp//VdKpAFRK3SZ5vryIiMy/koG2q29eEXGNMf8PYDVgF8lLVYBbSa4XkTGSv31XrJEgIqtJ7gLwA8BkeYjneUPW2sc1O1iruFJqlOQRAPu01m+aAaiU2kPyrYg8N8YcXkyz7rpFgFEHA2zKJduD/f39G+PxeIbkDdd1X5SzptPpg7FY7Lrnecpa+7X825IBLpiGYRG5Y4y5UA7hOM4QgIsATmut88sC6DhOEsCD6uFahCkb+n1a61wEWGtQRx1sxLAudpNEHYw6+M9bLuuYOQFgRESGjDEVPlIpdYvkZQA9WutHyzIHe3t721pbW6+KyIi19mMVxCYAp6anpwdzuVyF0V2yqy6AT5hPaSqg4zhPARwTkUPGmJdBoWoYiVcARrXWR8M66rskz3qed81ae7MZgI7jXAEwKCLWGKPCAvaRvAfg08zMzLZsNlsIA5lKpVa1tLR8ALAFQJfW+kkowIWD8I3kuuKSFAqFk9WbvlHg7u7uRHt7+0OSxwFMdHR0bB8YGPBCARaT0+n0XpLPSLaJyBeSr0Xke6NgC3EbAOwnuRnAHwC7tdYT9TTq/tWVBBzH6RSRonveUU90se8i8i4WiynXdccb0WkYsCSmlDoAYE8j12QZgJCcnJubG8tkMp8bASvF+Ab0I96M2AgwbBdXfAf/AijyKEf+XJVaAAAAAElFTkSuQmCC') no-repeat center;
+      width: 60rpx;
+      height: 60rpx;
+      display: block;
+      background-size: 36rpx 36rpx;
+    }
+</style>
+
+<template>
+    <view>
+        <view wx:if="{{!isShowCity}}" class="search-page-container">
+            <search @searchFn.user="parentSearchFn"
+                    @trShowCityFn.user="parentTrShowCityFn"
+                    @trUnderSearchFn.user="parentUnderSearchFn"
+                    :isShowCityName.sync="isShowCityName"
+            ></search>
+            <view class="search-bd">
+                <view class="peo-search" wx:if="{{!isUnderSearch}}">
+                    <view class="wx-title">
+                        <icon type="search" color="#a0a0a0" size="12"></icon>
+                        <text>大家都在搜</text>
+                    </view>
+                    <view class="badges-container">
+                        <block wx:for="{{peoSearch}}" wx:for-index="index" wx:for-item="item">
+                            <text class="weui-badge"
+                                  data-peo-badge="{{item}}"
+                                  @tap="selPeoBadgeFn"
+                            >{{item}}</text>
+                        </block>
+                    </view>
+                </view>
+                <view class="his-search" wx:if="{{!isUnderSearch}}">
+                    <view class="wx-title">
+                        <icon type="waiting" color="#a0a0a0" size="12"></icon>
+                        <text>搜索历史</text>
+                        <view @tap="empty" class="emtybtn"></view>
+                    </view>
+                    <view class="his-container">
+                        <repeat for="{{keywordhisList}}" key="item" index="index">
+                            <view class="jrq-cell">
+                                <view @tap="selHisKeyWordFn" data-his="{{item}}" class="jrq-bd">
+                                    <text>{{item}}</text>
+                                </view>
+                                <view class="cancel-box" @tap="delHisCellFn" data-del="{{item}}">
+                                    <image class='cancel-img' src="/images/icons/cancel.png"></image>
+                                </view>
+                            </view>
+                        </repeat>
+                    </view>
+                </view>
+                <view wx:if="{{isUnderSearch}}" class="radio-search">
+                     <view class="jrq-cell" @tap="trJobListFn" wx:if="{{(!isShowJobList)&&(!isShowCorpList)}}">
+                        <view class="jrq-bd">
+                            <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关职位<text class="num">({{jobNum ? jobNum : 0}}条结果)</text></text>
+                        </view>
+                        <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                    </view>
+                    <view class="jrq-cell" @tap="trCorpListFn" wx:if="{{(!isShowCorpList)&&(!isShowJobList)}}">
+                        <view class="jrq-bd">
+                            <text>查找<text style="color: #FF9E00">“{{keyword}}”</text>相关企业<text class="num">({{corpNum ? corpNum : 0}}条结果)</text></text>
+                        </view>
+                        <image class="arrow-img" src="/images/icons/arrow_right.png"></image>
+                    </view>
+
+                    <view wx:if="{{isShowJobList}}">
+                        <view class="select-area">
+                            <picker  bindchange="bindRegionChange" value="{{index}}" range="{{areaid}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{areaidStatus}}">{{city}}</text>
+                                    <text wx:else>{{areaid[indexRegion]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                            <picker bindchange="bindIndustryChange" value="{{index}}" range="{{industryid}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{industryidStatus}}">行业类型</text>
+                                    <text wx:else>{{industryid[indexIndustry]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                            <picker bindchange="bindPublicChange" value="{{index}}" range="{{publicdate}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{publicdateStatus}}">发布时间</text>
+                                    <text wx:else>{{publicdate[indexPublic]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                        </view>
+                        <repeat for="{{hunterjobList}}" key="index" index="index" item="item">
+                            <commposi :syncPosidata.sync="item"></commposi>
+                        </repeat>
+                        <!--暂无数据显示-->
+                        <view class="empty-placeholder row-center" wx:if="{{isJobEmpty}}">
+                            <image class="icon-xl" src="/images/icons/no_delivery.png" />
+                            <view class="txt">暂无发现数据</view>
+                        </view>
+                    </view>
+                    <view wx:if="{{isShowCorpList}}">
+                        <view class="select-area">
+                            <picker  bindchange="bindRegionChange" value="{{index}}" range="{{areaid}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{areaidStatus}}">{{city}}</text>
+                                    <text wx:else>{{areaid[indexRegion]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                            <picker bindchange="bindIndustryChange" value="{{index}}" range="{{industryid}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{industryidStatus}}">行业类型</text>
+                                    <text wx:else>{{industryid[indexIndustry]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                            <picker bindchange="bindNatureChange" value="{{index}}" range="{{nature}}">
+                                <view class="jobpicker">
+                                    <text wx:if="{{natureStatus}}">企业性质</text>
+                                    <text wx:else>{{nature[indexNature]}}</text>
+                                    <image src="/images/icons/arrow-down.png"></image>
+                                </view>
+                            </picker>
+                        </view>
+                        <repeat for="{{corplist}}" key="index" index="index" item="item">
+                            <corplist :syncCorpdata.sync="item"></corplist>
+                        </repeat>
+                        <!--暂无数据显示-->
+                        <view class="empty-placeholder row-center" wx:if="{{isCorpEmpty}}">
+                            <image class="icon-xl" src="/images/icons/no_delivery.png" />
+                            <view class="txt">暂无发现数据</view>
+                        </view>
+                    </view>
+                    <!--加载更多时动画-->
+                    <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+
+                </view>
+            </view>
+        </view>
+        <citylist wx:if="{{isShowCity}}"
+                  @cityNameFn.user="parentCityNameFn"
+                  :citySelected.sync="city"
+        ></citylist>
+
+    </view>
+
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import {USER_OPERATE_INFO, LOGIN_INFO} from '../../utils/constants';
+import tip from '../../utils/tip';
+import Search from '../../components/search';
+import CityList from '../../components/citylist';
+import CommPosi from '../../components/commposi';
+import CorpList from '../../components/corplist';
+import BottomLoadMore from "../../components/bottomloadmore";
+import {filter} from 'lodash';
+const peoSearch = require('../../data/peosearch-data.js');
+const  regions = require('../../utils/regions');
+
+
+export default class SearchPage extends wepy.page {
+
+    config={
+        navigationBarTitleText: '搜索',
+    }
+
+    data={
+        isShowCity: false,
+        isUnderSearch: false,       //是否在搜索状态
+        keyword: '',    //输入字段
+        hunterjobList: [],       //服务器返回
+        corplist: [],
+        peoSearch: peoSearch,
+        city: '',
+        keywordhisList: [],
+        isShowJobList: false,
+        isShowCorpList: false,
+        showLoading: false,
+        isJobEmpty: false,
+        isCorpEmpty: false,
+        currentPage: 1,   //当前页面
+        totalJobPage: 0,    //总数
+        totalCorpPage: 0,
+        regions: regions,
+        dictionaryList: ["DICT_COMP_CITY", "DICT_COMP_INDUSTRY", "DICT_JOB_PUB_DATE", "DICT_COMP_NATURE"],
+        areaid: [],
+        industryid: [],
+        publicdate: [],
+        nature: [],
+        indexRegion: "",
+        indexIndustry: "",
+        indexPublic: "",
+        indexNature: "",
+        areaidStatus: true,
+        industryidStatus: true,
+        publicdateStatus: true,
+        natureStatus: true,
+        isShowCityName: true,
+        loginInfo: {},
+        jobNum: 0,
+        corpNum: 0
+    }
+
+    components = {
+        search: Search,
+        citylist: CityList,
+        commposi: CommPosi,
+        corplist: CorpList,
+        bottomloadmore: BottomLoadMore,
+    }
+
+    onLoad (options) {
+        if(options.jobname!==undefined){
+          this.isUnderSearch=true;
+          this.isShowJobList=true;
+          this.keyword=options.jobname
+          this.$apply()
+          this.doPosiSearch(options.jobname)
+        }
+        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        if (userSpecialInfo.city) {
+            this.city = userSpecialInfo.city;
+        } else {
+            this.city = '全国';
+        }
+        if(userSpecialInfo.keywordhisList) {
+            this.keywordhisList = userSpecialInfo.keywordhisList;
+        }
+        const that = this;
+        // 获取数据字典
+        that.dictionaryList.forEach((item,index) => {
+            switch (item){
+            case "DICT_COMP_CITY":// 城市
+                this.getDictData(item).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        let arr = []
+                        json.data.data.forEach((item,index)=>{
+                            arr.push(item.label)
+                        })
+                        that.areaid = arr;
+                        that.$apply();
+                    } else {
+                        tip.error(json.data.returnMsg);
+                    }
+                })
+                break;
+            case "DICT_COMP_INDUSTRY":// 期望行业
+                this.getDictData(item).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        let arr = []
+                        json.data.data.forEach((item,index)=>{
+                            arr.push(item.label)
+                        })
+                        that.industryid = arr;
+                        that.$apply();
+                    } else {
+                        tip.error(json.data.returnMsg);
+                    }
+                })
+                break;
+            case "DICT_JOB_PUB_DATE":// 发布时间
+                this.getDictData(item).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        let arr = []
+                        json.data.data.forEach((item,index)=>{
+                            arr.push(item.label)
+                        })
+                        that.publicdate = arr;
+                        that.$apply();
+                    } else {
+                        tip.error(json.data.returnMsg);
+                    }
+                })
+                break;
+            case "DICT_COMP_NATURE"://企业性质
+                this.getDictData(item).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        let arr = []
+                        json.data.data.forEach((item,index)=>{
+                            arr.push(item.label)
+                        })
+                        that.nature = arr;
+                        that.$apply();
+                    } else {
+                        tip.error(json.data.returnMsg);
+                    }
+                })
+                break;
+            }
+        });
+    }
+
+    methods={
+        empty(){ //清空搜索历史记录
+          var that = this
+          wx.removeStorage({
+            key: 'userSpecialInfo',
+            success(res) {
+              that.keywordhisList=[]
+            }
+          })
+        },
+        parentSearchFn(val) { //搜索关键字
+            this.isUnderSearch = true;
+            this.keyword = val;
+            this.doPosiSearch(val);
+            this.doCorpSearch(val);
+            this.hunterjobList = [];
+            this.corplist = [];
+            wx.showToast({
+                title: "加载中",
+                icon: "loading",
+                mask: true,
+                duration: 300
+            });
+            console.log(val)
+        },
+        parentTrShowCityFn(val) {
+            this.isShowCity = val;
+        },
+        parentUnderSearchFn(val){//清空搜索框内容后，不在搜索状态
+            this.isUnderSearch = val;
+            this.isShowJobList = val;
+            this.isShowCorpList = val;
+            this.isShowCityName = true;
+        },
+        parentCityNameFn(val){
+            if(val.length > 3) {
+                val = val.substring(0, 3) + "...";
+            }
+            this.$invoke('search', 'setCityFn', val);
+            this.isShowCity = false;
+            this.city = val;
+        },
+        selHisKeyWordFn(event){
+            this.$invoke('search', 'setSearchInputFn', event.currentTarget.dataset.his);
+        },
+        delHisCellFn(event){
+            let del = event.currentTarget.dataset.del;
+            let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+            this.keywordhisList = filter(userSpecialInfo.keywordhisList, (item, index) => {
+                return item != del;
+            });
+            userSpecialInfo.keywordhisList = this.keywordhisList;
+            wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+        },
+        selPeoBadgeFn(event){
+            this.$invoke('search', 'setSearchInputFn', event.target.dataset.peoBadge);
+        },
+        trJobListFn(event){//显示职位
+            this.isShowJobList = true;
+            this.isShowCorpList = false;
+            this.isShowCityName = false;
+        },
+        trCorpListFn(event){//显示公司
+            this.isShowCorpList = true;
+            this.isShowJobList = false;
+            this.isShowCityName = false;
+        },
+        bindRegionChange(event){
+            this.areaidStatus = false;
+            this.indexRegion = event.detail.value;
+            this.city = this.areaid[this.indexRegion];  //???
+            this.refreshListData();
+        },
+        bindIndustryChange(event){
+            this.industryidStatus = false;
+            this.indexIndustry = event.detail.value;
+            this.refreshListData();
+        },
+        bindPublicChange(event){
+
+            this.publicdateStatus = false;
+            this.indexPublic = event.detail.value;
+            this.refreshListData();
+        },
+        bindNatureChange(event){
+            this.natureStatus = false;
+            this.indexNature = event.detail.value;
+            this.refreshListData();
+        }
+    }
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom(event) {
+        let that = this;
+        that.showLoading = true;
+        if(that.isShowJobList) {
+            // console.log(that.totalJobPage + "===" + that.currentPage);
+            //判断总页数是否大于翻页数
+            if ((that.totalJobPage) > that.currentPage) {
+                //防止重复加载
+                if (that.preventRepeatReuqest) {
+                return true;
+                }
+                that.preventRepeatReuqest = true;
+                that.currentPage++;
+                that.doPosiSearch(that.keyword, that.currentPage);
+                that.preventRepeatReuqest = false;
+            } else {
+                that.showLoading = false;
+            }
+        }
+        if(that.isShowCorpList) {
+            // console.log(that.totalCorpPage + "===" + that.currentPage);
+            //判断总页数是否大于翻页数
+            if ((that.totalCorpPage) > that.currentPage) {
+                //防止重复加载
+                if (that.preventRepeatReuqest) {
+                return true;
+                }
+                that.preventRepeatReuqest = true;
+                that.currentPage++;
+                that.doCorpSearch(that.keyword, that.currentPage);
+                that.preventRepeatReuqest = false;
+            } else {
+                that.showLoading = false;
+            }
+        }
+
+    }
+
+    //职位搜索
+    async doPosiSearch(keyword, currentPage) {
+        const that = this;
+        let region_name = ''
+        if (that.city == '全国' || that.areaid[that.indexRegion] == '全部' ) {
+            region_name = '';
+        } else {
+            region_name = that.areaid[that.indexRegion] || that.city;
+        }
+        const json = await api.getCompanyjob({
+        query: {
+            head: {
+                "transcode": "Q0001",
+                "type": "h"
+            },
+            data: {
+                pageNo: currentPage || "1",
+                keyword: that.keyword,
+                areaid: region_name,
+                industryid: that.industryid[that.indexIndustry] || "",
+                publicdate: that.publicdate[that.indexPublic] || ""
+            }
+        }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            if (json.data.data.num == 0) {
+                // tip.toast('搜索结果为空');
+                that.isJobEmpty = true;  //暂无数据
+                that.jobNum = 0;
+            } else {
+                let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+                if(that.keywordhisList.indexOf(keyword) == -1) {
+                    that.keywordhisList.push(keyword);
+                    if(that.keywordhisList.length>8){
+                      that.keywordhisList.shift()
+                    }
+                    userSpecialInfo.keywordhisList =  that.keywordhisList;
+                    console.log(that.keywordhisList)
+                    wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+                }
+                that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
+                that.jobNum = json.data.data.num;
+                that.totalJobPage =parseInt(json.data.data.num / 10);
+                that.isJobEmpty = false;
+                // console.log("查找职位", "isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isJobEmpty", that.isJobEmpty, "isCorpEmpty", that.isCorpEmpty);
+            }
+            that.$apply();
+            that.showLoading = false;
+        } else {
+            tip.error(json.data.returnMsg);
+        }
+    }
+
+    //查找公司(已登录)
+    async doCorpSearch(keyword, currentPage) {
+        const that = this;
+        let region_name = '';
+        if (that.city == '全国' || that.areaid[that.indexRegion] == '全部' ) {
+            region_name = '';
+        } else {
+            region_name = that.areaid[that.indexRegion] || that.city;
+        }
+        const json = await api.searchCorp({
+        query: {
+            head: {
+                "transcode": "I0002",
+                "type": "h"
+            },
+            data: {
+                token: that.loginInfo.token,
+                tokenKey: that.loginInfo.tokenKey,
+                p: currentPage || "1",
+                keywork: that.keyword,
+                city: region_name,
+                industry: that.industryid[that.indexIndustry] || "",
+                nature: that.nature[that.indexNature] || ""
+            }
+        }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            if (json.data.data.num == 0) {
+                // tip.toast('搜索结果为空');
+                that.isCorpEmpty = true;  //暂无数据
+                that.corpNum = 0;
+            } else {
+                let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+                if(that.keywordhisList.indexOf(keyword) == -1) {
+                    that.keywordhisList.push(keyword);
+                    userSpecialInfo.keywordhisList =  that.keywordhisList;
+                    wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+                }
+                that.corplist = [...that.corplist, ...json.data.data.list];
+                that.corpNum = json.data.data.num;
+                that.totalCorpPage =parseInt(json.data.data.num / 10);
+                that.isCorpEmpty = false;
+                // console.log("查找公司", "isShowCorpList", that.isShowCorpList, "isShowJobList", that.isShowJobList, "isCorpEmpty", that.isCorpEmpty, "isJobEmpty", that.isJobEmpty);
+            }
+            that.$apply();
+            that.showLoading = false;
+        } else {
+            tip.error(json.data.returnMsg);
+        }
+    }
+
+    //获取数据字典
+    async getDictData(groupcode) {
+        const json = await api.getDictData({
+        query: {
+            head: {
+                "transcode": "DC001",
+                "type": "h"
+            },
+            data: {
+                "groupcode": groupcode,
+                "selAll": "true"
+            }
+        }
+        })
+        return json;
+    }
+
+    //刷新数据
+    refreshListData() {
+        const that = this;
+        const keyword = that.keyword;
+        that.isShowJobList&&that.doPosiSearch(keyword);
+        that.isShowCorpList&&that.doCorpSearch(keyword);
+        that.hunterjobList = [];
+        that.corplist = [];
+    }
+}
+</script>

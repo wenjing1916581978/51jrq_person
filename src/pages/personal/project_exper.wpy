@@ -1,0 +1,257 @@
+<style lang="less">
+  page {
+    background: #F0F1F2;
+    .biggest {
+        background: #fff;
+        border-top: #f1f1f1 solid 1rpx;
+        .block {
+            margin: auto 40rpx;
+            .list_item {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                font-size: 28rpx;
+                color: #888888;
+                height: 80rpx;
+                justify-content: space-between;
+                border-bottom: #f1f1f1 solid 2rpx;
+                .title {
+                    color: #353535;
+                    width: 35%;
+                }
+                .input {
+                    width: 65%;
+                    input {
+                        text-align: right;
+                        color: #888888;
+                        width: 100%;
+                    }
+                    .phcolor {
+                        color: #888888;
+                        text-align: right;
+                    }
+                }
+            }
+
+        }
+    }
+    .work-content {
+        height: 80rpx;
+        font-size: 28rpx;
+        line-height: 80rpx;
+        margin-left: 40rpx;
+        color: #b2b2b2;
+    }
+    .big {
+        background: white;
+        .section {
+            margin: auto 40rpx;
+            textarea {
+                padding: 30rpx auto;
+                width: 100%;
+                font-size: 28rpx;
+                color: #888888;
+            }
+        }
+    }
+
+    .btn-box {
+        margin-top: 70rpx;
+        .save-btn{
+            width: 600rpx;
+            height: 64rpx;
+            background: #ff9e00;
+            color: white;
+            text-align: center;
+            line-height: 60rpx;
+            font-size: 36rpx;
+            border-radius: 10rpx;
+        }
+    }
+  }
+</style>
+<template>
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">项目名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="projectname" value="{{projectname}}" placeholder="请填写" />
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">公司名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="companyname" value="{{companyname}}" placeholder="请填写" />
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">开始时间</view>
+                <picker name="starttime" mode="date" value="{{starttime}}" bindchange="bindDateChange1">
+                    <view class="picker">
+                        {{starttime?starttime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">结束时间</view>
+                <picker name="endtime" mode="date" value="{{endtime}}" bindchange="bindDateChange2">
+                    <view class="picker">
+                        {{endtime?endtime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+
+        </view>
+    </view>
+    <view class="work-content">
+        项目描述/职责：
+    </view>
+    <view class="big">
+        <view class="section">
+            <textarea maxlength="-1" name="projectremark" value="{{projectremark}}" placeholder="请输入个人介绍（500字以内）" placeholder-style="color:#888888;font-size:28rpx;"  />
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api';
+  import tip from '../../utils/tip';
+
+  export default class BaseInfo extends wepy.page {
+
+    config = {
+    navigationBarTitleText: '项目经验',
+    }
+
+    data = {
+        projectname:'',
+        companyname:'',
+        starttime:'',
+        endtime:'',
+        projectremark:'',
+        projectid:'',
+        token: "",
+        tokenKey: "",
+        resumeid:''
+    }
+
+    onLoad(options) {
+        this.projectid = options.projectid;
+        this.resumeid = options.resumeid;
+        this.$apply();
+        const that = this;
+
+        // 获取登录信息
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                if(options.resumeid==''){
+                  return false
+                }
+                //获取求职意向
+                that.getJobInfo(that.token,that.tokenKey,that.resumeid).then(json => {
+                    if (json.data.returnCode == "AAAAAAA") {
+                        var jobExper = JSON.parse(json.data.data);
+                        let resultArr = jobExper.find(item => item.projectid == options.projectid)
+                        that.projectname = resultArr.projectname;
+                        that.companyname = resultArr.companyname;
+                        that.starttime = resultArr.starttime;
+                        that.endtime = resultArr.endtime;
+                        that.projectremark = resultArr.projectremark;
+                        that.$apply();
+                    } else {
+                        tip.error(json.data.returnMsg);
+                    }
+                })
+            }
+        })
+
+
+    }
+
+    methods = {
+        // 提交表单--基本信息编辑新增
+        formSubmit: function(e) {
+            wx.showLoading({
+                title: '加载中',
+            })
+            if(this.projectid != "undefined"){
+                e.detail.value.projectid = this.projectid;
+            }
+            var obj2 = {
+                "token": this.token,
+                "tokenKey": this.tokenKey,
+                "resumeid": this.resumeid
+            }
+            if(!obj2.resumeid){
+                delete obj2['resumeid']
+            }
+            const that = this;
+            this.changeBaseInfo(e.detail.value,obj2).then(data=>{
+                if(data.data && data.data.returnCode == "AAAAAAA") {
+                    let pages = getCurrentPages();
+                    let prevPage = pages[pages.length - 2];
+                    prevPage.update(4)
+                    wx.navigateBack({
+                     delta: 1
+                   })
+                }else{
+                    console.log(data)
+                }
+                wx.hideLoading()
+            })
+        },
+        bindDateChange1: function(e) {
+            this.starttime = e.detail.value;
+            this.$apply();
+        },
+        bindDateChange2: function(e) {
+            this.endtime = e.detail.value;
+            this.$apply();
+        },
+    }
+
+    //获取工作经历
+    async getJobInfo(token,tokenKey,resumeid) {
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0008",
+                    "type": "h"
+                },
+                data: {
+                    "token": token,
+                    "tokenKey": tokenKey,
+                    "resumeid": resumeid
+                }
+            }
+        })
+        return json;
+    }
+
+    //修改表单数据
+    async changeBaseInfo(obj,obj2) {
+        let data = obj2
+        let resultObj = Object.assign(data, obj);
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0018",
+                    "type": "h"
+                },
+                data: resultObj
+            }
+        })
+        return json;
+    }
+  }
+</script>

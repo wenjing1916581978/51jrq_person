@@ -1,0 +1,24 @@
+
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">证书名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="certname" value="{{certname}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">获得时间</view>
+                <picker name="gaintime" mode="date" value="{{gaintime}}" bindchange="bindDateChange2">
+                    <view class="picker">
+                        {{gaintime?gaintime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>

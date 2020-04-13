@@ -1,0 +1,80 @@
+<style lang="scss">
+    .recomm-container {
+        display: flex;
+        flex-direction: column;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 30rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .corpname {
+            margin-top: 10rpx;
+            color: #888;
+            font-size: 26rpx;
+        }
+        .posi-duty {
+            padding-top: 4rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+        }
+    }
+</style>
+
+<template>
+    <view class="recomm-container"
+            @tap="goToHomeView({{syncRelatedJob.corpid}}, {{syncRelatedJob.id}})"
+    >
+        <view class="gray-line"></view>
+        <view class="posi-name-sal">
+            <text class="posi-name">{{syncRelatedJob.jobname}}</text>
+            <text class="posi-sal">{{syncRelatedJob.salary}}</text>
+        </view>
+        <text class="corpname">{{syncRelatedJob.corpname}}</text>
+        <view class="posi-duty">
+            <text>{{syncRelatedJob.jobcity}}</text>
+            <!-- <text class="ver">|</text>
+            <text>{{}}</text> -->
+            <text class="ver" wx:if="{{syncRelatedJob.jobcity}}">|</text>
+            <text>{{syncRelatedJob.workyears}}</text>
+            <text class="ver" wx:if="{{syncRelatedJob.workyears}}">|</text>
+            <text>{{syncRelatedJob.ebid}}</text>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class RelatedJob extends wepy.component {
+        props = {
+            syncRelatedJob: {
+                type: Object,
+                default: null
+            }
+        }
+
+        methods = {
+            goToHomeView(corpid, jobid) {
+                if (jobid.length && corpid.length == 0) {
+                    return;
+                }
+                wepy.navigateTo({
+                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+                })
+            }
+        }
+    }
+</script>
+
+

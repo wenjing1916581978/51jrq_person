@@ -1,0 +1,158 @@
+<style lang='scss'>
+
+.comm-posis-container {
+  .header-container {
+    padding: 12rpx 32rpx 17rpx 32rpx;
+    image {
+      margin-right: 12rpx;
+      width: 28rpx;
+      height: 28rpx;
+      vertical-align: middle;
+    }
+    text {
+      vertical-align: middle;
+      font-size: 30rpx;
+      color: #353535;
+    }
+  }
+}
+</style>
+
+<template>
+  <view>
+    <bannersearch></bannersearch>
+    <view class="comm-posis-container">
+      <view class="header-container">
+        <image src="/images/icons/comm-posi.png"></image>
+        <text>推荐职位</text>
+      </view>
+      <repeat for="{{hunterjobList}}" key="index" index="index" item="item">
+        <commposi :syncPosidata.sync="item"></commposi>
+      </repeat>
+      <!-- <navigationload :syncLoadShow.sync="showPageLoading"></navigationload> -->
+      <!--加载更多时动画-->
+      <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+      <!--暂无数据显示-->
+      <placeholder :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import utils from'../../utils/utils';
+import BannerSearch from '../../components/bannersearch';
+import CommPosi from '../../components/commposi';
+import BottomLoadMore from "../../components/bottomloadmore";
+import PlaceHolder from "../../components/placeholder";
+import NavigationLoad from '../../components/navigationload';
+
+export default class HomePage extends wepy.page {
+
+  config = {
+
+  }
+
+  components = {
+    bannersearch: BannerSearch,
+    commposi: CommPosi,
+    bottomloadmore: BottomLoadMore,
+    placeholder: PlaceHolder,
+    navigationload: NavigationLoad
+  }
+
+  data ={
+    posiList: [],
+    hunterjobList: {},
+    showLoading: false,
+    isEmpty: false,
+    currentPage: 1,   //当前页面
+    totalPage: 0,    //总数
+    showPageLoading: true,
+  }
+
+  onLoad (options) {
+    // tip.confirm()
+    this.getCompanyjob(this.currentPage)
+  }
+
+  // 下拉刷新
+  onPullDownRefresh(){
+    wx.showNavigationBarLoading()
+    this.onLoad()
+  }
+  // 转发分享
+  onShareAppMessage() {
+      var pages = getCurrentPages()    //获取加载的页面
+      var currentPage = pages[pages.length-1]    //获取当前页面的对象
+      var url = currentPage.route    //当前页面url
+      return {
+      title: '金融职业机会尽在51金融圈',
+      desc: '51金融圈丨金融人才求职招聘',
+      path: `/${url}`
+      }
+  }
+
+  /**
+ * 页面上拉触底事件的处理函数
+ */
+  onReachBottom(event) {
+    let that = this;
+    that.showLoading = true;
+      //判断总页数是否大于翻页数
+      if ((that.totalPage) > that.currentPage) {
+        //防止重复加载
+        if (that.preventRepeatReuqest) {
+          return true;
+        }
+        that.preventRepeatReuqest = true;
+        that.currentPage++;
+        that.getCompanyjob(that.currentPage);
+        that.preventRepeatReuqest = false;
+      } else {
+        that.showLoading = false;
+      }
+  }
+
+  async getCompanyjob(currentPage) {
+    // 开启loading效果
+    const that = this;
+    that.showPageLoading = false;
+    that.$apply()
+    const json = await api.getCompanyjob({
+      query: {
+        head: {
+            "transcode": "Q0001",
+            "type": "h"
+        },
+        data: {
+            pageNo: currentPage
+        }
+      }
+    })
+    console.log(typeof json.data)
+    if (json.data.returnCode == "AAAAAAA") {
+      that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
+      that.hunterjobList.forEach(element => {
+          element.updatedate = utils.date('Y/m/d',(element.updatedate)/1000)
+      });
+      that.totalPage =parseInt(json.data.data.num / 10);
+      if(json.data.data.num == 0) {
+        that.isEmpty = true;  //暂无数据
+      }
+      that.showPageLoading = false;
+      that.$apply()
+    } else {
+      tip.error(json);
+    }
+
+
+    wx.hideNavigationBarLoading() //完成停止加载
+    wx.stopPullDownRefresh() //停止下拉刷新
+    that.$apply();
+    that.showLoading = false
+  }
+}
+</script>

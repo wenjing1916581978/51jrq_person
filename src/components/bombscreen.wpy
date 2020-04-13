@@ -1,0 +1,43 @@
+<style lang="scss">
+    .bomb-screen {
+        background-color: rgb(0, 0, 0);
+        position: fixed;
+        z-index: 2000;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+    }
+</style>
+
+<template>
+    <view wx:if="{{isShow}}">
+        <!-- <view class="pop-pic">
+            <image></image>
+        </view> -->
+        <view class="bomb-screen" @tap.stop="close"></view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    export default class BombScreen extends wepy.component {
+        props = {
+            isShow:{
+                default: false
+            }
+        }
+        methods = {
+            close() {
+                this.isShow = false;
+            }
+        }
+
+        showPopScreen() {
+            this.isShow = true;
+            this.$apply();
+        }
+    }
+    
+</script>
+

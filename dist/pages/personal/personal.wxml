@@ -1,0 +1,70 @@
+
+  <view class="personal-container">
+      <view class="personal-info" catchtap="goBaseEdit">
+            <image mode="aspectFill" src="{{tempPortraitFilePath}}"  wx:if="{{headimgStatus}}"/>
+            <image mode="aspectFill" src="/images/icons/upload_head.png"  wx:else="{{headimgStatus}}"/>
+            <view class="name-intro" wx:if="{{loginStatus}}">
+                <view class="name-intro-bd">
+                    <view class="name">{{username}}</view>
+                    <view class="intro">{{jobname}}</view>
+                </view>
+                <image src="/images/icons/arrow_right.png" class="arrow_right"/>
+            </view>
+            <view class="name-intro" wx:else="{{loginStatus}}">
+                <view class="intro2" bindtap="goLoginPage"><text>登录</text>  / <text>注册</text> </view>
+            </view>
+      </view>
+      <view class="my-function">
+          <view class="fun-line" bindtap="goResumeList">
+            <view class="img-title">
+                <image src="/images/icons/resume.png"/>
+                <text>我的简历</text>
+            </view>
+            <view class="percent-arrow">
+                <!-- <view class="percentage">{{percentage}}</view> -->
+                <image src="/images/icons/arrow_right.png"/>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="goDeliveryPage">
+            <view class="img-title">
+                <image src="/images/icons/delivery.png"/>
+                <text>投递状态</text>
+            </view>
+            <view class="percent-arrow">
+                <view/>
+                <image src="/images/icons/arrow_right.png"/>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="goCollectionPage">
+            <view class="img-title">
+                <image src="/images/icons/collection.png"/>
+                <text>我的收藏</text>
+            </view>
+            <view class="percent-arrow">
+                <view/>
+                <image src="/images/icons/arrow_right.png"/>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="switchapplet">
+            <view class="img-title">
+                <image src="/images/icons/switch_icon_qiye.png"/>
+                <text>切换到企业版</text>
+            </view>
+            <view class="percent-arrow">
+                <view/>
+                <image src="/images/icons/arrow_right.png"/>
+            </view>
+        </view>
+      </view>
+      <view class="exit" bindtap="logout" wx:if="{{loginStatus}}">
+          退出登录
+      </view>
+    <view class="alert-container" wx:if="{{showbox}}"/>
+    <view class="alert-box" wx:if="{{showbox}}">
+        <view class="sure">确认退出登录？</view>
+        <view class="yesno">
+            <view class="no" bindtap="cancel">取消</view>
+            <view class="yes" bindtap="yes">确定</view>
+        </view>
+    </view>
+  </view>

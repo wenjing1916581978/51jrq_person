@@ -1,0 +1,117 @@
+<style lang='scss'>
+</style>
+
+<template>
+  <view>
+    <bannersearch></bannersearch>
+    <repeat for="{{corplist}}" key="index" index="index" item="item">
+      <corplist :syncCorpdata.sync="item"></corplist>
+    </repeat>
+    <!-- <navigationload :syncLoadShow.sync="showPageLoading"></navigationload> -->
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import BannerSearch from '../../components/bannersearch';
+import CorpList from '../../components/corplist';
+import NavigationLoad from '../../components/navigationload';
+
+export default class CorpPage extends wepy.page {
+  components = {
+    bannersearch: BannerSearch,
+    corplist: CorpList,
+    navigationload: NavigationLoad
+  }
+
+  data = {
+    corplist: [],
+    showLoading: false,
+    isEmpty: false,
+    currentPage: 1,   //当前页面
+    totalPage: 0,    //总数
+    showPageLoading: true,
+  }
+
+  onLoad (options) {
+    //获取公司列表数据
+    this.getCorpList()
+  }
+
+  // 转发分享
+  onShareAppMessage() {
+    var pages = getCurrentPages()    //获取加载的页面
+    var currentPage = pages[pages.length-1]    //获取当前页面的对象
+    var url = currentPage.route    //当前页面url
+    return {
+      title: '金融职业机会尽在51金融圈',
+      desc: '51金融圈丨金融人才求职招聘',
+      path: `/${url}`
+    }
+  }
+
+  /**
+ * 页面上拉触底事件的处理函数
+ */
+  onReachBottom(event) {
+    let that = this;
+    that.showLoading = true;
+    // console.log(that.totalPage + "===" + that.currentPage);
+      //判断总页数是否大于翻页数
+      if ((that.totalPage) > that.currentPage) {
+        //防止重复加载
+        if (that.preventRepeatReuqest) {
+          return true;
+        }
+        that.preventRepeatReuqest = true;
+        that.currentPage++;
+        that.getCorpList(that.currentPage);
+        that.preventRepeatReuqest = false;
+      } else {
+        that.showLoading = false;
+      }
+  }
+
+  // 下拉刷新
+  onPullDownRefresh(){
+    wx.showNavigationBarLoading()
+    this.onLoad()
+  }
+
+  async getCorpList(currentPage) {
+    // wx.showLoading({
+    //     title: '加载中',
+    // })
+    const that = this;
+    that.showPageLoading = true;
+    const json = await api.getCompanyList({
+      query: {
+          head: {
+              "transcode": "CP001",
+              "type": "h"
+          },
+          data: {
+              "p": currentPage || 1
+          }
+      }
+    })
+    if (json.data.returnCode == "AAAAAAA") {
+      that.corplist = [...that.corplist, ...json.data.data.list];
+      that.totalPage =parseInt(json.data.data.num / 10);
+      if(json.data.data.num == 0) {
+        that.isEmpty = true;  //暂无数据
+      }
+    } else {
+      tip.error(json.returnMsg);
+    }
+    that.showPageLoading = false;
+    // wx.hideLoading() //隐藏loading效果
+    wx.hideNavigationBarLoading() //完成停止加载
+    wx.stopPullDownRefresh() //停止下拉刷新
+    that.$apply();
+    that.showLoading = false
+  }
+}
+</script>

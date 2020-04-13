@@ -1,0 +1,273 @@
+<style lang="scss">
+    .biggest {
+        .posi-corp-container {
+            padding: 0 32rpx;
+            display: flex;
+            flex-direction: column;
+            padding-top: 12rpx;
+            padding-bottom: 14rpx;
+            margin: 0 32rpx;
+            border-top: 1rpx solid #F1F1F1;
+            .ver {
+                margin: 0 12rpx;
+            }
+            .corp-brief {
+                padding-top: 13rpx;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .logo {
+                    margin-right: 16rpx;
+                    width: 60rpx;
+                    height: 60rpx;
+                    image {
+                        width: 60rpx;
+                        height: 60rpx;
+                    }
+                }
+                .corp-info {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    .corp-name {
+                        font-size: 28rpx;
+                        color: #888;
+                    }
+                    .corp-size-type {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        font-size: 24rpx;
+                        color: #b2b2b2;
+                        .up-date {
+                            font-size: 26rpx;
+                            color: #a0a0a0;
+                        }
+                    }
+                }
+            }
+            .posi-container {
+                display: flex;
+                flex-direction: column;
+                .ver {
+                    margin: 0 12rpx;
+                }
+                .posi-name-sal {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    font-size: 30rpx;
+                    .posi-name {
+                        font-weight: bold;
+                        color: #353535;
+                    }
+                    .posi-sal {
+                        color: #FF9E00;
+                    }
+                    .posi-sal2 {
+                        color: #b2b2b2;
+                    }
+                }
+                .posi-duty {
+                    font-size: 24rpx;
+                    color: #B2B2B2;
+                }
+            }
+        }
+        .status-box {
+            padding: 14rpx 0;
+            background: #F0F1F2;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            justify-content: space-around;
+            .circle{
+                width: 16rpx;
+                height: 16rpx;
+                background: #B2B2B2;
+                border-radius: 50%;
+            }
+            .cir2 {
+                background:#FF9E00;
+            }
+            .content-box {
+                width: 640rpx;
+                background: white;
+                border-radius: 10rpx;
+                .up {
+                    padding-left: 20rpx;
+                    padding-top: 14rpx;
+                    color: #353535;
+                    font-size: 30rpx;
+                }
+                .down {
+                    padding-left: 20rpx;
+                    padding-bottom: 14rpx;
+                    color: #888888;
+                    font-size: 22rpx;
+                }
+            }
+        }
+        .box-status {
+            display: none;
+        }
+        .see-view {
+            width: 100%;
+            background: #F0F1F2;
+            position: relative;
+            cursor: pointer;
+            height: 74rpx;
+            .btn {
+                width:236rpx;
+                height: 68rpx;
+                margin: 0rpx auto;
+                display: block;
+            }
+            view {
+                font-size: 24rpx;
+                color: white;
+                position: absolute;
+                left: 305rpx;
+                top: 10rpx;
+            }
+        }
+    }
+    
+</style>
+
+<template>
+    <view class="biggest">
+        <view class="posi-corp-container" bindtap="goProcessView({{syncPosidata.companyid}}, {{syncPosidata.jobid}},{{syncPosidata.applyid}} )" >
+            <view class="posi-container">
+                <view class="posi-name-sal">
+                    <text class="posi-name">{{syncPosidata.jobname}}</text>
+                    <text class="posi-sal {{syncPosidata.status == 4?'posi-sal2':''}}">{{ syncPosidata.status == 4 ? '已结束' : syncPosidata.salary }}</text>
+                </view>
+                <view class="posi-duty">
+                    <text>{{syncPosidata.jobcity}}</text>
+                    <!-- <text class="ver">|</text>
+                    <text>{{}}</text> -->
+                    <!-- <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text> -->
+                    <!-- <text>{{syncPosidata.workyears}}</text> -->
+                    <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
+                    <text>{{syncPosidata.ebid}}</text>
+                </view>
+            </view>
+            <view class="corp-brief">
+                <view class="logo">
+                    <image mode="aspectFit" src="{{syncPosidata.mlogo ? syncPosidata.mlogo : '/images/icons/upload_head.png'}}"></image>
+                </view>
+                <view class="corp-info">
+                    <text class="corp-name">{{syncPosidata.corpname}}</text>
+                    <view class="corp-size-type">
+                        <view class="corp-size">
+                        <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text> 
+                        </view>
+                        <text class="up-date">{{syncPosidata.createdate?syncPosidata.createdate:'暂无'}}</text> 
+                    </view>
+                </view>
+            </view>
+        </view>
+        <repeat for="{{processList}}" key="index" index="index" item="item">
+            <view class="status-box {{syncPosidata.applyid == applyid?'':'box-status'}}">
+                <view class="circle {{index == 0?'cir2':''}}"></view>
+                <view class="content-box">
+                    <view class="up">{{item.msg}}</view>
+                    <view class="down">{{item.data}}</view>
+                </view>
+            </view>
+        </repeat>
+        <view class="see-view {{syncPosidata.applyid == applyid?'':'box-status'}}" bindtap="goToHomeView({{syncPosidata.companyid}}, {{syncPosidata.jobid}})">
+            <image class='btn' src="/images/icons/long_btn.png"></image>
+            <view>查看职位详情</view>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from "../api/api";
+    import {LOGIN_INFO} from "../utils/constants";
+    import utils from'../utils/utils';
+
+    export default  class CommPosi extends wepy.component {
+        components = {
+            
+        }
+
+        data = {
+            loginInfo: {},
+            processList: [],
+            applyid: ''
+        }
+
+        props = {
+            syncPosidata: {
+                type: Object,
+                default: null
+            }
+        }
+
+        onLoad(options){
+            this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+        }
+
+        methods = {
+            goToHomeView(corpid, jobid) {
+                wepy.navigateTo({
+                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+                })
+            },
+            goProcessView(corpid,jobid,applyid) {
+                if((typeof applyid) === "object"){
+                    wepy.navigateTo({
+                        url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+                    })
+                    return;
+                }
+                if(this.applyid == applyid){
+                    this.applyid = -1111;
+                    this.$apply();
+                    return;
+                }
+                this.applyid = applyid;
+                const that = this;
+                this.getProcessView(applyid.toString()).then(data=>{
+                    let processList = data.data.list;
+                    processList.forEach(element => {
+                        element.data = utils.date('Y-m-d H:i',(element.data)/1000)
+                    });
+                    // #star code#
+                    let arr = []
+                    that.processList = processList.reduce((preValue, curValue) => {
+                        arr[curValue.status] ? '' : arr[curValue.status] = preValue.push(curValue);
+                        return preValue;
+                    }, [])
+                    wx.hideLoading()
+                    that.$apply();
+                })
+            }
+        }
+        //获取简历基本信息
+        async getProcessView(applyid) {
+            wx.showLoading({
+                title: '加载中',
+            })
+            const json = await api.getProcessView({
+            query: {
+                    head: {
+                        "transcode": "P00026",
+                        "type": "h"
+                    },
+                    data: {
+                        "token": this.loginInfo.token,
+                        "tokenKey": this.loginInfo.tokenKey,
+                        "applyid": applyid
+                    }
+                }
+            })
+            return json;
+        }
+    }
+</script>

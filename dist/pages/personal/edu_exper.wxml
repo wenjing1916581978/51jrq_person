@@ -1,0 +1,50 @@
+
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">学校名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="school" value="{{school}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">专业</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="specialtyid" value="{{specialtyid}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">学历</view>
+                <picker name="educationbg" bindchange="bindPickerChange" value="{{educationbg[index]}}" range="{{educationbg}}">
+                    <view class="picker"  wx:if="{{educationbgstatus}}">
+                        {{a_educationbg?a_educationbg:'请选择 >'}}
+                    </view>
+                    <view class="picker"  wx:else="{{educationbgstatus}}">
+                        {{educationbg[index]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">开始时间</view>
+                <picker name="starttime" mode="date" value="{{starttime}}" bindchange="bindDateChange1">
+                    <view class="picker">
+                        {{starttime?starttime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">结束时间</view>
+                <picker name="endtime" mode="date" value="{{endtime}}" bindchange="bindDateChange2">
+                    <view class="picker">
+                        {{endtime?endtime:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>

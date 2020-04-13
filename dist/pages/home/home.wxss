@@ -1,0 +1,6 @@
+@import "./../../components/navigationload.wxss";
+@import "./../../components/placeholder.wxss";
+@import "./../../components/bottomloadmore.wxss";
+@import "./../../components/commposi.wxss";
+@import "./../../components/bannersearch.wxss";
+.comm-posis-container .header-container{padding:12rpx 32rpx 17rpx 32rpx}.comm-posis-container .header-container image{margin-right:12rpx;width:28rpx;height:28rpx;vertical-align:middle}.comm-posis-container .header-container text{vertical-align:middle;font-size:30rpx;color:#353535}

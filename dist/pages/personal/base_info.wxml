@@ -1,0 +1,111 @@
+
+  <form bindsubmit="formSubmit">
+    <view class="biggest">
+        <view class="block">
+            <view class="list_item">
+                <view class="title">简历名称</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="resumename" value="{{resumename}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">姓名</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="username" value="{{username}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">性别</view>
+                <picker name="sex" bindchange="bindPickerChange6" value="{{sex[index6]}}" range="{{sex}}">
+                    <view class="picker"  wx:if="{{sexstatus}}">
+                        {{a_sex?a_sex:'请选择'}}
+                    </view>
+                    <view class="picker"  wx:else="{{sexstatus}}">
+                        {{sex[index6]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">年龄</view>
+                <picker name="borndate" mode="date" value="{{borndate}}" bindchange="bindDateChange">
+                    <view class="picker">
+                        {{borndate?borndate:"请选择 >"}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">户口所在地</view>
+                <!-- <picker name="address" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
+                    <view class="picker" wx:if="{{workcitystatus}}">
+                        {{workcity?workcity:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{workcitystatus}}">
+                        {{city[index4]}}
+                    </view>
+                </picker> -->
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="address" value="{{address}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">工作年限</view>
+                <picker name="workyears" bindchange="bindPickerChange" value="{{workyears[index]}}" range="{{workyears}}">
+                    <view class="picker" wx:if="{{workyearsstatus}}">
+                        {{a_workyears?a_workyears:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{workyearsstatus}}">
+                        {{workyears[index]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">手机</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="telephone" value="{{telephone}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">邮箱</view>
+                <view class="input">
+                    <input placeholder-class="phcolor" type="text" name="email" value="{{email}}" placeholder="请填写"/>
+                </view>
+            </view>
+            <view class="list_item">
+                <view class="title">工作状态</view>
+                <picker name="jobstatus" bindchange="bindPickerChange2" value="{{jobstatus[index2]}}" range="{{jobstatus}}">
+                    <view class="picker" wx:if="{{jobstatusstatus}}">
+                        {{a_jobstatus?a_jobstatus:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{jobstatusstatus}}">
+                       {{jobstatus[index2]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">所在城市</view>
+                <picker name="livecityid" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
+                    <view class="picker" wx:if="{{livecitystatus}}">
+                        {{livecity?livecity:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{livecitystatus}}">
+                        {{city[index5]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="list_item">
+                <view class="title">婚姻状况</view>
+                <picker name="marital" bindchange="bindPickerChange3" value="{{marital[index3]}}" range="{{marital}}">
+                    <view class="picker" wx:if="{{maritalstatus}}">
+                        {{a_marital?a_marital:'请选择'}}
+                    </view>
+                    <view class="picker" wx:else="{{maritalstatus}}">
+                        {{marital[index3]}}
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <view class="btn-box">
+      <button class="save-btn" formType="submit">保存</button>
+    </view>
+  </form>

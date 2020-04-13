@@ -1,0 +1,437 @@
+<style lang='scss'>
+    page {
+        background-color: #F0F1F2;
+        .personal-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            .personal-info {
+                background-color: white;
+                margin: 12rpx 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 40rpx 28rpx;
+                image {
+                    border-radius: 100%;
+                    width: 94rpx;
+                    height: 80rpx;
+                }
+                .name-intro {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    margin-left: 20rpx;
+                    align-items:center;
+                    width:100%;
+                    .name-intro-bd {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .name {
+                        font-size: 36rpx;
+                        color: #333333;
+                        font-weight: 600;
+                    }
+                    .intro {
+                        margin-top: 6rpx;
+                        font-size: 26rpx;
+                        color: #888888;
+                    }
+                    .intro2 {
+                        margin-top: 6rpx;
+                        font-size: 32rpx;
+                        color: #888888;
+                    }
+                    .arrow_right {
+                        width: 10rpx;
+                        height: 16rpx;
+                    }
+                }
+            }
+            .my-function {
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                padding: 0 28rpx;
+            }
+            .fun-line {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 40rpx 0;
+                border-bottom: 1rpx solid #F1F1F1;
+                .img-title {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    image {
+                        width: 36rpx;
+                        height: 36rpx;
+                        margin-right: 20rpx;
+                    }
+                    text {
+                        color: rgba(53, 53, 53, 1);
+                        font-size: 30rpx;
+                    }
+                }
+                .percent-arrow {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    .percentage {
+                        width: 100rpx;
+                        height: 26rpx;
+                        border-radius: 26rpx;
+                        border: 1rpx solid #EC6955;
+                        color: #EC6955;
+                        font-size: 28rpx;
+                        text-align: center;
+                        line-height: 28rpx;
+                        margin-right: 20rpx;
+                    }
+                    view {
+                        width: 100rpx;
+                        height: 28rpx;
+                        font-size: 30rpx;
+                        text-align: center;
+                        line-height: 30rpx;
+                        margin-right: 20rpx;
+                    }
+                    image {
+                        width: 10rpx;
+                        height: 16rpx;
+                    }
+                }
+            }
+            .exit {
+                color: #353535;
+                font-size: 30rpx;
+                line-height: 82rpx;
+                background: white;
+                text-align: center;
+                line-height: 82rpx;
+                margin-top: 22rpx;
+            }
+            .alert-container {
+                position: fixed;
+                width: 100%;
+                height: 100vh;
+                background: black;
+                opacity: 0.5;
+            }
+            .alert-box{
+                width: 560rpx;
+                height: 290rpx;
+                background: white;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-left: -280rpx;
+                border-radius: 20rpx;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .sure {
+                    width: 100%;
+                    height: 190rpx;
+                    font-size: 36rpx;
+                    line-height: 190rpx;
+                    border-bottom: 1rpx solid #e5e5e5;
+                    text-align: center;
+                }
+                .yesno {
+                    display: flex;
+                    flex-direction: row;
+                    text-align: center;
+                    line-height: 100rpx;
+                    .no {
+                        width: 280rpx;
+                        color: #b2b2b2;
+                        border-right: 1rpx solid #e5e5e5;
+                    }
+                    .yes {
+                        width: 280rpx;
+                        color: #ff9e00;
+                    }
+                }
+            }
+        }
+    }
+
+</style>
+
+<template>
+  <view class="personal-container">
+      <view class="personal-info" @tap.stop="goBaseEdit">
+            <image mode="aspectFill" src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
+            <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
+            <view class="name-intro" wx:if="{{loginStatus}}" >
+                <view class="name-intro-bd">
+                    <view class="name">{{username}}</view>
+                    <view class="intro">{{jobname}}</view>
+                </view>
+                <image src="/images/icons/arrow_right.png" class="arrow_right"></image>
+            </view>
+            <view class="name-intro" wx:else="{{loginStatus}}">
+                <view class="intro2" bindtap="goLoginPage"><text>登录</text>  / <text>注册</text> </view>
+            </view>
+      </view>
+      <view class="my-function">
+          <view class="fun-line" bindtap="goResumeList">
+            <view class="img-title">
+                <image src="/images/icons/resume.png"></image>
+                <text>我的简历</text>
+            </view>
+            <view class="percent-arrow">
+                <!-- <view class="percentage">{{percentage}}</view> -->
+                <image src="/images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="goDeliveryPage">
+            <view class="img-title">
+                <image src="/images/icons/delivery.png"></image>
+                <text>投递状态</text>
+            </view>
+            <view class="percent-arrow">
+                <view></view>
+                <image src="/images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="goCollectionPage">
+            <view class="img-title">
+                <image src="/images/icons/collection.png"></image>
+                <text>我的收藏</text>
+            </view>
+            <view class="percent-arrow">
+                <view></view>
+                <image src="/images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+        <view class="fun-line" bindtap="switchapplet">
+            <view class="img-title">
+                <image src="/images/icons/switch_icon_qiye.png"></image>
+                <text>切换到企业版</text>
+            </view>
+            <view class="percent-arrow">
+                <view></view>
+                <image src="/images/icons/arrow_right.png"></image>
+            </view>
+        </view>
+      </view>
+      <view class="exit" bindtap="logout" wx:if="{{loginStatus}}">
+          退出登录
+      </view>
+    <view class="alert-container" wx:if = "{{showbox}}"></view>
+    <view class="alert-box" wx:if = "{{showbox}}">
+        <view class="sure">确认退出登录？</view>
+        <view class="yesno">
+            <view class="no" bindtap="cancel">取消</view>
+            <view class="yes" bindtap="yes">确定</view>
+        </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import {
+    LOGIN_INFO
+} from '../../utils/constants';
+const utils = require('../../utils/utils');
+
+
+export default class PersPage extends wepy.page {
+    data = {
+        // 简历完成百分比
+        percentage: '0%',
+        username:'暂无',
+        headimg:'',
+        headimgStatus:false,
+        jobname:'',
+        token:'',
+        tokenKey:'',
+        have: true,
+        resumeid: '',
+        showbox: false,
+        loginStatus: false,
+        tempPortraitFilePath: ''
+    }
+    onLoad() {
+
+    }
+    // 转发分享
+    onShareAppMessage() {
+        var pages = getCurrentPages()    //获取加载的页面
+        var currentPage = pages[pages.length-1]    //获取当前页面的对象
+        var url = currentPage.route    //当前页面url
+        return {
+        title: '金融职业机会尽在51金融圈',
+        desc: '51金融圈丨金融人才求职招聘',
+        path: `/${url}`
+        }
+    }
+
+    onShow(){
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.loginStatus = true;
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.getPimg();
+                if(!res.data.data.companyname || !res.data.data.jobname){
+                    that.have = false;
+                }
+                that.$apply();
+            },
+            fail: function(res) {
+                // 清空本地信息
+                wx.clearStorage()
+                that.have = false;
+                that.loginStatus = false;
+                that.$apply();
+            }
+        })
+
+    }
+    methods = {
+      switchapplet(){
+        wx.navigateToMiniProgram({
+            appId: 'wxd7928bf1898a30cd',
+            path: 'pages/joblist/joblist',
+            extraData: {},
+            envVersion: 'trail',
+            success(res) {
+              // 打开成功
+            },fail(){
+
+            }
+        })
+      },
+        goResumeList () {// 跳转我的简历
+            // 未登录跳转登录页
+            const that = this;
+            utils.goLogin().catch(()=>{
+                if(that.loginStatus){
+                    wx.navigateTo({
+                        url: `resume_list`
+                    })
+                }
+            })
+
+        },
+
+        // 跳转投递状态
+        goDeliveryPage () {
+            // 未登录跳转登录页
+            const that = this;
+            utils.goLogin().catch(() => {
+                if(that.loginStatus){
+                    wx.navigateTo({
+                        url: `delivery`
+                    })
+                }
+            })
+
+        },
+        goCollectionPage () {// 跳转我的收藏
+            // 未登录跳转登录页
+            const that = this;
+            utils.goLogin().catch(() => {
+                if(that.loginStatus){
+                    wx.navigateTo({
+                        url: `collection`
+                    })
+                }
+            })
+
+        },
+        logout () {// 退出登录
+            this.showbox = true;
+        },
+        cancel () {// 取消
+            this.showbox = false;
+        },
+        yes () {// 确定
+            // 清空本地信息
+            wx.clearStorage()
+            // 跳转登录页
+            wx.navigateTo({
+                url: `/pages/login/login`
+            })
+        },
+        goLoginPage () {// 跳转登录页
+            wx.navigateTo({
+                url: `/pages/login/login`
+            })
+        },
+        goBaseEdit() { //跳转个人信息编辑
+            // 未登录跳转登录页
+            utils.goLogin()
+            wx.navigateTo({
+                url: `base_edit`
+            })
+        }
+
+    };
+    onHide(){
+        this.showbox = false;
+        this.headimgStatus = false;
+    }
+
+    //完整度查询
+    async getIntegrity(resumeid) {
+        const json = await api.getResumeInfo({
+        query: {
+                head: {
+                    "transcode": "M0002",
+                    "type": "h"
+                },
+                data: {
+                    "token": this.token,
+                    "tokenKey": this.tokenKey,
+                    "resumeid": resumeid
+                }
+            }
+        })
+        return json;
+    }
+
+    //获取个人信息
+    async getPimg() {
+        const that = this;
+        const json = await api.getPimg({
+            query: {
+                    head: {
+                        "transcode": "P0040",
+                        "type": "h"
+                    },
+                    data: {
+                        "tokenKey": that.tokenKey,
+                        "token": that.token,
+                    }
+                }
+        })
+        if(json.data.returnCode == 'AAAAAAA') {
+            if(json.data.data.headimg){
+                that.headimgStatus = true;
+            }else{
+                that.headimgStatus = false;
+            }
+            that.tempPortraitFilePath = json.data.data.headimg;
+            that.username = json.data.data.username;
+            that.jobname = json.data.data.jobname;
+            that.$apply();
+        }else{
+            tip.error(json.data.returnMsg);
+        }
+    }
+}
+</script>

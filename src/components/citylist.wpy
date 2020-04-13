@@ -1,0 +1,81 @@
+<style lang="scss">
+    $borderColor: #e8e8e8;
+    $fontColor: #888;
+    $themeColor: #FF9E00;
+    /* 城市列表样式-start */
+    .cities-header {
+        background-color: $borderColor;
+        height: 30rpx;
+        line-height: 30rpx;
+        padding: 10rpx 30rpx;
+        font-size: 24rpx;
+        color: $fontColor;
+    }
+    .cities-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-top: 20rpx;
+    }
+    .cities-item {
+        flex-basis: 25%;
+        margin-bottom: 20rpx;
+        margin-left: 6%;
+        padding: 15rpx 0;
+        border: 1px solid $borderColor;
+        background-color: #fff;
+        text-align: center;
+        border-radius: 28rpx;
+        line-height: 28rpx;
+        font-size: 24rpx;
+        color: $fontColor;
+
+    }
+    .cities-item-selected {
+        background-color: $themeColor;
+        color: #fff;
+        border-color: $themeColor;
+    }
+    /* 城市列表样式-end */
+</style>
+
+<template>
+    <block wx:if='{{regions.length > 0}}' wx:for='{{regions}}' wx:for-index="index" wx:for-item="item">
+        <view class="cities-header">{{item.nameStr}}</view>
+        <view class="cities-list">
+            <view wx:for='{{item.cityList}}'
+                    wx:for-index="idx"
+                    wx:for-item="cityName"
+                    class="activeable cities-item {{citySelected == cityName ? 'cities-item-selected' : ''}}"
+                    data-city-name="{{cityName}}"
+                    @tap='selectCityFn'
+            >{{cityName}}</view>
+        </view>
+    </block>
+</template>
+
+<script>
+import wepy from 'wepy';
+const  regions = require('../utils/regions');
+
+export default class CityList extends wepy.component {
+    data={
+        regions: regions,
+    }
+
+    props = {
+        citySelected: {
+            type: String,
+            default: '全国'
+        }
+    }
+
+    methods={
+        selectCityFn(event){
+            this.$emit('cityNameFn', event.target.dataset.cityName);
+        }
+    }
+
+
+}
+</script>

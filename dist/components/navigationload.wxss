@@ -1,0 +1,1 @@
+.load-screen{background-color:#fff;position:fixed;z-index:2000;bottom:0;right:0;left:0;top:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.load-screen .pageLoad{display:flex;flex-direction:column;align-items:center}.load-screen .pageLoad text{font-size:30rpx;color:#999;margin-left:10rpx}.load-screen .pageLoad image{height:100rpx}

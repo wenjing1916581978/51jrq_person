@@ -1,0 +1,65 @@
+<style lang="scss">
+    .posi-container {
+        display: flex;
+        flex-direction: column;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 28rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .posi-duty {
+            padding-top: 4rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+            text-align:left;
+        }
+    }
+</style>
+
+<template>
+  <view class="posi-container">
+      <view class="posi-name-sal">
+          <text class="posi-name">{{syncJobInfo.jobname}}</text>
+          <text class="posi-sal">{{syncJobInfo.salary}}</text>
+      </view>
+      <view class="posi-duty">
+          <text>{{syncJobInfo.jobcity}}</text>
+          <!-- <text class="ver">|</text>
+          <text>{{}}</text> -->
+          <text class="ver" wx:if="{{syncJobInfo.workyears}}">|</text>
+          <text>{{syncJobInfo.workyears}}</text>
+          <text class="ver" wx:if="{{syncJobInfo.ebid}}">|</text>
+          <text>{{syncJobInfo.ebid}}</text>
+      </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+
+    export default class PosiNameDuty extends wepy.component {
+
+        props = {
+            syncJobInfo: {
+                type: Object,
+                default: null,
+                twoWay: true
+            }
+        }
+
+        onLoad(){
+        }
+    }
+</script>
+

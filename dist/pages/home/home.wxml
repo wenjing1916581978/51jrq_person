@@ -1,0 +1,80 @@
+
+  <view>
+    
+    <view class="banner-search-container">
+        <view class="banner-container">
+            <swiper style="height:{{($bannersearch$devicewidth/375)*165}}px;width:100%;" indicator-dots="true" autoplay="true">
+                <block wx:for="{{$bannersearch$bannerlist}}" wx:for-index="$bannersearch$index" wx:for-item="$bannersearch$item" wx:key="$bannersearch$index">
+                    <swiper-item>
+                        <view bindtap="$bannersearch$jumpto" data-wpyjumpto-a="{{$bannersearch$item.link}}">
+                            <image src="{{$bannersearch$item.src==''?'./../../images/icons/banner_default.jpg':$bannersearch$item.src}}" mode="aspectFill" style="height:{{($bannersearch$devicewidth/375)*165}}px;width:{{$bannersearch$devicewidth}}px"/>
+                        </view>
+                    </swiper-item>
+                </block>
+            </swiper>
+        </view>
+        <view class="search-read-only">
+            <navigator class="inner-container" url="/pages/search/search">
+                <icon class="search-img" type="search" color="#fff" size="14"/>
+                <text class="hint-text">请输入关键词，如职位名/公司名等</text>
+            </navigator>
+        </view>
+    </view>
+
+    <view class="comm-posis-container">
+      <view class="header-container">
+        <image src="/images/icons/comm-posi.png"/>
+        <text>推荐职位</text>
+      </view>
+      <block wx:for="{{hunterjobList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        
+  <view class="posi-corp-container" bindtap="$commposi$goToHomeView" data-com-index="{{index}}" data-wpygotohomeview-a="{{item.corpid}}" data-wpygotohomeview-b="{{item.id}}">
+    <view class="posi-container">
+        <view class="posi-name-sal">
+            <text class="posi-name">{{item.jobname}}</text>
+            <text class="posi-sal">{{item.salary}}</text>
+        </view>
+        <view class="posi-duty">
+            <text>{{item.jobcity}}</text>
+            <!-- <text class="ver">|</text>
+            <text>{{}}</text> -->
+            <text class="ver"  wx:if="{{item.workyears}}">|</text>
+            <text>{{item.workyears}}</text>
+            <text class="ver"  wx:if="{{item.ebid}}">|</text>
+            <text>{{item.ebid}}</text>
+        </view>
+    </view>
+      <view class="corp-brief">
+          <view class="logo">
+              <image mode="aspectFit" src="{{item.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : item.mlogo}}"/>
+          </view>
+          <view class="corp-info">
+              <text class="corp-name">{{item.corpname}}</text>
+              <view class="corp-size-type">
+                  <view class="corp-size">
+                    <text>{{item.industry}}</text> 
+                  </view>
+                  <text class="up-date">{{item.refreshdate ? item.refreshdate : item.updatedate}}</text> 
+              </view>
+          </view>
+      </view>
+  </view>
+
+      </block>
+      <!-- <navigationload v-bind:syncLoadShow.sync="showPageLoading"></navigationload> -->
+      <!--加载更多时动画-->
+      
+    <view class="loadMoreGif"  wx:if="{{$bottomloadmore$syncShow}}">
+        <image src="/images/icons/loadding.gif"/>
+        <text>{{$bottomloadmore$message}}</text>
+    </view>
+
+      <!--暂无数据显示-->
+      
+    <view class="empty-placeholder row-center"  wx:if="{{$placeholder$syncShow}}">
+        <image class="icon-xl" src="/images/icons/no_delivery.png"/>
+        <view class="txt">{{$placeholder$message}}</view>
+    </view>
+
+    </view>
+  </view>

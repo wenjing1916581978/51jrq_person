@@ -1,0 +1,78 @@
+<style lang='scss'>
+  .corp-container {
+    display: flex;
+    flex-direction: row;
+    // height: 150rpx;
+    padding-top: 20rpx;
+    padding-bottom: 24rpx;
+    align-items: center;
+    margin: 0 32rpx;
+    border-bottom: 1px solid #F1F1F1;
+    image {
+      height: 120rpx;
+      width: 120rpx;
+    }
+    .corp-intro{
+      margin-left: 30rpx;
+      .corp-name {
+        font-weight: bold;
+        font-size: 30rpx;
+        color: #353535;
+        line-height: 42rpx;
+      }
+      .corp-type {
+        font-size: 22rpx;
+        color: #B2B2B2;
+        line-height: 38rpx;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        .s-line{
+          margin: auto 10rpx;
+          display: inline-block;
+        }
+      }
+      .job-count {
+        font-size: 28rpx;
+        color: #B2B2B2;
+        line-height: 38srpx;
+      }
+      .count-color {
+        color: #FD8C09;
+      }
+    }
+  }
+</style>
+
+<template>
+  <view class="corp-container" bindtap="goCorpView({{syncCorpdata.id}})">
+    <image src="{{syncCorpdata.mlogo}}" mode="aspectFit"/>
+    <view class="corp-intro">
+        <view class="corp-name">{{syncCorpdata.corpname}}</view>
+        <view class="corp-type">
+          {{syncCorpdata.scope}}
+          <view class="s-line" wx:if="{{syncCorpdata.scope}}">|</view>
+          {{syncCorpdata.industry}}
+          <view class="s-line" wx:if="{{syncCorpdata.industry}}">|</view>
+          {{syncCorpdata.city}}
+        </view>
+        <view class="job-count">现有职位数：<text class="count-color">{{syncCorpdata.jobcount}}</text></view>
+    </view>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    export default class CorpList extends wepy.component  {
+
+      methods = {
+        // 跳转公司详情
+        goCorpView (companyid) {
+          wx.navigateTo({
+            url: `/pages/corporation/corpview?companyid=${companyid}`
+          })
+        }
+      };
+
+    }
+</script>

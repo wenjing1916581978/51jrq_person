@@ -1,0 +1,174 @@
+<style lang='scss'>
+    .collection-container {
+        .operate-container {
+            padding: 0 32rpx;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            border-bottom: 2rpx solid #e1e1e1;
+            .operate-btn {
+                font-size:28rpx;
+                padding: 30rpx;
+            }
+            .operate-btn-active {
+                border-bottom: 6rpx solid #FF9E00;
+                color: #FF9E00;
+            }
+        }
+        .no-collect-container {
+            padding: 0 32rpx;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 800rpx;
+            align-items: center;
+            image {
+                width: 176rpx;
+                height: 220rpx;
+            }
+            view {
+                color: #A0A0A0;
+                font-size: 28rpx;
+                margin-top: 30rpx;
+            }
+        }
+    }
+</style>
+
+<template>
+    <view class="collection-container">
+        <view class="operate-container">
+            <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">全部</view>
+            <view data-num="2" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">已查阅</view>
+            <view data-num="3" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">已储备</view>
+            <view data-num="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">面试邀约</view>
+        </view>
+        <view wx:if="{{collectStatus}}">
+            <repeat for="{{collectData}}" key="index" index="index" item="item"> 
+                <commposi :syncPosidata.sync="item"></commposi> 
+            </repeat>
+        </view>
+        <view class="no-collect-container" wx:else="{{collectStatus}}">
+            <image src="/images/icons/no_delivery.png"></image>
+            <view>{{warningWord}}</view>
+        </view>
+        <!--加载更多时动画-->
+        <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+    </view>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import utils from'../../utils/utils';
+import CommPosi from '../../components/commposi2';
+import BottomLoadMore from "../../components/bottomloadmore";
+
+export default class DeliveryPage extends wepy.page {
+    config = {
+        navigationBarTitleText: '投递状态',
+    }
+    data = {
+        _num: "1",
+        collectData: [],
+        warningWord:"",
+        collectStatus: false,
+        showLoading: false,
+        totalPage: 0,    //总数
+        currentPage: 1,
+        token:'',
+        tokenKey:''
+    }
+
+    components = {
+        commposi: CommPosi,
+        bottomloadmore: BottomLoadMore
+    };
+    onLoad() { 
+        
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                // 获取已投递职位
+                that.getCollectJob(res.data.token,res.data.tokenKey)
+            } 
+        })
+
+    }
+
+    methods = {
+
+       // 点击切换投递状态
+        menuClick (e) {
+            this._num = e.target.dataset.num;
+            this.getCollectJob(this.token, this.tokenKey, this._num);
+        }
+
+    };
+
+    async getCollectJob(token, tokenKey, status, currentPage) {
+        wx.showLoading({
+            title: '加载中',
+        })
+        const that = this;
+        const json = await api.getCollectJob({
+            query: {
+                head: {
+                    "transcode": "P0004",
+                    "type": "h"
+                },
+                data: {
+                    "token": token,
+                    "tokenKey": tokenKey,
+                    "type": status || "1",
+                    "pageNo": currentPage || "1"
+                }
+            }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            that.collectStatus = true;
+            that.collectData = JSON.parse(json.data.data);
+            that.collectData.forEach(element => {
+                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+            });
+            that.totalPage =parseInt(json.data.datanum/ 10);
+            if(that.collectData.length==0){
+                that.collectStatus = false;
+                that.warningWord = "暂未查到更多信息";
+            }
+        } else {
+            that.collectStatus = false;
+            that.warningWord = json.data.returnMsg;
+        }
+        wx.hideLoading()
+        that.$apply();
+    }
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom(event) {
+        let that = this;
+        that.showLoading = true;
+        //判断总页数是否大于翻页数
+        if ((that.totalPage) > that.currentPage) {
+            //防止重复加载
+            if (that.preventRepeatReuqest) {
+            return true;
+            }
+            that.preventRepeatReuqest = true;
+            that.currentPage++;
+            that.getCollectJob(that.token, that.tokenKey, that._num,that.currentPage);
+            that.preventRepeatReuqest = false;
+        } else {
+            that.showLoading = false;
+        }
+    }
+}
+</script>

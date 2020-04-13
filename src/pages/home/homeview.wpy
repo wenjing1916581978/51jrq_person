@@ -1,0 +1,554 @@
+<style lang="scss">
+  .homeview-container {
+    padding-bottom: 160rpx;
+    position: relative;
+    .jobbrief-container {
+      padding: 16rpx 28rpx;
+      background-color: #fff;
+    }
+    .posi-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 20rpx;
+        padding-bottom: 24rpx;
+        .ver {
+            margin: 0 12rpx;
+        }
+        .posi-name-sal {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-size: 30rpx;
+            .posi-name {
+                font-weight: bold;
+                color: #353535;
+                font-size: 36rpx;
+            }
+            .posi-sal {
+                color: #FF9E00;
+            }
+        }
+        .posi-duty {
+            padding-top: 10rpx;
+            font-size: 22rpx;
+            color: #B2B2B2;
+            text-align:left;
+        }
+    }
+    .weal-container {
+      display: flex;
+      flex-flow: row wrap;
+      text {
+        margin-right: 10rpx;
+        margin-bottom: 5rpx;
+        padding: 3rpx 14rpx;
+        border: 1rpx solid #ff9e00;
+        border-radius: 18rpx;
+        font-size: 24rpx;
+        color: #ff9e00;
+      }
+    }
+    .corp-brief {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 4rpx;
+        .corp-content {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+        .logo {
+            margin-right: 16rpx;
+            width: 60rpx;
+            height: 60rpx;
+        }
+        .corp-info {
+            display: flex;
+            flex-direction: column;
+            .corp-name {
+                font-size: 26rpx;
+                color: #888;
+            }
+            .corp-size-type {
+                display: flex;
+                flex-direction: row;
+                font-size: 22rpx;
+                color: #b2b2b2;
+            }
+        }
+        .arrow-right {
+          color: #ccc;
+          font-size: 28rpx;
+        }
+    }
+    .jobdec-container {
+      padding: 11rpx 28rpx;
+      display: flex;
+      flex-direction: column;
+      .dec-title {
+        color: rgba(53, 53, 53, 1);
+        font-size: 28rpx;
+      }
+      .dec-content {
+        line-height: 40rpx;
+        color: rgba(136, 136, 136, 1);
+        font-size: 28rpx;
+      }
+      .fold-block {
+        display: flex;
+        flex-direction: column;
+        margin: 20rpx 0;
+      }
+      .foldbtn {
+        text-align: center;
+        color: #ff9e00;
+        font-size: 24rpx;
+      }
+    }
+    .corp-address {
+      margin: 12rpx 28rpx;
+      .title {
+        font-size: 28rpx;
+        font-weight: 600;
+        color: #353535;
+      }
+      .address {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        image {
+            width: 24rpx;
+            height: 36rpx;
+        }
+        .addr-info {
+            margin-left: 12rpx;
+            width:100%;
+            color: #888888;
+            font-size: 28rpx;
+        }
+      }
+    }
+    .relatedjob-container {
+      padding: 11rpx 28rpx;
+      .rel-title {
+        font-size: 28rpx;
+        color: #353535;
+      }
+    }
+    .fixed-foot-bar {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      height: 118rpx;
+      border-top: 1px solid #E1E1E1;
+      background-color: #fcfcfc;
+      .tr-collect {
+        margin: 0 40rpx 0 20rpx;
+        width: 52rpx;
+        height: 50rpx;
+        image {
+          width: 52rpx;
+          height: 50rpx;
+        }
+      }
+      .tr-post {
+        width: 586rpx;
+        height: 80rpx;
+        .btn {
+          width: 586rpx;
+          line-height: 80rpx;
+          text-align: center;
+          font-size: 36rpx;
+          color: #fff;
+
+        }
+        .post-btn {
+          background-color: #ff9e00;
+        }
+        .posted-btn {
+          background-color: #d8d8d8;
+        }
+      }
+      &.fix-iphonex-button {
+          bottom:68rpx!important;
+      }
+      &.fix-iphonex-button::after {
+          content: ' ';
+          position: fixed;
+          bottom: 0!important;
+          height: 68rpx!important;
+          width: 100%;
+          background: #fff;
+      }
+    }
+
+  }
+  .tolist{
+    position: fixed;
+    bottom:246rpx;
+    right:16rpx;
+    width:96rpx;
+    height:96rpx;
+    opacity:0;
+  }
+</style>
+
+<template>
+  <view class="homeview-container" style="min-height:{{windowHeight+10}}">
+      <view class="jobbrief-container">
+        <view class="posi-container">
+            <view class="posi-name-sal">
+                <text class="posi-name">{{jobInfo.jobname}}</text>
+                <text class="posi-sal">{{jobInfo.salary}}</text>
+            </view>
+            <view class="posi-duty">
+                <text>{{jobInfo.jobcity}}</text>
+                <!-- <text class="ver">|</text>
+                <text>{{}}</text> -->
+                <text class="ver" wx:if="{{jobInfo.workyears}}">|</text>
+                <text>{{jobInfo.workyears}}</text>
+                <text class="ver" wx:if="{{jobInfo.ebid}}">|</text>
+                <text>{{jobInfo.ebid}}</text>
+            </view>
+        </view>
+        <!-- <posinameduty :syncJobInfo.sync="jobInfo"></posinameduty> -->
+        <view class="weal-container">
+          <repeat for="{{jobInfo.weal}}" item="weal">
+            <text>{{weal}}</text>
+          </repeat>
+        </view>
+        <view class="gray-line"></view>
+        <view class="corp-brief" bindtap="goCorpView({{corpInfo.corpid}})">
+          <view class="corp-content">
+            <image class="logo" src="{{corpInfo.mlogo ? corpInfo.mlogo : 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"></image>
+            <view class="corp-info">
+                <text class="corp-name">{{corpInfo.corpname}}</text>
+                <view class="corp-size-type">
+                    <view class="corp-size">
+                      <text>{{corpInfo.industry}}</text>
+                    </view>
+                </view>
+            </view>
+          </view>
+          <view class="arrow-right">&gt;</view>
+        </view>
+      </view>
+      <view class="gray-blank"></view>
+      <view class="jobdec-container">
+          <text class="dec-title">职位描述：</text>
+          <view class="gray-line"></view>
+          <text class="dec-content" wx:if="{{isFold}}">
+              {{jobdescriptionBrief}}
+          </text>
+          <text class="dec-content" wx:else="{{isFold}}">
+              {{jobInfo.jobdescription}}
+          </text>
+          <view class="fold-block"  wx:if="{{descFoldShow}}">
+            <text class="foldbtn"  @tap.stop="foldFn" wx:if="{{isFold}}">展开</text>
+            <text class="foldbtn"  @tap.stop="foldFn" wx:else>收起</text>
+          </view>
+      </view>
+      <view class="gray-blank"></view>
+      <view class="corp-address">
+        <view class="title">工作地址</view>
+        <view class="gray-line"></view>
+        <view class="address" bindtap="goMap({{corpInfo.address}})">
+            <image src="/images/icons/location_pink.png"></image>
+            <text class="addr-info">{{corpInfo.address}}</text>
+        </view>
+      </view>
+      <view class="gray-blank"></view>
+      <view class="relatedjob-container">
+        <text class="rel-title">相关职位推荐</text>
+        <repeat for="{{relatedJobs}}" item="item">
+          <relatedjob :syncRelatedJob="item"></relatedjob>
+        </repeat>
+      </view>
+      <view class="fixed-foot-bar {{isIpx?'fix-iphonex-button':''}}">
+        <view class="tr-collect">
+          <image wx:if="{{isFav}}" @tap.stop="onCollectionFn" src='/images/icons/like_hl.png'></image>
+          <image wx:else @tap.stop="onCollectionFn" src='/images/icons/like.png'></image>
+        </view>
+        <view class="tr-post">
+          <button wx:if="{{isDelivery}}" @tap.stop="onDeliverFn" class="btn posted-btn">已投递</button>
+          <button wx:else @tap.stop="onDeliverFn" class="btn post-btn">投递职位</button>
+        </view>
+      </view>
+      <image src='/images/icons/list-icon.png' class="tolist" @tap="tolist" animation="{{ani}}"></image>
+      <!-- <image src='/images/icons/list-icon.png' class="tolist" @tap="tolist" wx:if="{{tolist}}" animation="{{ani}}"></image> -->
+
+      <shareminipro hidden="{{!showShareBtn}}"
+            :urlWithArgs.sync="urlWithArgs"
+            :currentUrl.sync="currentUrl"
+            :jobInfo.sync="jobInfo"
+            :corpInfo.sync="corpInfo"
+            :dataOrg="dataOrg"></shareminipro>
+      <selresumeorg
+       :isShowSelContainer.sync="isShowSelContainer"
+       :jobId.sync="jobId"
+       :isDelivery.sync="isDelivery"
+       :haveResume.sync="haveResume"
+      ></selresumeorg>
+  </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
+    import {
+      LOGIN_INFO
+    } from '../../utils/constants';
+    import PosiNameDuty from '../../components/posinameduty';
+    import RelatedJob from '../../components/relatedjob';
+    import ShareMiniPro from '../../components/shareminipro';
+    import SelResumeOrg from '../../components/selresumeorg';
+    import NavigationLoad from '../../components/navigationload';
+    import utils from '../../utils/utils';
+
+    export default class HomeView extends wepy.page {
+      config = {
+        navigationBarTitleText: '职位详情'
+      }
+
+      components = {
+        posinameduty: PosiNameDuty,
+        relatedjob: RelatedJob,
+        shareminipro: ShareMiniPro,
+        selresumeorg: SelResumeOrg,
+        navigationload: NavigationLoad
+      }
+
+      data = {
+        jobId: '',
+        corpId: '',
+        corpInfo: {},
+        jobInfo: {},
+        relatedJobs: [],
+        isFav: false,   //未收藏
+        isDelivery: false,    //未投递
+        loginInfo: {},
+        urlWithArgs: "",
+        currentUrl: "",
+        showShareBtn: false,
+        dataOrg: "homeview",
+        isShowSelContainer: false,
+        haveResume: true,
+        isFold: true,
+        jobdescriptionBrief: '',
+        showPageLoading: true,
+        descFoldShow: true,
+        isIpx: false,
+        tolist:false,
+        ani:{},
+        windowHeight:0,
+      }
+      onPageScroll(){
+        var pages = getCurrentPages(); // 当前页面
+        if(pages.length==1 && this.tolist){
+          var animation = wx.createAnimation({
+           duration: 1000,
+           timingFunction: 'ease',
+           delay: 100
+          });
+          animation.opacity(1).translate(0, 0).step()
+          this.ani=animation.export()
+          this.$apply()
+        }
+      }
+      onLoad(options){
+        var that=this
+        wx.getSystemInfo({
+          success(res) {
+            that.windowHeight=res.windowHeight
+            that.$apply()
+          }
+        })
+        var pages = getCurrentPages(); // 当前页面
+        if(pages.length==1){
+          this.tolist=true
+          this.$apply()
+        }
+
+        this.jobId = options.jobid;
+        this.corpId = options.corpid;
+        this.loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+        this.urlWithArgs = utils.getCurrentPageUrlWithArgs();
+        this.currentUrl = utils.getCurrentPageUrl();
+        this.isIpx = this.$parent.globalData.isIpx;
+        this.$apply();
+        this.viewCompanyjob();
+      }
+
+      onShow(){
+      }
+
+      onReady(){
+        this.showShareBtn = true;
+      }
+
+      onHide(){
+        this.isShowSelContainer = false;
+      }
+
+      onShareAppMessage (res) {
+        const that = this;
+        const corpname = that.corpInfo.corpname,
+          jobname = that.jobInfo.jobname;
+        let title = `${corpname}正在招聘 ${jobname}`;
+        if (res.from === 'button') {
+          // 来自页面内转发按钮
+        }
+        return {
+          title: title.length > 30 ? title.slice(0, 29)+'...' : title,
+          path: `/${that.currentUrl}?corpid=${that.corpId}&jobid=${that.jobId}`,
+          success: function(res) {
+            // 转发成功
+            res.shareTickets // 单聊是没有的，注意必须要在分享前调用wx.showShareMenu方法，否则是不会带分享票据
+          },
+          fail: function(res) {
+            // 转发失败
+          }
+        }
+      }
+
+      methods={
+        tolist(){
+          wx.navigateTo({
+            url:'/pages/search/search?jobname='+this.jobInfo.jobname
+          })
+        },
+        onCollectionFn(){
+          // 未登录跳转登录页
+          const that = this;
+          utils.goLogin().catch(()=>{that.collectJob(that.jobId)})
+          ;
+        },
+        onDeliverFn(){
+          // 未登录跳转登录页
+          const that = this;
+          utils.goLogin().then(function(){
+            console.log('不做操作')
+          }).catch(function(){
+            if(that.haveResume){
+              that.isShowSelContainer = true;
+            }else{
+              wx.redirectTo({
+                  url: `../personal/resume_list`
+              })
+            }
+            that.$apply();
+          })
+
+        },
+        // 跳转公司详情页
+        goCorpView(companyid){
+          wx.navigateTo({
+            url: `/pages/corporation/corpview?companyid=${companyid}`
+          })
+        },
+        // 查看地图
+        goMap(address){
+            this.getAddress(address).then(data=>{
+                if(data.data.status==0){
+                    let addr = data.data.result.location;
+                    wx.openLocation({
+                        latitude: addr.lat,
+                        longitude: addr.lng,
+                        scale: 18,
+                        address: address
+                    })
+                }else{
+                    wx.showToast({
+                      title: `地址信息不全`,
+                      icon: 'none'
+                    })
+                    console.log(data.data.message)
+                }
+            });
+        },
+        foldFn(){//切换展开
+          this.isFold = !this.isFold;
+        }
+      }
+
+      async viewCompanyjob(){//查看企业职位详细
+        const that = this;
+        that.showPageLoading = true;
+        const json = await api.getCompanyjob({
+          query: {
+            "head": {
+                "transcode": "Q0002",
+                "type": "h"
+            },
+            "data": {
+                "token": that.loginInfo.token,
+                "tokenKey": that.loginInfo.tokenKey,
+                "corpid": this.corpId,
+                "jobid": this.jobId
+            }
+          }
+        });
+        if (json.data.returnCode == "AAAAAAA") {
+          that.corpInfo = { ...that.corpInfo, ...json.data.data.corpInfo };
+          that.jobInfo = { ...that.jobInfo, ...json.data.data.jobInfo };
+          if (that.jobInfo.jobdescription.length > 100) {
+            that.jobdescriptionBrief = that.jobInfo.jobdescription.substring(0, 100) + '......'
+            that.descFoldShow = true;
+          } else {
+            that.jobdescriptionBrief = that.jobInfo.jobdescription;
+            that.descFoldShow = false;
+          }
+          that.relatedJobs = json.data.data.relatedJobs;
+          that.isFav = json.data.data.isFav;
+          that.isDelivery = json.data.data.isDelivery;
+          that.showPageLoading = false;
+          that.$apply();
+        } else {
+          tip.error(json.data.returnMsg);
+        }
+      }
+
+
+      async collectJob(jobid) {//企业职位收藏
+        const that = this;
+        const json = await api.getCompanyjob({
+          query: {
+            head: {
+                "transcode": "Q0004",
+                "type": "h"
+            },
+            data: {
+                "token": that.loginInfo.token,
+                "tokenKey": that.loginInfo.tokenKey,
+                "jobid": jobid
+            }
+          }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+          tip.success("职位收藏成功");
+          that.isFav = !that.isFav;
+          that.$apply();
+        } else {
+          tip.error(json.data.returnMsg);
+        }
+      }
+
+    // 打开地图
+    async getAddress(address) {
+      const json = await api.getCityName({
+          method: "GET",
+          address: address
+      })
+      return json;
+    }
+  }
+
+</script>

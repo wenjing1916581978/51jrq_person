@@ -1,0 +1,54 @@
+
+  <view class="base-edit-container">
+      <form bindsubmit="baseEditSubmit">
+            <view class="portrait-box" catchtap="changePortrait">
+                <image mode="aspectFill"  wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"/>
+                <image mode="aspectFill"  wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"/>
+                <text>点击更换头像（图片大小不宜超过1M）</text>
+            </view>
+            <view class="list-container">
+                <view class="list-item">
+                    <text class="label">姓名</text>
+                    <view class="input-area">
+                        <input placeholder-class="phcolor" type="text" name="username" value="{{username}}" placeholder="请填写"/>
+                    </view>
+                </view>
+                <view class="list-item">
+                    <text class="label">性别</text>
+                    <picker name="sex" bindchange="bindSexChange" value="{{index}}" range="{{sex}}">
+                        <view class="picker">
+                            <text wx:if="{{sexStatus}}">{{u_sex ? u_sex : "请选择"}}</text>
+                            <text wx:else>{{sex[indexSex]}}</text>
+                        </view>
+                    </picker>
+                </view>
+                <view class="list-item">
+                    <text class="label">邮箱</text>
+                    <view class="input-area">
+                        <input placeholder-class="phcolor" type="text" name="email" value="{{email}}" placeholder="请填写"/>
+                    </view>
+                </view>
+                <view class="list-item">
+                    <text class="label">居住城市</text>
+                    <picker name="livecityid" bindchange="bindLiveCityChange" value="{{index}}" range="{{city}}">
+                        <view class="picker">
+                            <text wx:if="{{livecityStatus}}">{{u_city ? u_city : "请选择"}}</text>
+                            <text wx:else>{{city[indexLiveCity]}}</text>
+                        </view>
+                    </picker>
+                </view>
+                <view class="list-item">
+                    <text class="label">工作年限</text>
+                    <picker name="workyears" bindchange="bindWorkYearsChange" value="{{index}}" range="{{workyears}}">
+                        <view class="picker">
+                            <text wx:if="{{workyearsStatus}}">{{u_workyears ? u_workyears : "请选择"}}</text>
+                            <text wx:else>{{workyears[indexWorkYearsStatus]}}</text>
+                        </view>
+                    </picker>
+                </view>
+            </view>
+            <view class="btn-box">
+                <button class="save-btn" formType="submit">保存</button>
+            </view>
+      </form>
+  </view>

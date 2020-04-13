@@ -1,0 +1,216 @@
+<style lang='scss'>
+    .company {
+        width: 80%;
+        margin: 80rpx auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        .img-container{
+            width: 100rpx;
+            position: relative;
+            opacity: 0.5;
+            .logo {
+                width: 100rpx;
+                height: 100rpx;
+            }
+            .green-gou {
+                width: 40rpx;
+                height: 40rpx;
+                position: absolute;
+                top: 60rpx;
+                right: -10rpx;
+            }
+            .word {
+                text-align: center;
+                font-size: 24rpx;
+                color: #888888;
+            }
+        }
+        .img-container-active {
+            opacity: 1;
+        }
+    }
+    form {
+        view {
+            border-bottom: 2rpx solid #f1f1f1;
+            font-size: 28rpx;
+            margin: 0rpx 40rpx;
+            color: #353535;
+            .pholder {
+               color: #b2b2b2;
+            }
+            input {
+                height: 90rpx;
+            }
+        }
+        .telephone {
+            margin-top: 60rpx;
+        }
+        .verifycode {
+            margin-top: 10rpx;
+            position: relative;
+            .send-code{
+                position: absolute;
+                top: 18rpx;
+                right: 0rpx;
+                width: 140rpx;
+                height: 50rpx;
+                border: #ff9e00 solid 1rpx;
+                color: #ff9e00;
+                font-size: 24rpx;
+                border-radius: 10rpx;
+                line-height: 50rpx;
+                text-align: center;
+            }
+        }
+        .enter {
+            margin-top: 80rpx;
+            .save-btn{
+                width: 640rpx;
+                height: 80rpx;
+                background: #ff9e00;
+                color: white;
+                font-size: 36rpx;
+                text-align: center;
+                line-height: 80rpx;
+                border-radius: 20rpx;
+            }
+        }
+    }
+    .remind-word {
+        width: 640rpx;
+        margin: 40rpx auto;
+        color: #b2b2b2;
+        font-size: 24rpx;
+        text-align: center;
+    }
+    .warnword {
+        color: red;
+        font-size: 24rpx;
+        text-align: center;
+        margin-top: 30rpx;
+    }
+</style>
+
+<template>
+    <view>
+        <view class="company">
+            <view class="img-container {{_num=='1'?'img-container-active':''}}" bindtap="chooseCompany(1,'my51job')">
+                <image class="logo" src="/images/icons/51job.png" />
+                <image wx:if="{{_num=='1'}}" class="green-gou" src="/images/icons/green_gou.png" />
+                <view class="word">前程无忧</view>
+            </view>
+            <!-- <view class="img-container {{_num=='2'?'img-container-active':''}}" bindtap="chooseCompany(2,'myZL')">
+                <image class="logo" src="/images/icons/zlzp.png" />
+                <image wx:if="{{_num=='2'}}" class="green-gou" src="/images/icons/green_gou.png" />
+                <view class="word">智联招聘</view> 
+            </view>-->
+            <view class="img-container {{_num=='3'?'img-container-active':''}}" bindtap="chooseCompany(3,'myBankHr')">
+                <image class="logo" src="/images/icons/jryc.png" />
+                <image wx:if="{{_num=='3'}}" class="green-gou" src="/images/icons/green_gou.png" />
+                <view class="word">金融英才</view>
+            </view>
+        </view>
+        <form bindsubmit="formSubmit">
+            <view class="telephone">
+                <input placeholder-class="phcolor" type="text" name="username" placeholder="请输入账号" />
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="password" name="password" placeholder="请输入密码" />
+            </view>
+            <view class="enter">
+                <button class="save-btn" formType="submit">开始导入</button>
+            </view>
+        </form>
+        <view class="remind-word">51金融圈重视用户的隐私，您在使用我们的服务时，我们不会收集、使用、储存和分享这些信息</view>
+        <view class="warnword">
+            {{warnword}}
+        </view>
+    </view>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+
+export default class LoginPage extends wepy.page {
+
+    data = {
+       _num: "1",
+       type: "my51job",
+       warnword:''
+    }
+
+    onLoad () {
+        // 获取登录信息
+
+      const that = this;
+      wx.getStorage({
+          key: 'loginData',
+          success: function(res) {
+            that.token = res.data.token;
+            that.tokenKey = res.data.tokenKey;
+
+          },
+          fail: function(json) {
+              tip.error(json.data.returnMsg);
+          }
+      })
+    }
+
+    methods = {
+
+        // 提交表单
+        formSubmit (e) {
+            if(!e.detail.value.username || !e.detail.value.password){
+                this.warnword = "请先填写账号和密码！";
+                return;
+            }
+            this.importResume(this.type,e.detail.value.username,e.detail.value.password).then(data=>{
+                if(data.data.returnCode == "AAAAAAA") {
+                    this.warnword = '';
+                    wx.navigateBack({
+                     delta: 1
+                   })
+                    this.$apply();
+                }else{
+                    this.warnword = data.data.returnMsg;
+                    this.$apply();
+                }
+                wx.hideLoading()
+            })
+        },
+        // 切换公司
+        chooseCompany(num,type){
+            this._num = num;
+            this.type = type;
+        }
+    }
+
+    //导入简历
+  async importResume(type,username,password) {
+    wx.showLoading({
+        title: '加载中',
+    })
+    const json = await api.importResume({
+    query: {
+            head: {
+                "transcode": "P0029",
+                "type": "h"
+            },
+            data: {
+                "token": this.token,
+                "tokenKey": this.tokenKey,
+                "type": type,
+                "userName": username,
+                "password": password
+            }
+        }
+    })
+    return json;
+  }
+
+}
+</script>

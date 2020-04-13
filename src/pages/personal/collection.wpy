@@ -1,0 +1,115 @@
+<style lang='scss'>
+    .collection-container{
+        padding: 0 32rpx;
+    }
+    .no-collect-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 800rpx;
+        align-items: center;
+        image {
+            width: 176rpx;
+            height: 168rpx;
+        }
+        view {
+            color: #A0A0A0;
+            font-size: 28rpx;
+            margin-top: 30rpx;
+        }
+    }
+</style>
+
+<template>
+    <view>
+        <view class="collection-container" wx:if="{{collectStatus}}">
+            <repeat for="{{collectData}}" key="index" index="index" item="item"> 
+                <commposi :syncPosidata.sync="item"></commposi> 
+            </repeat>
+        </view>
+        <view class="no-collect-container" wx:else="{{collectStatus}}">
+            <image src="/images/icons/no_collection.png"></image>
+            <view>{{warningWord}}</view>
+        </view>
+    </view>
+</template>
+
+<script>
+
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import utils from'../../utils/utils';
+import CommPosi from '../../components/commposi2';
+
+export default class CollectionPage extends wepy.page {
+    config = {
+        navigationBarTitleText: '我的收藏',
+    }
+    data = {
+        collectStatus: false,
+        warningWord: "",
+        collectData: [],
+        token:'',
+        tokenKey:''
+    }
+
+    components = {
+        commposi: CommPosi 
+    };
+    onLoad() { 
+
+        // 获取收藏职位
+        this.getCollectJob()
+
+        // 获取登录信息
+        const that = this;
+        wx.getStorage({
+            key: 'loginData',
+            success: function(res) {
+                that.token = res.data.token;
+                that.tokenKey = res.data.tokenKey;
+                that.$apply();
+                that.getCollectJob(res.data.token,res.data.tokenKey)
+            } 
+        })
+    }
+
+    async getCollectJob(token,tokenKey,currentPage) {
+        wx.showLoading({
+            title: '加载中',
+        })
+        const that = this;
+        const json = await api.getCollectJob({
+            query: {
+                head: {
+                    "transcode": "P0003",
+                    "type": "h"
+                },
+                data: {
+                    "token": token,
+                    "tokenKey": tokenKey,
+                    "pageNo": currentPage || "1"
+                }
+            }
+        })
+        if (json.data.returnCode == "AAAAAAA") {
+            that.collectStatus = true;
+            that.collectData = JSON.parse(json.data.data);
+            that.collectData.forEach(element => {
+                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+            });
+            if(that.collectData.length==0){
+                that.collectStatus = false;
+                that.warningWord = "还没有收藏过职位哦";
+            }
+            that.$apply();
+        } else {
+            that.collectStatus = false;
+            that.warningWord = json.data.returnMsg;
+            that.$apply();
+        }
+        wx.hideLoading() 
+    }
+}
+</script>

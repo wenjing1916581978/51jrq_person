@@ -1,0 +1,536 @@
+<style lang="scss">
+    .share-container {
+        position: fixed;
+        bottom: 150rpx;
+        right: 16rpx;
+        width: 96rpx;
+        height: 96rpx;
+        z-index: 8;
+        .share-btn {
+            width: 96rpx;
+            height: 96rpx;
+            &:after {
+                border: none;
+            }
+        }
+        &.fix-iphonex-button {
+          bottom:218rpx!important;
+        }
+        &.fix-iphonex-button::after {
+          content: ' ';
+          position: fixed;
+          bottom: 0!important;
+          height: 218rpx!important;
+          width: 100%;
+          background: #fff;
+        } 
+    }
+    .sheet-list {
+        action-sheet-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px;
+            .sheet-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 24rpx;
+                color: #656565;
+                &.sheet-btn:after {
+                    border: none;
+                }
+                &.sheet-btn {
+                    padding-left: 0;
+                    padding-right: 0;
+                    margin-left: 0;
+                    margin-right: 0;
+                    background-color: #fff;
+                    line-height: inherit;
+                }
+            }
+            .share-icon {
+                width: 100rpx;
+                height: 100rpx;
+            }
+        }
+        action-sheet-cancel {
+            font-size: 36rpx;
+            color: #f16049;
+        }
+    }
+    .bomb-screen {
+        background-color: rgb(0, 0, 0);
+        position: fixed;
+        z-index: 2000;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items:center;/*垂直居中*/
+        justify-content: center;
+    }
+</style>
+
+<template>
+    <view>
+        <view class="share-container {{isIpx?'fix-iphonex-button':''}}">
+            <image class="share-btn" @tap.stop="openActionSheet" src='/images/icons/share.png'></image>
+        </view>
+        <action-sheet hidden="{{actionSheetHidden}}" bindchange="actionSheetbindchange" class="sheet-list">
+            <action-sheet-item>
+                <button class="sheet-btn sheet-item" open-type="share" @tap.stop="bindMenu0">
+                    <image src="/images/icons/friend-icon.png" class="share-icon"></image>
+                    <text open-type="share">转发给好友或群聊</text>
+                </button>
+                <view class="sheet-item" @tap.stop="bindMenu1">
+                    <image src="/images/icons/moments-icon.png" class="share-icon"></image>
+                    <text>生成朋友圈分享图</text>
+                </view>
+                <view class="sheet-item" @tap.stop="bindMenu2">
+                    <image src="/images/icons/public-icon.png" class="share-icon"></image>
+                    <text>生成公众号分享图</text>
+                </view>
+            </action-sheet-item>
+            <action-sheet-cancel>取消</action-sheet-cancel> 
+        </action-sheet>
+        <view wx:if="{{isShowMyCanvasScreen}}">
+            <view class="bomb-screen"></view>
+            <canvas canvas-id="myCanvas" 
+                    hidden="{{true}}"
+                    style="width: {{ctxWidth}}px; height: {{ctxHeight}}px; background-color: #ffffff;"/>
+        </view>        
+        <view wx:if="{{isShowPubCanvasScreen}}">
+            <view class="bomb-screen"></view>
+            <canvas canvas-id="pubCanvas" 
+                    hidden="{{true}}"
+                    style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../api/api';
+import tip from '../utils/tip';
+import {
+    strEnc, strDec
+} from '../utils/des';
+import {
+    DESKEY
+} from '../utils/constants';
+
+export default class ShareMiniPro extends wepy.component {
+    data = {
+        actionSheetHidden: true,
+        isShowMyCanvasScreen: false,
+        isShowPubCanvasScreen: false,
+        canvasRpx: 0,
+        ctxWidth: 0,
+        ctxHeight: 0,
+        opHint0: '长按或微信扫描小程序码',
+        opHint1: '您可了解这个职位，并投递您的简历',
+        opHint2: '长按或微信扫描小程序码',
+        opHint3: '了解公司信息和在招职位',
+        ctxPubWidth: 0,
+        ctxPubHeight: 0,
+        qrcodePath: '',
+        mlogoPath: '',
+        isIpx: false
+    }
+
+    props={
+        urlWithArgs: {
+            type: String,
+            default: ''
+        },
+        currentUrl: {
+            type: String,
+            default: ''
+        },
+        jobInfo: {
+            type: Object,
+            default: null
+        },
+        corpInfo: {
+            type: Object,
+            default: null
+        },
+        dataOrg: String
+    }
+
+
+    onLoad(option){
+        //获取屏幕宽度
+        const screenWidth = this.$parent.$parent.globalData.systemInfo;
+        this.canvasRpx = screenWidth.windowWidth / 750 * 2;
+        this.isIpx = this.$parent.$parent.globalData.isIpx;
+        this.$apply();
+    }
+
+    
+    methods={
+        openActionSheet() {
+            this.actionSheetHidden = false;
+        },
+        actionSheetbindchange() {//调取 “取消”按钮
+            this.actionSheetHidden = true;
+        },
+        bindMenu0(){//转发给好友或群聊
+            this.actionSheetHidden = true;
+        },
+        bindMenu1(){//生成朋友圈分享图
+            const that = this;
+            that.actionSheetHidden = true;
+            that.isShowMyCanvasScreen = true;
+            that.isShowPubCanvasScreen = false;
+            wx.showLoading({
+                title: '正在生成图片',
+                mask: true,
+            })
+            that.loadResources().then((resources) => {
+                that.generateShareImage(resources);
+                wx.hideLoading();
+            }).catch(err => {
+                console.log(err);
+                // tip.error('图片获取失败');
+                that.isShowMyCanvasScreen = false;
+                that.$apply();
+                wx.hideLoading();
+            });
+        },
+        bindMenu2(){//生成公众号文章分享图
+            const that = this;
+            that.actionSheetHidden = true;
+            that.isShowMyCanvasScreen = false;
+            that.isShowPubCanvasScreen = true;
+            wx.showLoading({
+                title: '正在生成图片',
+                mask: true,
+            })
+            that.loadResources().then((resources) => {
+                that.generatePublicAccountImage(resources);
+                wx.hideLoading();
+            }).catch(err => {
+                console.log(err);
+                // tip.error('图片获取失败');
+                that.isShowPubCanvasScreen = false;
+                that.$apply();
+                wx.hideLoading();
+            });
+        }
+    }
+    
+    
+    previewMyCanvasImage(path) { 
+        const that = this; 
+        wx.previewImage({
+            //current: that.myCanvasTempFilePath, // 当前显示图片的http链接
+            urls: [path], // 需要预览的图片http链接列表
+            success(res){
+                console.log(res)
+            },
+            fail(res){
+                console.log(res)
+            }
+        })
+    }  
+
+    loadResources() { //将在线路径转为本地临时路径
+        let {mlogo} = this.corpInfo;
+        if(mlogo == "") {
+            mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
+        }else {
+            mlogo = mlogo.replace(/http/, 'https');             
+        }
+        // 绑定数据记得去掉，这里做调试
+        // let mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
+        const {qrcodePath, mlogoPath} = this.data;
+        let len = (this.currentUrl + '?').length;
+        let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013 || companyid=1010527
+        let objs = new Object();
+        for( let i = 0; i < args.length; i++) {
+            objs[args[i].split('=')[0]] = args[i].split('=')[1];    
+        }
+        let sceneArgs = '';
+        switch (this.dataOrg) {
+            case "homeview":
+                sceneArgs = `hv*cid=${objs["corpid"]}&jid=${objs["jobid"]}`;
+                break;
+            case "corpview":
+                sceneArgs = `cv*cpid=${objs["companyid"]}`;
+                break;    
+        }
+        let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/index/index`,width: 180, scene:`${sceneArgs}`}});
+        let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
+        console.log('小程序码', wxacodeurl)
+        const getWxaCode = (src) => {
+            return new Promise(function(resolve, reject) {
+                wx.getImageInfo({
+                    src,
+                    success({width,height,path}) {
+                        resolve(path);
+                    },
+                    fail(){
+                        reject(`获取图片失败: ${src}`)
+                    }
+                })
+            })
+        }
+        
+        let promises = [getWxaCode(wxacodeurl), getWxaCode(mlogo)];
+        return Promise.all(promises).then(values => {
+            return {
+                qrcodePath: values[0],
+                mlogoPath: values[1],
+            }
+        })
+     }
+    
+
+    generateShareImage(resources) {//转发给好友或群聊
+        const that = this;
+        that.ctxWidth = that.canvasRpx * 375;
+        that.ctxHeight = that.canvasRpx * 600;
+        that.$apply();
+        //创建 canvas 绘图上下文
+        const ctx = wx.createCanvasContext('myCanvas');
+        
+        const {
+            corpname, scope, city, industry
+        } = that.corpInfo;
+        const CANVAS_W = that.ctxWidth;
+        const CANVAS_H = that.ctxHeight;
+        // draw background
+        ctx.setFillStyle('#ffffff');
+        ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+        // draw left-top-logo
+        ctx.drawImage('/images/icons/left-top-logo.png', 0, 0, that.canvasRpx * 106 / 2, that.canvasRpx * 106 / 2);
+
+        if (that.dataOrg == "homeview" ) {
+            //  draw jobduty
+            const {
+                jobname, jobcity, workyears, ebid, salary
+            } = that.jobInfo;
+            ctx.setTextAlign('center');
+            ctx.setFontSize(that.canvasRpx * 20);
+            ctx.setFillStyle('#353535');
+            ctx.fillText(corpname, CANVAS_W / 2, that.canvasRpx * 60);
+
+            ctx.fillText(jobname, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10));
+
+            ctx.setFontSize(that.canvasRpx * 14);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(`${jobcity} | ${workyears} | ${ebid}`, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10 + 20 + 10));
+
+            ctx.setFontSize(that.canvasRpx * 20);
+            ctx.setFillStyle('#ff9e00');
+            ctx.fillText(salary, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10 + 20 + 10 + 14 +10));
+
+            //draw hint
+            ctx.drawImage('/images/icons/finger.png', CANVAS_W/2-that.canvasRpx * 40 / 2 / 2, that.canvasRpx * 420, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
+            ctx.setTextAlign('center');
+            ctx.setFontSize(that.canvasRpx * 14);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(that.opHint0, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20));
+            ctx.fillText(that.opHint1, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20) + that.canvasRpx * (14 + 5));
+
+        } else if (that.dataOrg == "corpview") {
+            //  draw corpinfo
+            ctx.setTextAlign('center');
+            ctx.setFontSize(that.canvasRpx * 20);
+            ctx.setFillStyle('#353535');
+
+            ctx.fillText(corpname, CANVAS_W / 2, that.canvasRpx * (60+20+10));
+
+            ctx.setFontSize(that.canvasRpx * 14);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(`${scope} | ${industry} | ${city}`, CANVAS_W / 2, that.canvasRpx * (60 + 20 + 10 + 20 + 10));
+
+
+            //draw hint
+            ctx.drawImage('/images/icons/finger.png', CANVAS_W/2-that.canvasRpx * 40 / 2 / 2, that.canvasRpx * 420, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
+            ctx.setTextAlign('center');
+            ctx.setFontSize(that.canvasRpx * 14);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(that.opHint2, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20));
+            ctx.fillText(that.opHint3, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20) + that.canvasRpx * (14 + 5));
+        }
+        
+
+        
+
+        //draw footer;
+        ctx.drawImage('/images/icons/foot-txt.png', CANVAS_W / 2 - that.canvasRpx * 428 / 2 / 2, that.canvasRpx * 564, that.canvasRpx * 428 / 2, that.canvasRpx * 26 / 2);
+        //样式待调整
+        // ctx.setFontSize(that.canvasRpx * 10);
+        // ctx.setFillStyle('#b2b2b2');
+        // ctx.fillText('51金融圈 | 中国领先的金融职业平台', that.canvasRpx * (132), that.canvasRpx * 564);
+
+        //draw wxacode
+        const WXACODE_X = that.canvasRpx * 98;
+        const WXACODE_Y = that.canvasRpx* 180;
+        const WXACODE_SIZE = that.canvasRpx * 180;
+        const MLOGO_SIZE = that.canvasRpx * 78;
+        const {qrcodePath, mlogoPath} = resources;
+        ctx.drawImage(qrcodePath, (CANVAS_W / 2) - (WXACODE_SIZE/2), WXACODE_Y, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setFillStyle('#ffffff');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath() 
+        ctx.fill()
+        ctx.clip()
+        console.log(mlogoPath)
+        ctx.drawImage(mlogoPath,  (CANVAS_W / 2) - (MLOGO_SIZE/2), WXACODE_Y + (WXACODE_SIZE / 2 - MLOGO_SIZE /2 ), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
+
+        ctx.draw(true, function(){
+            setTimeout(() => {
+                wx.canvasToTempFilePath({
+                    canvasId: 'myCanvas',
+                    success: function(res) {
+                        // console.log(res.tempFilePath);
+                        that.previewMyCanvasImage(res.tempFilePath);
+                        that.isShowMyCanvasScreen = false;
+                        that.$apply();
+                    },
+                    fail(res){
+                        console.log(res)
+                    }
+                }, that)
+            }, 300);
+        });
+        
+    }
+
+    generatePublicAccountImage(resources){//生成公众号文章分享图
+        const that = this;
+        that.ctxPubWidth = that.canvasRpx * 375;
+        that.ctxPubHeight = that.canvasRpx * 170;
+        that.$apply();
+        //创建 canvas 绘图上下文
+        const ctx = wx.createCanvasContext('pubCanvas');
+        
+        
+        const CANVAS_W = that.ctxPubWidth;
+        const CANVAS_H = that.ctxPubHeight;
+        // draw background
+        ctx.setFillStyle('#ffffff');
+        ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+       
+        if (that.dataOrg == "homeview" ) {
+            const {
+                jobname, jobcity, workyears, ebid, salary
+            } = that.jobInfo;
+            //  draw jobduty
+            ctx.setFontSize(that.canvasRpx * 18);
+            ctx.setFillStyle('#353535');
+            ctx.fillText(jobname, that.canvasRpx * 16, that.canvasRpx * 28);
+
+            ctx.setFontSize(that.canvasRpx * 12);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(`${jobcity} | ${workyears} | ${ebid}`, that.canvasRpx * 16, that.canvasRpx * (28 + 18 + 6));
+
+            ctx.setFontSize(that.canvasRpx * 20);
+            ctx.setFillStyle('#ff9e00');
+            ctx.fillText(salary, CANVAS_W - that.canvasRpx * (16 + that.mesureText(salary)), that.canvasRpx * 28);
+
+            
+
+            //draw hint
+            ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
+            ctx.setFontSize(that.canvasRpx * 12);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(that.opHint0, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90));
+            ctx.fillText(that.opHint1, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90 + 12 + 10));
+        } else if (that.dataOrg == "corpview" ){
+            const {
+                corpname, scope, city, industry
+            } = that.corpInfo;
+            //  draw corpinfo
+            ctx.setFontSize(that.canvasRpx * 18);
+            ctx.setFillStyle('#353535');
+            ctx.fillText(corpname, that.canvasRpx * 16, that.canvasRpx * 28);
+
+            ctx.setFontSize(that.canvasRpx * 12);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(`${scope} | ${industry} | ${city}`, that.canvasRpx * 16, that.canvasRpx * (28 + 18 + 6));
+
+            
+
+            //draw hint
+            ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
+            ctx.setFontSize(that.canvasRpx * 12);
+            ctx.setFillStyle('#888888');
+            ctx.fillText(that.opHint2, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90));
+            ctx.fillText(that.opHint3, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90 + 12 + 10));
+        }
+        
+
+        //draw footer;
+        ctx.drawImage('/images/icons/foot-txt.png', that.canvasRpx * 16, CANVAS_H - that.canvasRpx * (14 + 26 / 2), that.canvasRpx * 428 / 2, that.canvasRpx * 26 / 2);
+        //样式待调整
+        // ctx.setFontSize(that.canvasRpx * 10);
+        // ctx.setFillStyle('#b2b2b2');
+        // ctx.fillText('51金融圈 | 中国领先的金融职业平台', that.canvasRpx * (132), that.canvasRpx * 564);
+
+        //draw wxacode
+        const WXACODE_SIZE = that.canvasRpx * 100;
+        const MLOGO_SIZE = that.canvasRpx * 42;
+        const {qrcodePath, mlogoPath} = resources;
+        ctx.drawImage(qrcodePath, CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE, WXACODE_SIZE, WXACODE_SIZE);
+        ctx.setStrokeStyle('#ffffff');
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE/2, CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE/2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
+        ctx.closePath()
+        ctx.stroke()
+        ctx.clip()
+        ctx.drawImage(mlogoPath,  CANVAS_W - that.canvasRpx * 16 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), CANVAS_H - that.canvasRpx * 14 - WXACODE_SIZE + (WXACODE_SIZE / 2 - MLOGO_SIZE / 2), MLOGO_SIZE, MLOGO_SIZE);
+        ctx.restore()
+
+        ctx.draw(true, function() {
+            setTimeout(() => {
+                wx.canvasToTempFilePath({
+                    canvasId: 'pubCanvas',
+                    success: function(res) {
+                        console.log(res.tempFilePath);
+                        that.previewMyCanvasImage(res.tempFilePath);
+                        that.isShowPubCanvasScreen = false;
+                        that.$apply();
+                    },
+                    fail(res){
+                        console.log(res)
+                    }
+                }, that)
+            }, 300)
+        });
+    }
+
+    //小程序中没提供获文本宽度的方法 判断各种字符宽度 返回字符串总宽度
+    mesureText(text) {
+        text = text.split('');
+        let width = 0;
+        text.forEach(function (item) {
+            if (/[a-zA-Z]/.test(item)) {
+                width += 14;
+            } else if (/[0-9]/.test(item)) {
+                width += 11;
+            } else if (/\./.test(item)) {
+                width += 5.4;
+            } else if (/-/.test(item)) {
+                width += 6.5;
+            } else if (/[\u4e00-\u9fa5]/.test(item)) {
+                width += 20;
+            }
+        });
+        return width;
+    }
+}
+</script>
+
+

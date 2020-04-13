@@ -1,0 +1,239 @@
+<style lang='scss'>
+    .head-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 80rpx;
+        align-items: center;
+        image {
+            width: 40rpx;
+            height: 28rpx;
+            margin: 0rpx 30rpx;
+        }
+        .head-img {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            image {
+                width: 120rpx;
+                height: 120rpx;
+                border-radius: 50%;
+            }
+            view {
+                margin-top: 20rpx;
+                color: #353535;
+                font-size: 28rpx;
+                text-align: center;
+            }
+        }
+    }
+    form {
+        view {
+            border-bottom: 2rpx solid #f1f1f1;
+            font-size: 28rpx;
+            margin: 0rpx 40rpx;
+            color: #353535;
+            .pholder {
+               color: #b2b2b2;
+            }
+            input {
+                height: 90rpx;
+            }
+        }
+        .telephone {
+            margin-top: 60rpx;
+        }
+        .verifycode {
+            margin-top: 10rpx;
+            position: relative;
+            .send-code{
+                position: absolute;
+                top: 18rpx;
+                right: 0rpx;
+                width: 140rpx;
+                height: 50rpx;
+                border: #ff9e00 solid 1rpx;
+                color: #ff9e00;
+                font-size: 24rpx;
+                border-radius: 10rpx;
+                line-height: 50rpx;
+                text-align: center;
+                z-index: 999;
+            }
+        }
+            .save-btn{
+              background:linear-gradient(to right, #FF9E00, #FFBD00);
+              height:80rpx;
+              border-radius:16rpx;
+              text-align:center;
+              line-height:80rpx;
+              font-size:32rpx;
+              color:#ffffff;
+              margin:40rpx 28rpx 0;
+              border:none;
+            }
+    }
+    .regist {
+        color: red;
+        font-size: 24rpx;
+        text-align: center;
+        margin-top: 15rpx;
+    }
+
+</style>
+
+<template>
+    <view>
+        <view class="head-container">
+            <!-- <view class="head-img">
+                <image src="{{headimg}}"></image>
+                <view>{{nickname}}</view>
+            </view>
+            <image src="/images/icons/connect.png"></image> -->
+            <view class="head-img">
+                <image src="/images/icons/logo.png"></image>
+                <view>51金融圈</view>
+            </view>
+        </view>
+        <form bindsubmit="formSubmit">
+            <view class="telephone">
+                <input bindinput ="userNameInput" placeholder-class="phcolor" type="text" name="phone" placeholder="请输入手机号" />
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="text" name="verifycode" placeholder="请输入验证码" />
+                <view class="send-code" bindtap="sendCode" wx:if="{{codeObj.status}}">{{codeObj.value}}</view>
+                <view class="send-code" wx:else="{{codeObj.status}}" >{{codeObj.value}}</view>
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="password" name="password" placeholder="设置新密码" />
+            </view>
+            <button class="save-btn" formType="submit">确认</button>
+        </form>
+        <view class="regist" bindtap="goRegistPage">
+            {{warnword}}{{obj.value}}
+        </view>
+    </view>
+
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+
+// md5加密
+const code = require('../../utils/md5.js');
+
+export default class RegistPage extends wepy.page {
+    data = {
+        phone: '',
+        warnword: '',
+        nickname:'',
+        headimg:'',
+        codeObj: {
+            status: true,
+            value:'发送验证码'
+        }
+    }
+    config = {
+        navigationBarTitleText: '忘记密码',
+        enablePullDownRefresh: false
+    }
+    methods = {
+        // 提交表单
+        formSubmit (e) {
+            wx.showLoading({
+                title: '修改中',
+            })
+            const that = this;
+            let data = {
+                "phone": e.detail.value.phone,
+                "verifycode": e.detail.value.verifycode,
+                "password": code.hex_md5(e.detail.value.password)
+            }
+            this.getCode(data,"A0002").then(data=>{
+                if(data.data.returnCode == "AAAAAAA") {
+                    tip.success("操作成功");
+                    // 跳转到登录页
+                    wx.navigateTo({
+                        url: 'login'
+                    });
+                }else{
+                    that.warnword = data.data.returnMsg;
+                    that.$apply();
+                }
+                wx.hideLoading()
+            })
+        },
+        // 设置密码
+        setPassword () {
+            wx.navigateTo({
+                url: `set_password`
+            })
+        },
+        // 发送验证码
+        sendCode () {
+            const that = this;
+            this.getCode({"phone":this.phone},"A0001").then(data=>{
+                that.warnword = '';
+                if(data.data.returnCode != "AAAAAAA" ){
+                    that.warnword = data.data.returnMsg;
+                }else{
+                    console.log(data)
+                    that.counttime()
+                }
+                that.$apply();
+            })
+        },
+        // 获取输入框手机号
+        userNameInput (e) {
+            this.phone = e.detail.value
+        }
+    }
+    onLoad () {
+        const that = this;
+        wx.getUserInfo({
+            success: function(res) {
+                that.nickname = res.userInfo.nickName;
+                that.headimg = res.userInfo.avatarUrl;
+                that.$apply();
+            }
+        })
+    }
+
+    //新用户获取验证码及重置密码
+    async getCode(data,code) {
+        const json = await api.resetPassword({
+        query: {
+                "head": {
+                    "transcode": code,
+                    "type": "h"
+                },
+                "data": data
+            }
+        })
+        return json;
+    }
+    counttime(){
+        const that = this
+        var countdown = 60;
+        (function settime() {
+            if (countdown == 0) {
+                that.codeObj.value = "发送验证码";
+                that.codeObj.status = true;
+                countdown = 60;
+                that.$apply();
+                return;
+            } else {
+                that.codeObj.status = false;
+                that.codeObj.value="重发(" + countdown + ")";
+                countdown--;
+                that.$apply();
+            }
+            setTimeout(function() {
+                settime()
+            },1000)
+        })()
+    }
+}
+</script>

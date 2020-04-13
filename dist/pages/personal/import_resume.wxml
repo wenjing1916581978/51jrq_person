@@ -1,0 +1,35 @@
+
+    <view>
+        <view class="company">
+            <view class="img-container {{_num=='1'?'img-container-active':''}}" bindtap="chooseCompany" data-wpychoosecompany-a="1" data-wpychoosecompany-b="my51job">
+                <image class="logo" src="/images/icons/51job.png"/>
+                <image  wx:if="{{_num=='1'}}" class="green-gou" src="/images/icons/green_gou.png"/>
+                <view class="word">前程无忧</view>
+            </view>
+            <!-- <view class="img-container {{_num=='2'?'img-container-active':''}}" bindtap="chooseCompany(2,'myZL')">
+                <image class="logo" src="/images/icons/zlzp.png" />
+                <image wx:if="{{_num=='2'}}" class="green-gou" src="/images/icons/green_gou.png" />
+                <view class="word">智联招聘</view> 
+            </view>-->
+            <view class="img-container {{_num=='3'?'img-container-active':''}}" bindtap="chooseCompany" data-wpychoosecompany-a="3" data-wpychoosecompany-b="myBankHr">
+                <image class="logo" src="/images/icons/jryc.png"/>
+                <image  wx:if="{{_num=='3'}}" class="green-gou" src="/images/icons/green_gou.png"/>
+                <view class="word">金融英才</view>
+            </view>
+        </view>
+        <form bindsubmit="formSubmit">
+            <view class="telephone">
+                <input placeholder-class="phcolor" type="text" name="username" placeholder="请输入账号"/>
+            </view>
+            <view class="verifycode">
+                <input placeholder-class="phcolor" type="password" name="password" placeholder="请输入密码"/>
+            </view>
+            <view class="enter">
+                <button class="save-btn" formType="submit">开始导入</button>
+            </view>
+        </form>
+        <view class="remind-word">51金融圈重视用户的隐私，您在使用我们的服务时，我们不会收集、使用、储存和分享这些信息</view>
+        <view class="warnword">
+            {{warnword}}
+        </view>
+    </view>

@@ -1,0 +1,199 @@
+<style lang="scss">
+    .search-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 10rpx 20rpx 0;
+        .search-content {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 60rpx;
+            line-height: 60rpx;
+            width: 632rpx;
+            padding: 0 20rpx;
+            border: 1px solid #e9e9e9;
+            border-radius: 60rpx;
+        }
+        .ver {
+            background-color: #e1e1e1;
+            height: 40rpx;
+            width: 2px;
+        }
+        .search-input {
+            margin-left: 12rpx;
+            width: 100%;
+            font-size: 28rpx;
+            color: #353535;
+        }
+        .placeholder {
+            letter-spacing: 2rpx;
+            font-size: 24rpx;
+            color: #888;
+        }
+        .cancel-img {
+            display: inline-flex;
+            align-self: center;
+            margin-left: 14rpx;
+        }
+        .city-cascade {
+            width: 156rpx;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            text {
+                font-size: 24rpx;
+                color: #888;
+            }
+            .arrow-img {
+                width: 16rpx;
+                height: 10rpx;
+            }
+        }
+        .city-transparent {
+            width: 16rpx;
+        }
+        .picker{
+            text-align: center;
+            font-size: 24rpx;
+            color: #888;
+        }
+        .btn {
+            margin-left: 20rpx;
+            font-size: 28rpx;
+            color: #888;
+        }
+    }
+</style>
+
+<template>
+    <view class="search-container">
+        <view class="search-content">
+            <view wx:if="{{isShowCityName}}" @tap="trShowCityFn" class="city-cascade">
+                <text>{{city}}</text>
+                <image class="arrow-img" src="/images/icons/arrow-down.png"/>
+            </view>
+            <view wx:else="{{isShowCityName}}" class="city-transparent"></view>
+            <view wx:if="{{isShowCityName}}" class='ver'></view>
+            <input type="text"
+                class="search-input"
+                placeholder="请输入关键词，如职位名/公司名等"
+                placeholder-class="placeholder"
+                focus="true"
+                confirm-type="search"
+                maxlength="-1"
+                bindconfirm="onSearchInputFn"
+                value="{{search_input_value}}"
+            />
+            <icon class='cancel-img' @tap="delTextFn" wx:if="{{search_input_value!=''}}" type="clear" color="#888" size="14"></icon>
+        </view>
+        <text class="btn btn-cancel" @tap="goBackFn" wx:if="{{search_input_value==''}}">取消</text>
+        <text class="btn btn-confirm" @tap="searchFn" wx:else>完成</text>
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import regions from "../utils/regions";
+import {USER_OPERATE_INFO, TECENT_MAP_KEY} from "../utils/constants";
+import api from "../api/api";
+
+
+export default class Search extends wepy.component {
+    data={
+        isShowCity: false,
+        city: '全国',
+        cities: [],
+        search_input_value: ''
+    };
+
+    props={
+        isShowCityName: {
+            type: Boolean,
+            default: true
+        }
+    }
+
+    onLoad(options) {
+        const that = this;
+        // this.getLocation();
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        if (userSpecialInfo.city){
+            this.city = userSpecialInfo.city;
+        }
+    }
+
+    methods={
+        trShowCityFn: function(event){
+            const that = this;
+            that.isShowCity = true;
+            that.$emit('trShowCityFn', that.isShowCity);
+        },
+        onSearchInputFn: function (event) {
+            this.search_input_value = event.detail.value;
+            this.$emit('searchFn', this.search_input_value);
+        },
+        delTextFn: function (event) {//清空搜索
+            this.search_input_value = '';
+            this.$emit('trUnderSearchFn', false);
+        },
+        goBackFn: function (event) {
+            wepy.navigateBack({
+              delta: 1
+            })
+        },
+        searchFn: function (event) { //完成“搜索”
+            const that = this;
+            this.$emit('searchFn', that.search_input_value);
+        }
+    }
+
+    async getLocation(){
+        const that = this;
+        await wx.getLocation({
+            type: 'wgs84',
+            success: function(res) {
+                that.getCityName(res.latitude, res.longitude);
+            }
+        });
+    }
+
+    async getCityName(latitude, longitude){//逆地址解析
+        const that = this;
+        let json = await api.getCityName({
+            query: {
+                location: latitude + ',' + longitude,
+                key: TECENT_MAP_KEY
+            }
+        })
+        if(json.data.message = "query ok") {
+            let city = json.data.result.address_component.city;
+            if(city.length > 3) {
+                city = city.substring(0, 3) + "...";
+            }
+            that.city = city;
+            that.$apply();
+        } else {
+            tip.error(json.data.message);
+        }
+    }
+
+    setCityFn(params) {//设置城市名称
+        this.city = params;
+        let userSpecialInfo = wx.getStorageSync(USER_OPERATE_INFO) || {};
+        userSpecialInfo.city = params;
+        wx.setStorageSync(USER_OPERATE_INFO, userSpecialInfo);
+        this.$apply();
+    }
+
+    setSearchInputFn(params) {//设置输入值
+        this.search_input_value = params;
+        this.$apply()
+    }
+
+
+
+}
+</script>

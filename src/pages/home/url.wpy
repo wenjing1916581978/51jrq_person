@@ -1,0 +1,20 @@
+<template>
+  <web-view src="{{url}}"></web-view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Url extends wepy.page {
+      config = {
+        navigationBarTitleText: '基本信息',
+      }
+     data = {
+        url:''
+      }
+      onLoad(options) {
+        this.url = options.url;
+        this.$apply();
+      }
+
+  }
+</script>

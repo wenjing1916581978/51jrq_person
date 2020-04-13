@@ -1,0 +1,41 @@
+
+  <view class="resumelist-container">
+    <view class="blank"  wx:if="{{no_resume}}">
+      <image src="/images/icons/blank_resume.png"/>
+      <view>{{warnword}}</view>
+    </view>
+    <view  wx:else="{{no_resume}}">
+      <view class="alert-container" wx:if="{{showbox}}"/>
+      <block wx:for="{{resumelist}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+        <view class="resume-list">
+          <view class="content">
+            <view class="up" bindtap="goLook" data-wpygolook-a="{{item.resumeid}}">
+              <view class="percent">
+                <view class="title">{{item.resumename}}</view>
+                <progress percent="{{item.percent}}" show-info color="#FF9E00"/>
+              </view>
+              <view>
+                <view class="date">{{item.updatedate}}   ></view>
+              </view>
+            </view>
+            <view class="line"/>
+            <view class="down">
+              <view class="delete" bindtap="deleteResume" data-wpydeleteresume-a="{{item.resumeid}}">删除简历</view>
+              <view class="edit" bindtap="editResume" data-wpyeditresume-a="{{item.resumeid}}">编辑简历</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="bottom-operate">
+      <view class="add-resume" bindtap="addResume" wx:if="{{no_resume || resumelist.length<3}}">添加简历</view>
+      <view class="import-resume" bindtap="importResume">导入简历</view>
+    </view>
+    <view class="alert-box" wx:if="{{showbox}}">
+      <view class="sure">删除后不可恢复，是否确认删除？</view>
+      <view class="yesno">
+          <view class="no" bindtap="cancel">取消</view>
+          <view class="yes" bindtap="yes">确定</view>
+      </view>
+    </view>
+  </view>

@@ -1,0 +1,140 @@
+<style>
+  @import "./styles/weui.wxss";
+  @import "./styles/common.wxss";
+</style>
+
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+import {
+      LOGIN_INFO
+} from './utils/constants';
+import api from './api/api';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/home/home',
+      'pages/home/url',
+      'pages/personal/delivery',
+      'pages/login/forgot',
+      'pages/personal/base_edit',
+      'pages/index/index',
+      'pages/personal/import_resume',
+      'pages/personal/resume_list',
+      'pages/login/login',
+      'pages/personal/personal',
+      'pages/login/regist',
+      'pages/personal/resume',
+      'pages/personal/certificate',
+      'pages/personal/edu_exper',
+      'pages/personal/project_exper',
+      'pages/personal/work_exper',
+      'pages/personal/job_want',
+      'pages/personal/base_info',
+      'pages/search/search',
+      'pages/personal/collection',
+      'pages/home/homeview',
+      'pages/corporation/corporation',
+      'pages/corporation/corpview',
+      'pages/salary/salary'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: '51金融圈',
+      navigationBarTextStyle: 'black',
+      enablePullDownRefresh: true
+    },
+    tabBar: {
+      "color": "#a0a0a0",
+      "selectedColor": "#FFA315",
+      "backgroundColor": "#ffffff",
+      list: [{
+        'pagePath': 'pages/home/home',
+        'text': '主页',
+        'iconPath': 'images/icons/home.png',
+        'selectedIconPath': 'images/icons/home_hl.png'
+      }, {
+        'pagePath': 'pages/corporation/corporation',
+        'text': '公司',
+        'iconPath': 'images/icons/corp.png',
+        'selectedIconPath': 'images/icons/corp_hl.png'
+      }, {
+        'pagePath': 'pages/salary/salary',
+        'text': '薪税',
+        'iconPath': 'images/icons/xinshui.png',
+        'selectedIconPath': 'images/icons/xinshui_hl.png'
+      }, {
+        'pagePath': 'pages/personal/personal',
+        'text': '我的',
+        'iconPath': 'images/icons/pers.png',
+        'selectedIconPath': 'images/icons/pers_hl.png'
+      }]
+    },
+    "navigateToMiniProgramAppIdList": [
+      "wxd7928bf1898a30cd"
+    ]
+  }
+
+  globalData = {
+    userInfo: null,
+    appid: "wxd48d26a8a3f6938f",
+    secret: 'ffd389347ef65447d93b82a332a59aad',
+    access_token: '',
+    systemInfo: '',
+    isIpx: false
+  }
+
+  constructor () {
+    super()
+    this.use('requestfix')
+  }
+
+  //当小程序初始化完成时，会触发 onLaunch（全局只触发一次）
+  onLaunch(options) {
+    let loginInfo =  wx.getStorageSync(LOGIN_INFO) || {};
+    this.getAccessToken();
+    this.globalData.systemInfo = wx.getSystemInfoSync();
+    let model = wx.getSystemInfoSync().model;
+    if(model.indexOf('iPhone X') > -1) {
+      this.globalData.isIpx = true
+    }
+  }
+
+  // sleep (s) {
+  //   return new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve('promise resolved')
+  //     }, s * 1000)
+  //   })
+  // }
+
+  // async testAsync () {
+  //   const data = await this.sleep(3)
+  // }
+  async getAccessToken() {
+    const that = this;
+    const json = await api.getAccessToken({
+      method: 'GET'
+    });
+    if (json.data.result) {
+      that.globalData.access_token = json.data.access_token;
+    }
+  }
+
+  getUserInfo(cb) {
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        cb && cb(res.userInfo)
+      }
+    })
+  }
+
+}
+</script>
