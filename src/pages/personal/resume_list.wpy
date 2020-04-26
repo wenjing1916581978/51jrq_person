@@ -67,40 +67,7 @@
                   }
                 }
             }
-            .bottom-operate {
-              width: 100%;
-              height: 120rpx;
-              border-top: 1rpx solid #E1E1E1;
-              background: white;
-              position: fixed;
-              bottom: 0;
-              left: 0;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-around;
-              z-index: 8;
-              .add-resume {
-                width: 280rpx;
-                height: 72rpx;
-                background: #FF9E00;
-                color: white;
-                font-size: 36rpx;
-                border-radius: 50rpx;
-                line-height: 72rpx;
-                text-align: center;
-              }
-              .import-resume {
-                width: 280rpx;
-                height: 72rpx;
-                background: #F56666;
-                color: white;
-                font-size: 36rpx;
-                border-radius: 50rpx;
-                line-height: 72rpx;
-                text-align: center;
-              }
-            }
+
             .alert-container {
                 position: fixed;
                 width: 100%;
@@ -150,6 +117,56 @@
         }
 
     }
+
+
+    .bottom-operate {
+      width: 100%;
+      height: 120rpx;
+      border-top: 1rpx solid #E1E1E1;
+      background: white;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 8;
+
+      .add-resume {
+        width: 280rpx;
+        height: 80rpx;
+        background: #FF9E00;
+        color: white;
+        font-size: 36rpx;
+        border-radius: 50rpx;
+        line-height: 80rpx;
+        text-align: center;
+        margin-right: 20rpx;
+        margin-left: 84rpx;
+      }
+      .import-resume {
+        width: 280rpx;
+        height: 80rpx;
+        background: #F56666;
+        color: white;
+        font-size: 36rpx;
+        border-radius: 50rpx;
+        line-height: 80rpx;
+        text-align: center;
+        margin-right: 84rpx;
+      }
+    }
+    .num{
+        text-align: center;
+        font-size: 24rpx;
+        color: #A0A0A0;
+        line-height: 34rpx;
+        margin-top: 36rpx;
+    }
+    .annex_img{
+      width: 24rpx;
+      height: 28rpx;
+      display: inline-block;
+      margin-left: 6rpx;
+      vertical-align: middle;
+    }
 </style>
 
 <template>
@@ -158,38 +175,42 @@
       <image src="/images/icons/blank_resume.png"></image>
       <view>{{warnword}}</view>
     </view>
-    <view wx:else="{{no_resume}}">
+    <block wx:else>
       <view class="alert-container" wx:if = "{{showbox}}"></view>
       <repeat for="{{resumelist}}" key="index" index="index" item="item">
         <view class="resume-list">
           <view class="content">
-            <view class="up" bindtap="goLook({{item.resumeid}})">
+            <view class="up" @tap="goLook({{item.resumeid}})">
               <view class="percent">
-                <view class="title">{{item.resumename}}</view>
-                <progress percent="{{item.percent}}" show-info color="#FF9E00" />
+                <view class="flex">
+                  <view class="title">{{item.resumename}}</view>
+                </view>
+                <progress percent="{{item.percent}}" show-info activeColor="#FF9E00" border-radius="8" stroke-width="10" />
               </view>
               <view>
-                <view class="date">{{item.updatedate}}   ></view>
+                <view class="date">></view>
               </view>
             </view>
             <view class="line"></view>
             <view class="down">
-              <view class="delete" bindtap="deleteResume({{item.resumeid}})">删除简历</view>
-              <view class="edit" bindtap="editResume({{item.resumeid}})">编辑简历</view>
+              <view class="delete" @tap="deleteResume({{item.resumeid}})">删除简历</view>
+              <view class="edit" @tap="editResume({{item.resumeid}})">编辑简历   <image wx:if="{{item.fileshowname}}" src="/images/icons/annex.png" class="annex_img"></image></view>
             </view>
           </view>
         </view>
       </repeat>
-    </view>
-    <view class="bottom-operate">
-      <view class="add-resume" bindtap="addResume" wx:if="{{no_resume || resumelist.length<3}}">添加简历</view>
-      <view class="import-resume" bindtap="importResume">导入简历</view>
+      <view class="num">简历数量{{resumelist.length}}/3</view>
+    </block>
+
+    <view class="bottom-operate flex alignitems">
+      <view class="add-resume flex1" @tap="addResume" wx:if="{{no_resume || resumelist.length<3}}">添加简历</view>
+      <view class="import-resume flex1" @tap="importResume">导入简历</view>
     </view>
     <view class="alert-box" wx:if = "{{showbox}}">
       <view class="sure">删除后不可恢复，是否确认删除？</view>
       <view class="yesno">
-          <view class="no" bindtap="cancel">取消</view>
-          <view class="yes" bindtap="yes">确定</view>
+          <view class="no" @tap="cancel">取消</view>
+          <view class="yes" @tap="yes">确定</view>
       </view>
     </view>
   </view>
@@ -271,12 +292,12 @@ export default class CorpPage extends wepy.page {
       },
       editResume (resumeid) {// 编辑我的简历
           wx.navigateTo({
-              url: `resume?resumeid=${resumeid}`
+              url: `resume?resumeid=${resumeid}&edit=true`
           })
       },
       addResume() {// 添加简历
         wx.navigateTo({
-            url: `resume`
+          url:'/pages/personal/base_info'
         })
       },
       cancel() {//取消删除
@@ -317,7 +338,7 @@ export default class CorpPage extends wepy.page {
       },
       goLook (resumeid) {// 预览简历
           wx.navigateTo({
-              url: `resume?resumeid=${resumeid}&look=just`
+              url: `resume?resumeid=${resumeid}&edit=false`
           })
       },
       importResume() {// 导入简历

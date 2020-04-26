@@ -1,111 +1,126 @@
 
-  <form bindsubmit="formSubmit">
-    <view class="biggest">
-        <view class="block">
-            <view class="list_item">
-                <view class="title">简历名称</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="resumename" value="{{resumename}}" placeholder="请填写"/>
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">姓名</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="username" value="{{username}}" placeholder="请填写"/>
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">性别</view>
-                <picker name="sex" bindchange="bindPickerChange6" value="{{sex[index6]}}" range="{{sex}}">
-                    <view class="picker"  wx:if="{{sexstatus}}">
-                        {{a_sex?a_sex:'请选择'}}
-                    </view>
-                    <view class="picker"  wx:else="{{sexstatus}}">
-                        {{sex[index6]}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">年龄</view>
-                <picker name="borndate" mode="date" value="{{borndate}}" bindchange="bindDateChange">
-                    <view class="picker">
-                        {{borndate?borndate:"请选择 >"}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">户口所在地</view>
-                <!-- <picker name="address" bindchange="bindPickerChange4" value="{{city[index4]}}" range="{{city}}">
-                    <view class="picker" wx:if="{{workcitystatus}}">
-                        {{workcity?workcity:'请选择'}}
-                    </view>
-                    <view class="picker" wx:else="{{workcitystatus}}">
-                        {{city[index4]}}
-                    </view>
-                </picker> -->
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="address" value="{{address}}" placeholder="请填写"/>
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">工作年限</view>
-                <picker name="workyears" bindchange="bindPickerChange" value="{{workyears[index]}}" range="{{workyears}}">
-                    <view class="picker" wx:if="{{workyearsstatus}}">
-                        {{a_workyears?a_workyears:'请选择'}}
-                    </view>
-                    <view class="picker" wx:else="{{workyearsstatus}}">
-                        {{workyears[index]}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">手机</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="telephone" value="{{telephone}}" placeholder="请填写"/>
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">邮箱</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="email" value="{{email}}" placeholder="请填写"/>
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">工作状态</view>
-                <picker name="jobstatus" bindchange="bindPickerChange2" value="{{jobstatus[index2]}}" range="{{jobstatus}}">
-                    <view class="picker" wx:if="{{jobstatusstatus}}">
-                        {{a_jobstatus?a_jobstatus:'请选择'}}
-                    </view>
-                    <view class="picker" wx:else="{{jobstatusstatus}}">
-                       {{jobstatus[index2]}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">所在城市</view>
-                <picker name="livecityid" bindchange="bindPickerChange5" value="{{city[index5]}}" range="{{city}}">
-                    <view class="picker" wx:if="{{livecitystatus}}">
-                        {{livecity?livecity:'请选择'}}
-                    </view>
-                    <view class="picker" wx:else="{{livecitystatus}}">
-                        {{city[index5]}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">婚姻状况</view>
-                <picker name="marital" bindchange="bindPickerChange3" value="{{marital[index3]}}" range="{{marital}}">
-                    <view class="picker" wx:if="{{maritalstatus}}">
-                        {{a_marital?a_marital:'请选择'}}
-                    </view>
-                    <view class="picker" wx:else="{{maritalstatus}}">
-                        {{marital[index3]}}
-                    </view>
-                </picker>
-            </view>
+  <view class="form container">
+    <view bindtap="changePortrait">
+      <view class="headimg">
+        <image mode="aspectFill" class="icon-upload"  wx:if="{{form.headimg}}" src="{{base64?'data:image/jpg;base64,':''}}{{form.headimg}}"/>
+        <image mode="aspectFill" class="icon-upload"  wx:else src="/images/icons/upload_head.png"/>
+      </view>
+      <!-- <text>点击更换头像（图片大小不宜超过1M）</text> -->
+    </view>
+    <view class="form_item bb pb">
+        <view class="form_label">简历名称</view>
+        <view class="form_content">
+            <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="resumename" value="{{form.resumename}}" placeholder="请填写"/>
         </view>
     </view>
-    <view class="btn-box">
-      <button class="save-btn" formType="submit">保存</button>
+    <view class="form_item bb pb">
+        <view class="form_label">姓名</view>
+        <view class="form_content">
+            <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="username" value="{{form.username}}" placeholder="请填写"/>
+        </view>
     </view>
-  </form>
+    <view class="form_item bb pb">
+      <view class="form_label">性别</view>
+      <picker data-name="sex" data-current="0" value="{{screen[0].index}}" bindchange="pickerChange" range="{{screen[0].list}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">
+              {{form.sex?form.sex:'请选择'}}
+          </view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"/>
+          </view>
+        </view>
+      </picker>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">出生年月</view>
+      <picker data-name="borndate" mode="date" value="{{form.borndate}}" bindchange="dateChange" start="{{start}}" end="{{end}}">
+          <view class="form_content flex alignitems">
+              <view class="flex1">{{form.borndate?form.borndate:"请选择"}}</view>
+              <view class="form_arrow">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
+          </view>
+      </picker>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">户籍地址</view>
+      <view class="form_content">
+          <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="address" value="{{form.address}}" placeholder="请填写"/>
+      </view>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">学历</view>
+      <picker data-name="educationbg" data-current="4" value="{{screen[4].index}}" bindchange="pickerChange" range="{{screen[4].list}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">
+              {{form.educationbg?form.educationbg:'请选择'}}
+          </view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"/>
+          </view>
+        </view>
+      </picker>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">工作年限</view>
+      <picker data-name="workyears" data-current="1" value="{{screen[1].index}}" bindchange="pickerChange" range="{{screen[1].list}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">
+              {{form.workyears?form.workyears:'请选择'}}
+          </view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"/>
+          </view>
+        </view>
+      </picker>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">手机</view>
+      <view class="form_content">
+          <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="telephone" value="{{form.telephone}}" placeholder="请填写"/>
+      </view>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">邮箱</view>
+      <view class="form_content">
+          <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="email" value="{{form.email}}" placeholder="请填写"/>
+      </view>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">工作状态</view>
+      <picker data-name="jobstatus" data-current="3" value="{{screen[3].index}}" bindchange="pickerChange" range="{{screen[3].list}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">
+              {{form.jobstatus?form.jobstatus:'请选择'}}
+          </view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"/>
+          </view>
+        </view>
+      </picker>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">所在城市</view>
+      <view class="form_content">
+          <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="livecityid" value="{{form.livecityid}}" placeholder="请填写"/>
+      </view>
+    </view>
+    <view class="form_item bb pb">
+      <view class="form_label">婚姻状况</view>
+      <picker data-name="marital" data-current="2" value="{{screen[2].index}}" bindchange="pickerChange" range="{{screen[2].list}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">
+              {{form.marital?form.marital:'请选择'}}
+          </view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"/>
+          </view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form_btn">
+      <button class="mainbtn" bindtap="formSubmit">保存</button>
+    </view>
+  </view>

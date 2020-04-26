@@ -1,296 +1,418 @@
 <style lang="less">
-  page {
-    background: #F0F1F2;
-    .biggest {
-        background: #fff;
-        border-top: #f1f1f1 solid 1rpx;
-        .block {
-            margin: auto 40rpx;
-            .list_item {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                font-size: 28rpx;
-                color: #888888;
-                height: 80rpx;
-                justify-content: space-between;
-                border-bottom: #f1f1f1 solid 2rpx;
-                .title {
-                    color: #353535;
-                    width: 35%;
-                }
-                .input {
-                    width: 65%;
-                    input {
-                        text-align: right;
-                        color: #888888;
-                        width: 100%;
-                    }
-                    .phcolor {
-                        color: #888888;
-                        text-align: right;
-                    }
-                }
-            }
-
-        }
-    }
-    .work-content {
-        height: 80rpx;
-        font-size: 28rpx;
-        line-height: 80rpx;
-        margin-left: 40rpx;
-        color: #b2b2b2;
-    }
-    .big {
-        background: white;
-        .section {
-            margin: auto 40rpx;
-            textarea {
-                padding: 30rpx auto;
-                width: 100%;
-                font-size: 28rpx;
-                color: #888888;
-            }
-        }
-    }
-
-    .btn-box {
-        margin-top: 70rpx;
-        .save-btn{
-            width: 600rpx;
-            height: 64rpx;
-            background: #ff9e00;
-            color: white;
-            text-align: center;
-            line-height: 60rpx;
-            font-size: 36rpx;
-            border-radius: 10rpx;
-        }
-    }
-  }
+@import "../../styles/form.less";
 </style>
 <template>
-  <form bindsubmit="formSubmit">
-    <view class="biggest">
-        <view class="block">
-            <view class="list_item">
-                <view class="title">学校名称</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="school" value="{{school}}" placeholder="请填写" />
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">专业</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="specialtyid" value="{{specialtyid}}" placeholder="请填写" />
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">学历</view>
-                <picker name="educationbg" bindchange="bindPickerChange" value="{{educationbg[index]}}" range="{{educationbg}}">
-                    <view class="picker" wx:if="{{educationbgstatus}}">
-                        {{a_educationbg?a_educationbg:'请选择 >'}}
-                    </view>
-                    <view class="picker" wx:else="{{educationbgstatus}}">
-                        {{educationbg[index]}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">开始时间</view>
-                <picker name="starttime" mode="date" value="{{starttime}}" bindchange="bindDateChange1">
-                    <view class="picker">
-                        {{starttime?starttime:"请选择 >"}}
-                    </view>
-                </picker>
-            </view>
-            <view class="list_item">
-                <view class="title">结束时间</view>
-                <picker name="endtime" mode="date" value="{{endtime}}" bindchange="bindDateChange2">
-                    <view class="picker">
-                        {{endtime?endtime:"请选择 >"}}
-                    </view>
-                </picker>
-            </view>
-
+  <view class="form container">
+    <view class="form_item bb">
+        <view class="form_label">学校名称</view>
+        <view class="form_content">
+          <input placeholder-class="phcolor" type="text" data-name="school" value="{{school}}" placeholder="请填写" bindinput="inputChange" />
         </view>
     </view>
-    <view class="btn-box">
-      <button class="save-btn" formType="submit">保存</button>
+    <view class="form_item bb">
+        <view class="form_label">专业</view>
+        <view class="form_content">
+            <input placeholder-class="phcolor" type="text" data-name="specialtyid" value="{{specialtyid}}" placeholder="请填写" bindinput="inputChange" />
+        </view>
     </view>
-  </form>
+    <view class="form_item bb">
+      <view class="form_label">学历</view>
+      <picker data-name="educationbg" data-current="0" value="{{screen[0].index}}" bindchange="pickerChange" range="{{screen[0].list}}">
+          <view class="form_content flex alignitems">
+            <view class="flex1">
+                {{educationbg?educationbg:'请选择'}}
+            </view>
+            <view class="form_arrow">
+              <image src="../../images/icons/arrow_right.png"></image>
+            </view>
+          </view>
+      </picker>
+    </view>
+    <view class="form_item pb bb">
+      <view class="form_label">开始时间</view>
+      <picker mode="multiSelector" bindchange="starttimeChange" bindcolumnchange="starttimeColumnChange" value="{{starttimeIndex}}" range="{{starttimeArray}}">
+        <view class="form_content flex alignitems">
+          <view class="flex1">{{starttime?starttime:"请选择"}}</view>
+          <view class="form_arrow">
+            <image src="../../images/icons/arrow_right.png"></image>
+          </view>
+        </view>
+      </picker>
+    </view>
+    <view class="form_item pb bb">
+        <view class="form_label">结束时间</view>
+        <picker mode="multiSelector" bindchange="endtimeChange" bindcolumnchange="endtimeColumnChange" value="{{endtimeIndex}}" range="{{endtimeArray}}">
+          <view class="form_content flex alignitems">
+            <view class="flex1">{{endtime?endtime:"请选择"}}</view>
+            <view class="form_arrow">
+              <image src="../../images/icons/arrow_right.png"></image>
+            </view>
+          </view>
+        </picker>
+
+    </view>
+
+    <view class="form_btn flex">
+      <button class="delbtn" @tap="del" wx:if="{{educationid!=''&&length>1}}">删除</button>
+      <button class="mainbtn flex1" @tap="formSubmit">保存</button>
+    </view>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
   import api from '../../api/api';
   import tip from '../../utils/tip';
+  let monthArr =[1,2,3,4,5,6,7,8,9,10,11,12]
+  import moment from 'moment'
 
   export default class BaseInfo extends wepy.page {
 
     config = {
-    navigationBarTitleText: '教育经历',
+      navigationBarTitleText: '教育经历',
+      navigationBarBackgroundColor: "#fafafa",
     }
 
     data = {
-        school:'',
-        specialtyid:'',
-        starttime:'',
-        endtime:'',
-        educationbg: [],
-        a_educationbg: '',
-        educationbgstatus: true,
-        index:'',
-        educationid:'',
-        token: "",
-        tokenKey: "",
-        resumeid:''
+      screen:[
+        {
+          list:[],
+          index:[],
+        }
+      ],
+      school:'',
+      specialtyid:'',
+      starttime:'',
+      endtime:'',
+      educationbg:'',
+      educationid:'',
+      token: "",
+      tokenKey: "",
+      resumeid:'',
+      length:0,
+      endtimeArray: [['至今'], ['至今']],
+      endtimeIndex: [0, 0],
+      starttimeArray: [['至今'], []],
+      starttimeIndex: [0, 0],
     }
 
     onLoad(options) {
-        this.educationid = options.educationid;
-        this.resumeid = options.resumeid;
-        this.$apply();
-        const that = this;
-        // 获取登录信息
-        wx.getStorage({
-            key: 'loginData',
-            success: function(res) {
-                that.token = res.data.token;
-                that.tokenKey = res.data.tokenKey;
-                that.$apply();
-                //获取求职意向
-                if(options.resumeid==''){
-                  return false
-                }
-                that.getJobInfo(that.token,that.tokenKey,that.resumeid).then(json => {
-                    if (json.data.returnCode == "AAAAAAA") {
-                        var jobExper = JSON.parse(json.data.data);
-                        let resultArr = jobExper.find(item => item.educationid == options.educationid)
-                        that.school = resultArr.school;
-                        that.specialtyid = resultArr.specialtyid;
-                        that.starttime = resultArr.starttime;
-                        that.endtime = resultArr.endtime;
-                        that.a_educationbg = resultArr.educationbg;
-                        that.$apply();
-                    } else {
-                        tip.error(json.returnMsg);
-                    }
-                })
-            }
-        })
+      const that = this;
+      let login = wx.getStorageSync('login')
+      that.resumeid = options.resumeid;
+      this.educationid = options.educationid || '';
+      that.token = login.token
+      that.tokenKey = login.tokenKey
+      that.$apply();
 
-        // 获取数据字典数据
-        this.getDict("DICT_JOB_EDU").then(json => {
-            if (json.data.returnCode == "AAAAAAA") {
-                var arr = []
-                json.data.data.forEach((item,index)=>{
-                    arr.push(item.label)
-                })
-                that.educationbg = arr;
-                that.$apply();
-            } else {
-                tip.error(json.returnMsg);
-            }
-        })
+      if(options.educationid) that.getData()
+
+      const arr = ['DICT_JOB_EDU']
+      for (var i = 0; i < arr.length; i++) {
+        that.getDict(arr[i],i)
+      }
+
+      let one = []
+      let now = new Date()
+      let currentY = now.getFullYear()
+      let currentM = now.getMonth()+1
+
+      for(var i=0;i<31;i++){
+        let v = currentY-i
+        one.push(v+'')
+        if(i==30) one.push(v+'以前')
+      }
+
+
+      this.starttimeArray[0] = one
+      this.starttimeArray[1] = monthArr
+      let a=['至今']
+      var newA = [...a,...one]
+      this.endtimeArray[0] = newA
+      this.$apply()
     }
 
     methods = {
+      endtimeChange: function (e) {
+        const {endtimeArray} = this
+        let v = e.detail.value
+        if(v[0]==0 || v[0]==32){
+          this.endtime = endtimeArray[0][v[0]]
+        }else{
+          let month = parseInt(v[1])+1
+          let r = month<10?'0'+month:month
+          this.endtime =endtimeArray[0][v[0]]+'/'+ r
+        }
+        this.multiIndex= e.detail.value
+        this.$apply()
+      },
+      endtimeColumnChange: function (e) {
+        var data = {
+          endtimeArray: this.endtimeArray,
+          endtimeIndex: this.endtimeIndex
+        };
+        data.endtimeIndex[e.detail.column] = e.detail.value;
+        if(e.detail.column==0){
+          if(data.endtimeIndex[0]==0){
+            data.endtimeArray[1] = ['至今'];
+            data.endtimeIndex[1] = 0
+          }else if(data.endtimeIndex[0]==32){
+            let arr= data.endtimeArray[0]
+            data.endtimeArray[1] = [arr[arr.length-1]]
+            data.endtimeIndex[1] = 0
+          }else{
+            data.endtimeArray[1] = monthArr
+          }
+        }
+        this.$apply()
+      },
+      starttimeChange: function (e) {
+        const {starttimeArray} = this
+        let v = e.detail.value
+        if(v[0]==31){
+          this.starttime = starttimeArray[0][v[0]]
+        }else{
+          let month = parseInt(v[1])+1
+          let r = month<10?'0'+month:month
+          this.starttime =starttimeArray[0][v[0]]+'/'+ r
+        }
+        this.multiIndex= e.detail.value
+        this.$apply()
+      },
+      starttimeColumnChange: function (e) {
+        var data = {
+          starttimeArray: this.starttimeArray,
+          starttimeIndex: this.starttimeIndex
+        };
+        data.starttimeIndex[e.detail.column] = e.detail.value;
+          if(data.starttimeIndex[0]==31){
+            let arr= data.starttimeArray[0]
+            data.starttimeArray[1] = [arr[arr.length-1]]
+            data.starttimeIndex[1] = 0
+          }else{
+            data.starttimeArray[1] = monthArr
+          }
+        this.$apply()
+      },
+
+        del(){
+          this.delExperience()
+        },
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
-            wx.showLoading({
-                title: '加载中',
-            })
-            if(this.educationid != "undefined"){
-                e.detail.value.educationid = this.educationid;
+          const that = this
+            if(!that.school){
+              tip.error('学校名称不为空');
+              return false
             }
-            var obj2 = {
-                "token": this.token,
-                "tokenKey": this.tokenKey,
-                "resumeid": this.resumeid
+            if(!that.specialtyid){
+              tip.error('专业不为空');
+              return false
             }
-            if(!obj2.resumeid){
-                delete obj2['resumeid']
+            if((!that.a_educationbg)&&that.index==''){
+              tip.error('请选择教育背景');
+              return false
             }
-            const that = this;
-            this.changeBaseInfo(e.detail.value,obj2).then(data=>{
-                if(data.data && data.data.returnCode == "AAAAAAA") {
-                    let pages = getCurrentPages();
-                    let prevPage = pages[pages.length - 2];
-                    prevPage.update(3)
-                    wx.navigateBack({
-                     delta: 1
-                   })
-                }else{
-                    console.log(data)
-                }
-                wx.hideLoading()
-            })
+            if(!that.starttime){
+              tip.error('请选择开始时间');
+              return false
+            }
+            if(!that.endtime){
+              tip.error('请选择结束时间');
+              return false
+            }
+
+
+            let startTime=that.starttime
+            let endTime=that.endtime
+
+            if(startTime.indexOf('/')!=-1) startTime = startTime.replace(/\//g,"-")
+
+            if(moment(moment().format('YYYY-MM')).diff(moment(startTime), 'months')<0){
+              tip.error('起始时间不能大于当前时间')
+              return false
+            }
+
+            if(that.endtime.indexOf('以前')!=-1&&that.starttime.indexOf('以前')==-1){
+              tip.error('起始时间不能大于结束时间')
+              return false
+            }
+
+            if(that.starttime.indexOf('以前')==-1&&(that.endtime!='至今'&&that.endtime.indexOf('以前')==-1)){
+
+              if(endTime.indexOf('/')!=-1) endTime = endTime.replace(/\//g,"-")
+              if(startTime.indexOf('/')!=-1) startTime = startTime.replace(/\//g,"-")
+              let diff = moment(endTime).diff(moment(startTime), 'months')
+              if(diff<0){
+                tip.error('起始时间不能大于结束时间')
+                return false
+              }
+
+            }
+
+            this.changeData()
         },
-        bindDateChange1: function(e) {
-            this.starttime = e.detail.value;
-            this.$apply();
+        inputChange(e){
+          const name = e.currentTarget.dataset.name
+          this[name] = e.detail.value;
+          this.$apply();
         },
-        bindDateChange2: function(e) {
-            this.endtime = e.detail.value;
-            this.$apply();
+        pickerChange(e){
+          const name = e.currentTarget.dataset.name
+          const current = e.currentTarget.dataset.current
+          const index = e.detail.value
+          this[name] = this.screen[current].list[index]
+          this.screen[current].index = e.detail.value;
+          this.$apply();
         },
-        bindPickerChange: function(e) {
-            this.educationbgstatus = false ;
-            this.index = e.detail.value;
-            this.$apply();
-        },
+        timeChange: function(e) {
+          const name = e.currentTarget.dataset.name
+          this[name] = e.detail.value.replace(/-/g,"/");
+          this.$apply();
+        }
     }
 
     //获取教育经历
-    async getJobInfo(token,tokenKey,resumeid) {
-        const json = await api.getResumeInfo({
+    async getData() {
+      const that = this
+      wx.showLoading({
+          title: '加载中',
+      })
+      api.getResumeInfo({
         query: {
-                head: {
-                    "transcode": "M0006",
-                    "type": "h"
-                },
-                data: {
-                    "token": token,
-                    "tokenKey": tokenKey,
-                    "resumeid": resumeid
-                }
+              head: {
+                "transcode": "M0006",
+                "type": "h"
+              },
+              data: {
+                "token": that.token,
+                "tokenKey": that.tokenKey,
+                "resumeid": that.resumeid
+              }
             }
+        }).then(res=>{
+          if (res.data.returnCode == "AAAAAAA") {
+              wx.hideLoading()
+              var jobExper = JSON.parse(res.data.data);
+              let resultArr = jobExper.find(item => item.educationid == that.educationid)
+              that.school = resultArr.school;
+              that.length = jobExper.length;
+              that.specialtyid = resultArr.specialtyid;
+              that.starttime = resultArr.starttime;
+              that.endtime = resultArr.endtime;
+              that.educationbg = resultArr.educationbg;
+              that.$apply();
+          } else {
+              tip.error(res.returnMsg);
+          }
         })
-        return json;
+
     }
 
     //获取数据字典
-    async getDict(code) {
-        const json = await api.getDictData({
+    getDict(code,i) {
+      const that = this
+      api.getDictData({
         query: {
-                head: {
-                    "transcode": "DC001",
-                    "type": "h"
-                },
-                data: {
-                    "groupcode": code,
-                    "selAll": "true"
-                }
+            head: {
+                "transcode": "DC001",
+                "type": "h"
+            },
+            data: {
+                "groupcode": code,
+                "selAll": "false"
             }
-        })
-        return json;
+        }
+      }).then(res=>{
+        if (res.data.returnCode == "AAAAAAA") {
+            var arr = []
+            res.data.data.forEach((item,index)=>{
+                arr.push(item.label)
+            })
+            arr.shift()
+            that.screen[i].list = arr;
+            that.$apply();
+        } else {
+            tip.error(res.returnMsg);
+        }
+
+      }).catch(err=>{
+
+      })
     }
 
-    //修改表单数据
-    async changeBaseInfo(obj,obj2) {
-        let data = obj2
-        let resultObj = Object.assign(data, obj);
-        const json = await api.getResumeInfo({
+    // 删除经历
+    delExperience() {
+      const that = this
+      api.delExperience({
         query: {
-                head: {
-                    "transcode": "M0016",
-                    "type": "h"
-                },
-                data: resultObj
+            head: {
+                "transcode": "M0029",
+                "type": "h"
+            },
+            data: {
+              token: that.token,
+              tokenKey: that.tokenKey,
+              resumeid:that.resumeid,
+              educationid:that.educationid
             }
-        })
-        return json;
+        }
+      }).then(res=>{
+        if (res.data && res.data.returnCode == "AAAAAAA") {
+          tip.success('删除成功');
+          let pages = getCurrentPages();
+          let prevPage = pages[pages.length - 2];
+          prevPage.update(3)
+          wx.navigateBack({
+           delta: 1
+         })
+        } else {
+            tip.error(res.returnMsg);
+        }
+      }).catch(err=>{
+
+      })
+    }
+    //修改表单数据
+    async changeData() {
+      const that = this
+        // let data = obj2
+        // let resultObj = Object.assign(data, obj);
+      let obj= {
+        token: this.token,
+        tokenKey: this.tokenKey,
+        resumeid: this.resumeid,
+        school:that.school,
+        specialtyid:that.specialtyid,
+        starttime:that.starttime,
+        endtime:that.endtime,
+        educationbg:that.educationbg,
+        educationid:that.educationid
+      }
+      wx.showLoading({
+        title: '加载中',
+      })
+      api.getResumeInfo({
+        query: {
+            head: {
+                "transcode": "M0016",
+                "type": "h"
+            },
+            data: obj
+          }
+      }).then(res=>{
+        wx.hideLoading()
+        if(res.data && res.data.returnCode == "AAAAAAA") {
+            let pages = getCurrentPages();
+            let prevPage = pages[pages.length - 2];
+            prevPage.update(3)
+            wx.navigateBack({
+             delta: 1
+           })
+        }else{
+            console.log(data)
+        }
+
+      })
     }
   }
 </script>

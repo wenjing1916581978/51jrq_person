@@ -1,0 +1,102 @@
+<style lang="less">
+@import "../../styles/form.less";
+</style>
+<template>
+  <view class="form container">
+    <view class="form_item bb">
+        <view class="form_label">附件简历重命名</view>
+        <view class="form_content">
+          <input placeholder-class="phcolor" type="text" data-name="name" value="{{name}}" placeholder="请填写" bindinput="inputChange" />
+        </view>
+    </view>
+
+    <view class="form_btn flex">
+      <button class="mainbtn flex1" @tap="formSubmit">保存</button>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api';
+  import tip from '../../utils/tip';
+
+  export default class Annexname extends wepy.page {
+
+    config = {
+      navigationBarTitleText: '附件简历',
+      navigationBarBackgroundColor: "#fafafa",
+    }
+
+    data = {
+      token:'',
+      tokenKey:'',
+      name:'',
+      resumeid:'',
+      type:'',
+    }
+
+    onLoad(options) {
+      const that = this;
+      let login = wx.getStorageSync('login')
+      that.resumeid = options.resumeid;
+      that.name = options.name;
+      that.type = options.type;
+      that.token = login.token
+      that.tokenKey = login.tokenKey
+      that.$apply();
+    }
+
+    methods = {
+        del(){
+          this.delExperience()
+        },
+        // 提交表单--基本信息编辑新增
+        formSubmit: function(e) {
+          const that = this
+            if(!that.name){
+              tip.error('简历名称不为空');
+              return false
+            }
+
+            this.changeData()
+        },
+        inputChange(e){
+          const name = e.currentTarget.dataset.name
+          this[name] = e.detail.value;
+          this.$apply();
+        }
+    }
+
+
+    // 修改名字
+    changeData(){
+      const that = this
+      wepy.request({
+          url: api.apimall+'/api/editrfile',
+          method: 'post',
+          data: {
+            'token': that.token,
+            'tokenKey': that.tokenKey,
+            'resumeid':that.resumeid,
+            'fileShowName':that.name + '.'+that.type
+          },
+          header: { 'content-type': 'application/x-www-form-urlencoded' },
+          success: function(res) {
+            if(res.data.returnCode == 'AAAAAAA'){
+              tip.success('修改成功');
+              let pages = getCurrentPages();
+              let prevPage = pages[pages.length - 2];
+              let lastPage = pages[pages.length - 3];
+              prevPage.changeName(that.name)
+              lastPage.update(0)
+            }else{
+              tip.error(res.data.returnMsg);
+            }
+          },
+          fail: function(err){
+          }
+      });
+    }
+
+  }
+</script>

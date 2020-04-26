@@ -1,0 +1,217 @@
+<style lang='less'>
+  page{
+    background: #F0F1F2;
+  }
+  .wrapper{
+    height: 100vh;
+    flex-direction: column;
+  }
+  .arrow{
+    width: 30rpx;
+    height: 30rpx;
+    display: block;
+  }
+  .main{
+    padding: 60rpx 48rpx;
+    text-align: center;
+  }
+  .bottom{
+    padding: 24rpx;
+    background: #fcfcfc;
+    button{
+      color: #ffffff;
+      background-image: linear-gradient(270deg, #FF9E00 0%, #FFBD00 100%);
+      border: none;
+      border-radius: 44rpx;
+      margin-top: 28rpx;
+    }
+  }
+  .tips{
+    font-size: 28rpx;
+    color: #999999;
+    line-height: 34rpx;
+    padding: 24rpx;
+    background: #ffffff;
+  }
+  .time{
+    font-size: 24rpx;
+    color: #999999;
+    line-height: 32rpx;
+  }
+  .name{
+    line-height: 44rpx;
+    margin-bottom: 12rpx;
+    font-size: 32rpx;
+  }
+  .type{
+    width: 120rpx;
+    height: 120rpx;
+    margin: 0 auto 46rpx;
+  }
+  .edit{
+    background: #ffffff;
+    text-align: right;
+    padding: 44rpx 24rpx;
+
+    image{
+      width: 32rpx;
+      height: 32rpx;
+      display: inline-block;
+    }
+  }
+  .bgfff{
+    background: #ffffff;
+    margin-top: 20rpx;
+  }
+</style>
+
+<template>
+  <view class="wrapper flex">
+    <view class="flex1 {{name?'bgfff':''}}">
+      <navigator url="/pages/personal/annexname?resumeid={{resumeid}}&name={{name}}&type={{type}}" hover-class="none" class="edit" wx:if="{{name}}">
+        <image src="/images/icons/edit.png"></image>
+      </navigator>
+      <view class="main">
+        <navigator url="/pages/personal/annexdetails?resumeid={{resumeid}}" hover-class="none" wx:if="{{name}}">
+          <image src="/images/icons/ppt.png" class="type" wx:if="{{type=='ppt'}}"></image>
+          <image src="/images/icons/word.png" class="type" wx:if="{{type=='doc'|| type=='docx'}}"></image>
+          <image src="/images/icons/pdf.png" class="type" wx:if="{{type=='pdf'}}"></image>
+          <image src="/images/icons/img.png" class="type" wx:if="{{type=='jpg' || type=='png'}}"></image>
+          <view class="name">{{name}}.{{type}}</view>
+          <view class="time">{{time}} 上传</view>
+        </navigator>
+      </view>
+    </view>
+
+    <view class="tips">附件简历可以以您编辑的版式呈现给用人单位，现阶段只能主动投递不会被搜索到，请放心创建</view>
+    <view class="bottom">
+      <button @tap="upload">{{name?'重新上传':'上传附件'}}</button>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import utils from'../../utils/utils';
+
+export default class Annex extends wepy.page {
+  config = {
+    navigationBarTitleText: '附件简历',
+    navigationBarBackgroundColor: "#fafafa"
+  }
+
+
+  data = {
+    token:'',
+    tokenKey:'',
+    resumeid:'',
+    name:'',
+    type:'',
+    time:'',
+  }
+
+
+  methods = {
+    upload(){
+      const that = this
+      wx.chooseMessageFile({
+        count: 1,
+        success (res) {
+          // tempFilePath可以作为img标签的src属性显示图片
+          const tempFilePaths = res.tempFiles
+          console.log(tempFilePaths,'上传文件')
+
+          var size = res.tempFiles[0].size;
+          var filename = res.tempFiles[0].name;
+          var newfilename = filename + "";
+
+          let reg = /\.jpg|\.png|\.ppt|\.pdf|\.doc|\.docx/
+           // console.log('上传',reg.test(newfilename),newfilename)
+         if (!reg.test(newfilename)){ //我还限制了文件的大小和具体文件类型
+            wx.showToast({
+              title: '文件格式不正确,格式支持jpg,png,ppt,pdf,doc,docx！',
+              icon: "none",
+              duration: 2000,
+              mask: true
+            })
+            return false
+          }
+          that.getName(newfilename)
+
+          wx.uploadFile({
+            url: api.apimall+'/api/editrfile',
+            filePath: tempFilePaths[0].path,
+            name: 'file',
+            header: {
+                "Content-Type": "multipart/form-data",
+            },
+            formData: {
+              'token': that.token,
+              'tokenKey': that.tokenKey,
+              'resumeid':that.resumeid,
+              'fileShowName':newfilename
+            },
+            success (res){
+
+              let data = JSON.parse(res.data)
+              if (data.returnCode == "AAAAAAA") {
+                tip.success('上传成功');
+                let pages = getCurrentPages();
+                let prevPage = pages[pages.length - 2];
+                prevPage.update(0)
+                wx.navigateBack({
+                 delta: 1
+               })
+              } else {
+                tip.error(res.returnMsg);
+              }
+            },
+            complete(res){
+              console.log(res,'执行结束')
+            }
+          })
+
+
+        }
+      })
+    }
+  }
+  onLoad(options){
+    const that = this
+    let login = wx.getStorageSync('login')
+    that.token = login.token
+    that.tokenKey = login.tokenKey
+    that.resumeid = options.resumeid
+    if(options.time){
+      var date = new Date(parseInt(options.time));
+      that.time = that.formatDate(date)
+    }
+    let name = options.name
+    if(name) that.getName(name)
+    that.$apply()
+  }
+
+  getName(name){
+    const that = this
+    let arr = name.split('.')
+    that.type = arr[arr.length-1]
+    arr.pop()
+    that.name = arr.join('.');
+  }
+  changeName(name){
+    this.name = name
+    this.$apply()
+  }
+  formatDate(now) {
+    var year=now.getFullYear();
+    var month=now.getMonth()+1;
+    var date=now.getDate();
+    var hour=now.getHours();
+    var minute=now.getMinutes();
+    var second=now.getSeconds();
+    return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+  }
+}
+</script>

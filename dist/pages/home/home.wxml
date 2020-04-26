@@ -28,7 +28,7 @@
       </view>
       <block wx:for="{{hunterjobList}}" wx:for-index="index" wx:for-item="item" wx:key="index">
         
-  <view class="posi-corp-container" bindtap="$commposi$goToHomeView" data-com-index="{{index}}" data-wpygotohomeview-a="{{item.corpid}}" data-wpygotohomeview-b="{{item.id}}">
+  <view class="posi-corp-container" bindtap="$commposi$goDetails" data-com-index="{{index}}">
     <view class="posi-container">
         <view class="posi-name-sal">
             <text class="posi-name">{{item.jobname}}</text>
@@ -36,25 +36,23 @@
         </view>
         <view class="posi-duty">
             <text>{{item.jobcity}}</text>
-            <!-- <text class="ver">|</text>
-            <text>{{}}</text> -->
             <text class="ver"  wx:if="{{item.workyears}}">|</text>
             <text>{{item.workyears}}</text>
             <text class="ver"  wx:if="{{item.ebid}}">|</text>
             <text>{{item.ebid}}</text>
         </view>
     </view>
-      <view class="corp-brief">
+      <view class="corp-brief flex">
           <view class="logo">
               <image mode="aspectFit" src="{{item.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : item.mlogo}}"/>
           </view>
-          <view class="corp-info">
-              <text class="corp-name">{{item.corpname}}</text>
+          <view class="corp-info flex1">
+              <text class="corp-name ellipsis">{{item.corpname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
-                    <text>{{item.industry}}</text> 
+                    <text>{{item.industry?item.industry:'暂无'}}</text>
                   </view>
-                  <text class="up-date">{{item.refreshdate ? item.refreshdate : item.updatedate}}</text> 
+                  <text class="up-date">{{item.refreshdate ? item.refreshdate : item.updatedate}}</text>
               </view>
           </view>
       </view>

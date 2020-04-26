@@ -1,299 +1,323 @@
 <style lang='scss'>
-    page {
-      background: #F0F1F2;
-      .resume-container {
-        .head {
-          background: white;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          border-top: #f1f1f1 2rpx solid;
+    .title{
+      height: 56rpx;
+      font-size: 40rpx;
+      margin: 58rpx 0 0;
+    }
+    .baseinfo{
+      padding-top: 96rpx;
+      &_img{
+        width: 140rpx;
+        height: 140rpx;
+        position: relative;
+        .head{
           image {
             width: 140rpx;
             height: 140rpx;
-            margin-top: 20rpx;
-          }
-          view {
-            color: #b2b2b2;
-            font-size: 24rpx;
-            margin-top: 10rpx;
-            margin-bottom: 20rpx;
+            border-radius: 50%;
+            display: block;
+            background: #f8f8f8;
           }
         }
-        .resume-gray-line {
-          height: 1px;
-          background: #f1f1f1;
-          margin:auto 28rpx;
-        }
-        .add-btn {
-          width: 236rpx;
-          position: relative;
-          margin: 10rpx auto;
+        .sex{
+          position: absolute;
+          right: 4rpx;
+          bottom: 0;
           image {
-            width: 236rpx;
-            height: 68rpx;
-            color: black;
-            font-size: 24rpx;
-          }
-          .btn-word {
-            position: absolute;
-            color: white;
-            font-size: 24rpx;
-            top: 10rpx;
-            left: 30rpx;
-          }
-        }
-        .info-container {
-          margin-top: 15rpx;
-          background: white;
-          .title-container {
-            padding: 12rpx 28rpx;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            font-size: 28rpx;
-            .title {
-              color: #353535;
-            }
-            .edit {
-              color: #FF9E00;
-            }
-          }
-          .name-container {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin: 12rpx 28rpx;
-            .name {
-              font-size: 34rpx;
-              color: #282828;
-            }
-            image {
-              width: 28rpx;
-              height: 28rpx;
-              margin-left: 16rpx;
-            }
-          }
-          .small-info {
-            margin: auto 28rpx;
-            font-size: 22rpx;
-            color: #888888;
-            padding-bottom: 12rpx;
-          }
-          .intro-container {
-            padding: 12rpx 28rpx;
-            font-size: 26rpx;
-            color: #888888;
-            display: flex;
-            flex-direction: row;
-            // justify-content: space-between;
-            .edit {
-              color: #FF9E00;
-            }
-            .hukou {
-              display: flex;
-              flex-direction: row;
-              width: 50%;
-              .result {
-                color: #353535;
-              }
-            }
-            .color-word {
-              color: #353535;
-            }
-            .time {
-              font-size: 24rpx;
-              color: #b2b2b2;
-            }
-          }
-          .yellow-title {
-            color: #FF9E00;
-            font-size: 28rpx;
-            margin: auto 28rpx;
+            width: 28rpx;
+            height: 28rpx;
+            display: block;
           }
         }
       }
+      &_attr{
+        color: #a0a0a0;
+        font-size: 28rpx;
+      }
     }
-    .noid{
-      position: relative;
+    .content{
+      word-wrap: break-word;
+      word-break: break-all;
+      margin-top: 26rpx;
     }
-    .noid_mask{
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      background: rgba(255,255,255,0.5);
+    .pb{
+      padding-bottom: 60rpx;
+    }
+    .item{
+      margin-bottom: 20rpx;
+      &_tit {
+        color: #666666;
+        font-size: 32rpx;
+        line-height: 44rpx;
+      }
+      &_time{
+        font-size: 24rpx;
+        color: #a0a0a0;
+      }
+      &_post{
+        margin-top: 4rpx;
+        font-size: 24rpx;
+        color: #999999;
+        line-height: 36rpx;
+      }
+      &_edit{
+        margin-left: 6rpx;
+        image{
+          width: 10rpx;
+          height: 16rpx;
+          display: block;
+        }
+      }
+    }
+    .desc{
+      color: #666666;
+      font-size: 28rpx;
+      line-height: 40rpx;
+      margin-top: 16rpx;
+    }
+    .newadd{
+      padding-left: 40rpx;
+      font-size: 48rpx;
+    }
+    .toedit{
+      padding-left: 10rpx;
+      image{
+        width: 32rpx;
+        height: 32rpx;
+        display: block;
+      }
+    }
+    .editbase{
+      margin-right: 6rpx;
+      image{
+        width: 24rpx;
+        height: 24rpx;
+        display: block;
+      }
+    }
+    .annex{
+      height: 136rpx;
+      &_img{
+        width: 24rpx;
+        height: 30rpx;
+        display: block;
+        margin-right: 6rpx;
+      }
+      &_txt{
+        color: #a0a0a0;
+        font-size: 28rpx;
+        view{
+          max-width: 80%;
+        }
+      }
+    }
+    .baseattr{
+      margin-top: 16rpx;
+      font-size: 28rpx;
+      color: #999999;
+      line-height: 1.2;
     }
 </style>
 
 <template>
-  <view class="resume-container">
-      <view class="head">
-        <image mode="aspectFill" src="{{tempPortraitFilePath}}" wx:if="{{headimgStatus}}"></image>
-        <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else="{{headimgStatus}}"></image>
-        <view>{{baseInfo.username}}</view>
+  <view class="container">
+    <!-- 基本信息 S -->
+    <view class="flex alignitems baseinfo bb pb">
+      <view @tap="edititem"  data-url="/pages/personal/base_info?resumeid={{resumeid}}" class="flex1">
+        <view class="flex alignitems">
+          <text>{{baseInfo.username}}</text>
+        </view>
+        <view class="baseinfo_attr flex alignitems" wx:if="{{edit}}">
+          <view class="editbase"><image src="../../images/icons/edit.png"></image></view>
+          <text>我的基本信息</text>
+        </view>
+        <view wx:else>
+          <view class="baseattr">{{baseInfo.address}} <text>|</text>  {{baseInfo.workyears}} <text>|</text>  {{baseInfo.educationbg}} <text>|</text>  {{baseInfo.age}}</view>
+          <view class="baseattr">{{baseInfo.jobstatus}}</view>
+        </view>
       </view>
-      <!-- 基本信息 -->
-      <view class="info-container">
-        <view class="title-container">
-          <view class="title">基本信息<text hidden="{{operateShow}}"> | 必填</text></view>
-          <view class="edit" bindtap="goBaseInfo({{resumeid}})" hidden="{{operateShow}}">编辑</view>
+      <view class="baseinfo_img">
+        <view class="head">
+          <image mode="aspectFill" src="{{baseInfo.headimg}}" wx:if="{{baseInfo.headimg}}"></image>
+          <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else></image>
         </view>
-        <view class="resume-gray-line"></view>
-        <view class="name-container">
-          <view class="name">{{baseInfo.username}}</view>
-          <view hidden="{{sexStatus}}" wx:if="{{resumeid}}">
-            <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
-            <image src="/images/icons/female.png" wx:else="{{sex}}"></image>
+        <view class="sex">
+          <image src="/images/icons/male.png" wx:if="{{sex}}"></image>
+          <image src="/images/icons/female.png" wx:else></image>
+        </view>
+      </view>
+    </view>
+    <!-- 基本信息 E -->
+
+    <!-- 附件 S -->
+    <navigator url="/pages/personal/annex?resumeid={{resumeid}}&name={{baseInfo.fileshowname?baseInfo.fileshowname:''}}&time={{baseInfo.filectime?baseInfo.filectime:''}}" hover-class="none" class="bb flex alignitems annex" wx:if="{{edit}}">
+        <image src="/images/icons/annex.png" class="annex_img"></image>
+        <view class="annex_txt flex1">
+          <view class="ellipsis">{{baseInfo.fileshowname?baseInfo.fileshowname:'上传附件简历'}}</view>
+        </view>
+        <view class="item_edit" wx:if="{{edit}}">
+          <image src="../../images/icons/arrow_right.png"></image>
+        </view>
+    </navigator>
+    <!-- 附件 E -->
+
+    <!-- 联系方式 S -->
+    <view class="bb pb" wx:else>
+      <view class="title flex alignitems">
+        <text>联系方式</text>
+        <navigator wx:if="{{edit}}"  hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2"><image src="../../images/icons/edit.png"></image></navigator>
+      </view>
+      <view class="content">
+        <view class="desc">
+          <view>手机：{{baseInfo.telephone}}</view>
+          <view>邮箱：{{baseInfo.email}}</view>
+        </view>
+
+      </view>
+    </view>
+    <!-- 联系方式 E -->
+
+    <!-- 自我评价 S -->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <text>自我评价</text>
+        <navigator wx:if="{{edit}}"  hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2"><image src="../../images/icons/edit.png"></image></navigator>
+      </view>
+      <view class="content" wx:if="{{jobApply.selfremark}}">
+        <view class="desc">
+          <text>{{jobApply.selfremark}}</text>
+        </view>
+      </view>
+    </view>
+    <!-- 自我评价 E -->
+
+    <!-- 求职意向 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">求职意向</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=1&functions={{jobApply.functions?jobApply.functions:''}}"><image src="../../images/icons/edit.png"></image></navigator>
+      </view>
+      <view class="content" wx:if="{{jobApply.functions}}">
+        <view class="item">
+          <view class="item_tit">
+            {{jobApply.functions}}
+            <text wx:if="{{jobApply.functions}}">|</text> {{jobApply.postids}}
           </view>
-        </view>
-        <view class="small-info">{{baseInfo.livecityid}} <text wx:if="{{baseInfo.livecityid}}">|</text> {{baseInfo.workyears}}</view>
-        <view class="intro-container">
-          <view class="hukou"><view>户口：</view><view class="result">{{baseInfo.address}}</view></view>
-          <view class="hukou"><view>婚姻状况：</view><view class="result">{{baseInfo.marital}}</view></view>
-        </view>
-        <view class="intro-container">
-          <view>手机：</view>
-          <view class="color-word">{{baseInfo.telephone}}</view>
-        </view>
-        <view class="intro-container">
-          <view>邮箱：</view>
-          <view class="color-word">{{baseInfo.email}}</view>
-        </view>
-        <view class="resume-gray-line"></view>
-        <view class="intro-container">
-          <view>工作状态：</view>
-          <view class="color-word">{{baseInfo.jobstatus}}</view>
+          <view class="item_time">
+            {{jobApply.jobnature}}
+            <text wx:if="{{jobApply.jobnature}}">/</text>
+            {{jobApply.sitecity}}
+            <text wx:if="{{jobApply.sitecity}}">/</text>
+            {{jobApply.expectsalarycode}}
+            <text wx:if="{{jobApply.expectsalarycode}}">/</text>
+            {{jobApply.poststime}}
+          </view>
         </view>
       </view>
 
-      <view class="noid">
-        <view wx:if="{{resumeid==''}}" class="noid_mask" @tap="noidtips"></view>
-        <!-- 求职意向 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">求职意向<text hidden="{{operateShow}}"> | 必填</text></view>
-            <view class="edit" bindtap="goJobWant({{resumeid}})" hidden="{{operateShow}}">编辑</view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <view class="intro-container">
-            <view class="color-word">{{jobApply.functions}} <text wx:if="{{jobApply.functions}}">|</text> {{jobApply.postids}}</view>
-          </view>
-          <view class="small-info">{{jobApply.jobnature}} <text wx:if="{{jobApply.jobnature}}">/</text> {{jobApply.sitecity}} <text wx:if="{{jobApply.sitecity}}">/</text> {{jobApply.expectsalarycode}} <text wx:if="{{jobApply.expectsalarycode}}">/</text> {{jobApply.poststime}}</view>
-        </view>
-        <!-- 自我评价 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">自我评价<text hidden="{{operateShow}}"> | 必填</text></view>
-            <view class="edit" bindtap="goJobWant({{resumeid}})" hidden="{{operateShow}}">编辑</view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <view class="intro-container">
-            <view>
-              {{jobApply.selfremark}}
-            </view>
-          </view>
-        </view>
-        <!-- 工作经历 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">工作经历<text hidden="{{operateShow}}"> | 必填</text></view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <repeat for="{{workExper}}" key="index" index="index" item="item">
-            <view class="job-container">
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goWorkExper({{item.workid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
-              </view>
-              <view class="yellow-title"> {{item.corpname}} </view>
-              <view class="small-info">{{item.postcode}}</view>
-              <view class="intro-container">
-                <view>
-                  {{item.workremark}}
-                </view>
-              </view>
-              <view class="resume-gray-line"></view>
-            </view>
-          </repeat>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"></image>
-            <view class="btn-word" bindtap="goWorkExper(undefined,{{resumeid}})">+ 添加工作经历</view>
-          </view>
-        </view>
-        <!-- 教育经历 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">教育经历<text hidden="{{operateShow}}"> | 必填</text></view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <repeat for="{{eduExper}}" key="index" index="index" item="item">
-            <view class="job-container">
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goEduExper({{item.educationid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
-              </view>
-              <view class="yellow-title"> {{item.school}} </view>
-              <view class="intro-container">
-                <view>{{item.specialtyid}} | {{item.educationbg}}</view>
-              </view>
-              <view class="resume-gray-line"></view>
-            </view>
-          </repeat>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"></image>
-            <view class="btn-word" bindtap="goEduExper(undefined,{{resumeid}})">+ 添加教育经历</view>
-          </view>
-        </view>
-        <!-- 项目经验 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">项目经验</view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <repeat for="{{projectExper}}" key="index" index="index" item="item">
-            <view class="job-container">
-              <view class="yellow-title" style="margin-top:12rpx;"> {{item.projectname}} </view>
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goProjectExper({{item.projectid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
-              </view>
-              <view class="intro-container">
-                <view>
-                  {{item.projectremark}}
-                </view>
-              </view>
-              <view class="resume-gray-line"></view>
-            </view>
-          </repeat>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"></image>
-            <view class="btn-word" bindtap="goProjectExper(undefined,{{resumeid}})">+ 添加项目经验</view>
-          </view>
-        </view>
-        <!-- 证书 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">证书</view>
-          </view>
-          <view class="resume-gray-line"></view>
-          <repeat for="{{certificate}}" key="index" index="index" item="item">
-            <view class="job-container">
-              <view class="yellow-title" style="margin-top:12rpx;"> {{item.certname}} </view>
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time">{{item.gaintime}} 颁发</view>
-                <view class="edit" bindtap="goCert({{item.certid}},{{resumeid}})" hidden="{{operateShow}}">编辑</view>
-              </view>
-              <view class="resume-gray-line"></view>
-            </view>
-          </repeat>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"></image>
-            <view class="btn-word" bindtap="goCert(undefined,{{resumeid}})">+ 添加资格证书</view>
-          </view>
-        </view>
+    </view>
+    <!-- 求职意向 E -->
+
+    <!-- 工作经历 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">工作经历</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/work_exper?resumeid={{resumeid}}">+</navigator>
       </view>
-      
+      <view class="content" wx:if="{{workExper.length}}">
+        <repeat for="{{workExper}}" key="index" index="index" item="item">
+          <view class="item">
+            <view @tap="edititem" class="flex alignitems" data-url="/pages/personal/work_exper?workid={{item.workid}}&resumeid={{resumeid}}">
+              <view class="item_tit ellipsis flex1"> {{item.corpname}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"></image>
+              </view>
+            </view>
+            <view class="item_post">{{item.postcode}}</view>
+            <view class="desc">
+              <text>{{item.workremark}}</text>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+    <!-- 工作经历 E-->
+
+    <!-- 教育经历 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">教育经历</view>
+        <navigator wx:if="{{edit}}" hover-class="none" url="/pages/personal/edu_exper?resumeid={{resumeid}}" class="newadd">+</navigator>
+      </view>
+      <view class="content" wx:if="{{eduExper.length}}">
+        <repeat for="{{eduExper}}" key="index" index="index" item="item">
+          <view @tap="edititem" data-url="/pages/personal/edu_exper?educationid={{item.educationid}}&resumeid={{resumeid}}" class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.school}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"></image>
+              </view>
+            </view>
+            <view class="item_post">
+              <view>{{item.specialtyid}} | {{item.educationbg}}</view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+
+    </view>
+    <!-- 教育经历 E-->
+
+    <!-- 项目经验 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">项目经验</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/project_exper?resumeid={{resumeid}}">+</navigator>
+      </view>
+      <view class="content" wx:if="{{projectExper.length}}">
+        <repeat for="{{projectExper}}" key="index" index="index" item="item">
+          <view @tap="edititem" data-url="/pages/personal/project_exper?projectid={{item.projectid}}&resumeid={{resumeid}}" class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.projectname}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"></image>
+              </view>
+            </view>
+            <view class="desc">
+              <text>{{item.projectremark}}</text>
+            </view>
+          </view>
+        </repeat>
+      </view>
+
+    </view>
+    <!-- 项目经验 E-->
+
+    <!-- 证书 S-->
+    <view class="pb">
+      <view class="title flex alignitems">
+        <view class="flex1">证书</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/certificate?resumeid={{resumeid}}">+</navigator>
+      </view>
+      <view class="content" wx:if="{{certificate.length}}">
+        <repeat for="{{certificate}}" key="index" index="index" item="item">
+          <view @tap="edititem" data-url="/pages/personal/certificate?certid={{item.certid}}&resumeid={{resumeid}}"  class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.certname}} </view>
+              <view class="item_time">{{item.gaintime}} 颁发</view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"></image>
+              </view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+    <!-- 证书 E-->
+
   </view>
 </template>
 
@@ -305,10 +329,12 @@ import tip from '../../utils/tip';
 export default class resumePage extends wepy.page {
 
   config = {
-      navigationBarTitleText: '我的简历',
+    navigationBarTitleText: '我的简历',
+    navigationBarBackgroundColor: "#fafafa",
   }
 
   data = {
+    edit:false,
     baseInfo: {},      // 基本信息
     jobApply: {},      // 求职意向
     workExper: {},     // 工作经历
@@ -320,94 +346,37 @@ export default class resumePage extends wepy.page {
     tokenKey: '',
     headimg: '',
     resumeid: '',
-    operateShow: false,
     sexStatus: false,
-    tempPortraitFilePath: '',
-    headimgStatus:false,
   }
 
   onLoad(options) {
+    const that = this;
+    let login = wx.getStorageSync('login')
+    that.token = login.token
+    that.tokenKey = login.tokenKey
+    that.edit = options.edit=='true'
     this.resumeid = options.resumeid;
-    // console.log(this.resumeid)
-    if(options.look=="just"){
-      this.operateShow = true;
-    }else{
-      this.operateShow = false;
+    if(options.resumeid){
+      for (var i = 0; i < 6; i++) {
+        that.getJobInfo(i)
+      }
     }
     this.$apply();
-    const that = this;
-    // 获取登录信息
-    wx.getStorage({
-        key: 'loginData',
-        success: function(res) {
-          that.token = res.data.token;
-          that.tokenKey = res.data.tokenKey;
-          that.headimg = res.data.data.headimg;
-          that.getPimg();
-          that.$apply();
-          // 获取简历信息
-          if(options.resumeid===undefined){
-            return false
-          }
-          for (var i = 0; i < 6; i++) { 
-            that.getJobInfo(i)
-          }
-        },
-        fail:function(json){
-          tip.error(json.data.returnMsg);
-        }
-    })
   }
 
   // 更新
-  update(index,id){
-    // console.log('更新了')
-    if(id){
-      this.resumeid = id
-      this.$apply()
-    }
+  update(index){
     this.getJobInfo(index)
   }
 
   methods = {
-    noidtips(){
-      tip.error('请先完成基本信息编辑');
-    },
-    // 基本信息编辑新增
-    goBaseInfo (resumeid) {
-        wx.navigateTo({
-            url: `base_info?resumeid=${resumeid}`
-        })
-    },
-    // 求职意向
-    goJobWant (resumeid) {
-        wx.navigateTo({
-            url: `job_want?resumeid=${resumeid}`
-        })
-    },
-    // 工作经历
-    goWorkExper (workid, resumeid) {
-        wx.navigateTo({
-            url: `work_exper?workid=${workid}&resumeid=${resumeid}`
-        })
-    },
-    // 教育经历
-    goEduExper (educationid, resumeid) {
-        wx.navigateTo({
-            url: `edu_exper?educationid=${educationid}&resumeid=${resumeid}`
-        })
-    },
-    // 项目经验
-    goProjectExper (projectid, resumeid) {
-        wx.navigateTo({
-            url: `project_exper?projectid=${projectid}&resumeid=${resumeid}`
-        })
-    },
-    // 证书
-    goCert (certid, resumeid) {
-        wx.navigateTo({
-            url: `certificate?certid=${certid}&resumeid=${resumeid}`
-        })
+    edititem(e){
+      let url = e.currentTarget.dataset.url
+      console.log('url',url)
+      if(!this.edit){
+        return false
+      }
+      wx.navigateTo({url})
     }
   };
 
@@ -432,7 +401,10 @@ export default class resumePage extends wepy.page {
     switch (code){
       case "M0003":// 基本信息
           if (json.data.returnCode == "AAAAAAA") {
-            that.baseInfo = JSON.parse(json.data.data);
+            let data = JSON.parse(json.data.data);
+            that.baseInfo = data
+            that.baseInfo.age = that.ages(data.borndate)
+            // console.log(that.age(data.borndate),'年龄')
             that.sex = (that.baseInfo.sex == "男");
             if(!that.baseInfo.sex){
               that.sexStatus = true
@@ -489,6 +461,17 @@ export default class resumePage extends wepy.page {
       }
   }
 
+  ages(str){
+    var r = str.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+    if(r==null)return   false;
+    var d = new Date(r[1],r[3]-1,r[4]);
+    if(d.getFullYear()==r[1]&&(d.getMonth()+1)==r[3]&&d.getDate()==r[4]){
+      var Y = new Date().getFullYear();
+      return (Y-r[1])+'岁'
+    }
+    return("");
+  }
+
   //修改头像
   async changPic(token,tokenKey,imgsrc) {
     const json = await api.getResumeInfo({
@@ -506,33 +489,6 @@ export default class resumePage extends wepy.page {
       }
     })
     return json;
-  }
-  //获取个人信息
-  async getPimg() {
-      const that = this;
-      const json = await api.getPimg({
-        query: {
-          head: {
-              "transcode": "P0040",
-              "type": "h"
-          },
-          data: {
-              "tokenKey": that.tokenKey,
-              "token": that.token,
-          }
-        }
-      })
-      if(json.data.returnCode == 'AAAAAAA') {
-          if(json.data.data.headimg){
-              that.headimgStatus = true;
-          }else{
-              that.headimgStatus = false;
-          }
-          that.tempPortraitFilePath = json.data.data.headimg;
-          that.$apply();
-      }else{
-          tip.error(json.data.returnMsg);
-      }
   }
 }
 </script>

@@ -44,8 +44,8 @@
             <view data-num="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">面试邀约</view>
         </view>
         <view wx:if="{{collectStatus}}">
-            <repeat for="{{collectData}}" key="index" index="index" item="item"> 
-                <commposi :syncPosidata.sync="item"></commposi> 
+            <repeat for="{{collectData}}" key="index" index="index" item="item">
+                <commposi :syncPosidata.sync="item"></commposi>
             </repeat>
         </view>
         <view class="no-collect-container" wx:else="{{collectStatus}}">
@@ -63,7 +63,7 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 import utils from'../../utils/utils';
-import CommPosi from '../../components/commposi2';
+import CommPosi from '../../components/commposi';
 import BottomLoadMore from "../../components/bottomloadmore";
 
 export default class DeliveryPage extends wepy.page {
@@ -86,69 +86,63 @@ export default class DeliveryPage extends wepy.page {
         commposi: CommPosi,
         bottomloadmore: BottomLoadMore
     };
-    onLoad() { 
-        
-        // 获取登录信息
-        const that = this;
-        wx.getStorage({
-            key: 'loginData',
-            success: function(res) {
-                that.token = res.data.token;
-                that.tokenKey = res.data.tokenKey;
-                that.$apply();
-                // 获取已投递职位
-                that.getCollectJob(res.data.token,res.data.tokenKey)
-            } 
-        })
-
+    onLoad() {
+      // 获取登录信息
+      const that = this;
+      let login = wx.getStorageSync('login')
+      that.token = login.token
+      that.tokenKey = login.tokenKey
+      that.$apply()
+      that.getData()
     }
 
     methods = {
-
        // 点击切换投递状态
         menuClick (e) {
             this._num = e.target.dataset.num;
-            this.getCollectJob(this.token, this.tokenKey, this._num);
+            this.getData(this._num);
         }
-
     };
 
-    async getCollectJob(token, tokenKey, status, currentPage) {
+    async getData( status, currentPage) {
         wx.showLoading({
             title: '加载中',
         })
         const that = this;
-        const json = await api.getCollectJob({
+        api.getCollectJob({
             query: {
                 head: {
                     "transcode": "P0004",
                     "type": "h"
                 },
                 data: {
-                    "token": token,
-                    "tokenKey": tokenKey,
+                    "token": that.token,
+                    "tokenKey": that.tokenKey,
                     "type": status || "1",
                     "pageNo": currentPage || "1"
                 }
             }
+        }).then(json=>{
+          wx.hideLoading()
+          if (json.data.returnCode == "AAAAAAA") {
+              that.collectStatus = true;
+              that.collectData = JSON.parse(json.data.data);
+              that.collectData.forEach(element => {
+                  element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
+              });
+              that.totalPage =parseInt(json.data.datanum/ 10);
+              if(that.collectData.length==0){
+                  that.collectStatus = false;
+                  that.warningWord = "暂未查到更多信息";
+              }
+          } else {
+              that.collectStatus = false;
+              that.warningWord = json.data.returnMsg;
+          }
+
+          that.$apply();
         })
-        if (json.data.returnCode == "AAAAAAA") {
-            that.collectStatus = true;
-            that.collectData = JSON.parse(json.data.data);
-            that.collectData.forEach(element => {
-                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
-            });
-            that.totalPage =parseInt(json.data.datanum/ 10);
-            if(that.collectData.length==0){
-                that.collectStatus = false;
-                that.warningWord = "暂未查到更多信息";
-            }
-        } else {
-            that.collectStatus = false;
-            that.warningWord = json.data.returnMsg;
-        }
-        wx.hideLoading()
-        that.$apply();
+
     }
     /**
      * 页面上拉触底事件的处理函数
@@ -164,7 +158,7 @@ export default class DeliveryPage extends wepy.page {
             }
             that.preventRepeatReuqest = true;
             that.currentPage++;
-            that.getCollectJob(that.token, that.tokenKey, that._num,that.currentPage);
+            that.getData(that._num,that.currentPage);
             that.preventRepeatReuqest = false;
         } else {
             that.showLoading = false;

@@ -5,13 +5,12 @@
         padding-top: 20rpx;
         padding-bottom: 24rpx;
         margin: 0 32rpx;
-        border-top: 1rpx solid #F1F1F1;
+        border-bottom: 1rpx solid #F1F1F1;
         .ver {
             margin: 0 12rpx;
         }
         .corp-brief {
-            display: flex;
-            flex-direction: row;
+
             align-items: center;
             .logo {
                 margin-right: 22rpx;
@@ -24,8 +23,6 @@
                 }
             }
             .corp-info {
-                display: flex;
-                flex-direction: column;
                 width: 100%;
                 .corp-name {
                     font-size: 30rpx;
@@ -59,6 +56,7 @@
                     font-weight: bold;
                     font-family: PingFangSC-Medium;
                     color: #353535;
+                    flex: 1;
                 }
                 .posi-sal {
                     color: #FF9E00;
@@ -73,9 +71,7 @@
 </style>
 
 <template>
-  <view class="posi-corp-container"
-        @tap="goToHomeView({{syncPosidata.corpid}}, {{syncPosidata.id}})" 
-  >
+  <view class="posi-corp-container" @tap="goDetails">
     <view class="posi-container">
         <view class="posi-name-sal">
             <text class="posi-name">{{syncPosidata.jobname}}</text>
@@ -83,25 +79,23 @@
         </view>
         <view class="posi-duty">
             <text>{{syncPosidata.jobcity}}</text>
-            <!-- <text class="ver">|</text>
-            <text>{{}}</text> -->
             <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text>
             <text>{{syncPosidata.workyears}}</text>
             <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
             <text>{{syncPosidata.ebid}}</text>
         </view>
     </view>
-      <view class="corp-brief">
+      <view class="corp-brief flex">
           <view class="logo">
               <image mode="aspectFit" src="{{syncPosidata.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : syncPosidata.mlogo}}"></image>
           </view>
-          <view class="corp-info">
-              <text class="corp-name">{{syncPosidata.corpname}}</text>
+          <view class="corp-info flex1">
+              <text class="corp-name ellipsis">{{syncPosidata.corpname}}</text>
               <view class="corp-size-type">
                   <view class="corp-size">
-                    <text>{{syncPosidata.industry}}</text> 
+                    <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text>
                   </view>
-                  <text class="up-date">{{syncPosidata.refreshdate ? syncPosidata.refreshdate : syncPosidata.updatedate}}</text> 
+                  <text class="up-date">{{syncPosidata.refreshdate ? syncPosidata.refreshdate : syncPosidata.updatedate}}</text>
               </view>
           </view>
       </view>
@@ -125,13 +119,16 @@
         }
 
         methods = {
-            goToHomeView(corpid, jobid) {
-                if (jobid.length && corpid.length == 0) {
-                    return;
-                } 
-                wepy.navigateTo({
-                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
-                })
+            goDetails() {
+              let obj = this.syncPosidata
+              let corpid=obj.companyid?obj.companyid:obj.corpid
+              let jobid = obj.id?obj.id:obj.jobid
+              if (jobid.length && corpid.length == 0) {
+                  return;
+              }
+              wepy.navigateTo({
+                  url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`
+              })
             }
         }
     }

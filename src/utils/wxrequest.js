@@ -10,7 +10,21 @@ const wxRequest = (params = {}, url) => {
             data: data,
             header: { 'Content-Type': 'application/json' },
             success: function(res) {
+              console.log('回调',res)
+              if(res.data.returnCode&&res.data.returnCode=="1000009"){
+                wx.removeStorage({
+                  key: 'loginData',
+                  success (res) {
+                    wx.navigateTo({
+                      url: '/pages/login/login'
+                    })
+                  }
+                })
+                wx.removeStorageSync('login')
+              }else{
                 resolve(res)
+              }
+
             },
             fail: function(err){
                 reject(err)

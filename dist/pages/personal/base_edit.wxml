@@ -1,54 +1,64 @@
 
-  <view class="base-edit-container">
-      <form bindsubmit="baseEditSubmit">
-            <view class="portrait-box" catchtap="changePortrait">
-                <image mode="aspectFill"  wx:if="{{showPortraitStatus}}" class="icon-upload" src="{{tempPortraitFilePath}}"/>
-                <image mode="aspectFill"  wx:else="{{showPortraitStatus}}" class="icon-upload" src="/images/icons/upload_head.png"/>
-                <text>点击更换头像（图片大小不宜超过1M）</text>
+  <view class="container form">
+    <!-- <form bindsubmit="baseEditSubmit"> -->
+      <view bindtap="changePortrait">
+        <view class="headimg">
+          <image mode="aspectFill" class="icon-upload"  wx:if="{{form.imgsrc}}" src="{{base64?'data:image/jpg;base64,':''}}{{form.imgsrc}}"/>
+          <image mode="aspectFill" class="icon-upload"  wx:else src="/images/icons/upload_head.png"/>
+        </view>
+        <!-- <text>点击更换头像（图片大小不宜超过1M）</text> -->
+      </view>
+
+      <view class="form_item bb pb">
+        <text class="form_label">姓名</text>
+        <view class="form_content">
+            <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="username" value="{{form.username}}" placeholder="请填写"/>
+        </view>
+      </view>
+      <view class="form_item bb pb">
+        <text class="form_label">性别</text>
+        <picker data-name="sex" data-current="0" value="{{screen[0].index}}" bindchange="pickerChange" range="{{screen[0].list}}">
+          <view class="form_content flex alignitems">
+            <view class="flex1">
+                {{form.sex?form.sex:'请选择'}}
             </view>
-            <view class="list-container">
-                <view class="list-item">
-                    <text class="label">姓名</text>
-                    <view class="input-area">
-                        <input placeholder-class="phcolor" type="text" name="username" value="{{username}}" placeholder="请填写"/>
-                    </view>
-                </view>
-                <view class="list-item">
-                    <text class="label">性别</text>
-                    <picker name="sex" bindchange="bindSexChange" value="{{index}}" range="{{sex}}">
-                        <view class="picker">
-                            <text wx:if="{{sexStatus}}">{{u_sex ? u_sex : "请选择"}}</text>
-                            <text wx:else>{{sex[indexSex]}}</text>
-                        </view>
-                    </picker>
-                </view>
-                <view class="list-item">
-                    <text class="label">邮箱</text>
-                    <view class="input-area">
-                        <input placeholder-class="phcolor" type="text" name="email" value="{{email}}" placeholder="请填写"/>
-                    </view>
-                </view>
-                <view class="list-item">
-                    <text class="label">居住城市</text>
-                    <picker name="livecityid" bindchange="bindLiveCityChange" value="{{index}}" range="{{city}}">
-                        <view class="picker">
-                            <text wx:if="{{livecityStatus}}">{{u_city ? u_city : "请选择"}}</text>
-                            <text wx:else>{{city[indexLiveCity]}}</text>
-                        </view>
-                    </picker>
-                </view>
-                <view class="list-item">
-                    <text class="label">工作年限</text>
-                    <picker name="workyears" bindchange="bindWorkYearsChange" value="{{index}}" range="{{workyears}}">
-                        <view class="picker">
-                            <text wx:if="{{workyearsStatus}}">{{u_workyears ? u_workyears : "请选择"}}</text>
-                            <text wx:else>{{workyears[indexWorkYearsStatus]}}</text>
-                        </view>
-                    </picker>
-                </view>
+            <view class="form_arrow">
+              <image src="../../images/icons/arrow_right.png"/>
             </view>
-            <view class="btn-box">
-                <button class="save-btn" formType="submit">保存</button>
+          </view>
+        </picker>
+      </view>
+      <view class="form_item bb pb">
+          <text class="form_label">期望职位</text>
+          <view class="form_content">
+              <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="jobname" value="{{form.jobname}}" placeholder="请填写"/>
+          </view>
+      </view>
+
+      <view class="form_item bb pb">
+          <text class="form_label">期望行业</text>
+          <picker data-name="postids" data-current="1" value="{{screen[1].index}}" bindchange="pickerChange" range="{{screen[1].list}}">
+            <view class="form_content flex alignitems">
+              <view class="flex1">
+                  {{form.postids?form.postids:'请选择'}}
+              </view>
+              <view class="form_arrow">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
             </view>
-      </form>
+          </picker>
+      </view>
+      <view class="form_item bb pb">
+          <text class="form_label">期望地点</text>
+          <view class="form_content">
+              <input bindinput="inputChange" placeholder-class="phcolor" type="text" data-name="sitecity" value="{{form.sitecity}}" placeholder="请填写"/>
+          </view>
+      </view>
+      <view class="form_btn {{perfect?'skipbtn':''}}">
+        <button class="mainbtn" bindtap="formSubmit">保存</button>
+      </view>
+      <view class="skip" wx:if="{{perfect}}">
+        <text bindtap="skip">跳过</text>
+      </view>
+    <!-- </form> -->
   </view>

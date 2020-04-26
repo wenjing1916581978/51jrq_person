@@ -1,226 +1,217 @@
 <style lang="less">
-  page {
-    background: #F0F1F2;
-    .biggest {
-        background: #fff;
-        border-top: #f1f1f1 solid 1rpx;
-        .block {
-            margin: auto 40rpx;
-            .list_item {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                font-size: 28rpx;
-                color: #888888;
-                height: 80rpx;
-                justify-content: space-between;
-                border-bottom: #f1f1f1 solid 2rpx;
-                .title {
-                    color: #353535;
-                    width: 35%;
-                }
-                .input {
-                    width: 65%;
-                    input {
-                        text-align: right;
-                        color: #888888;
-                    }
-                    .phcolor {
-                        color: #888888;
-                        text-align: right;
-                    }
-                }
-            }
-
-        }
-    }
-    .work-content {
-        height: 80rpx;
-        font-size: 28rpx;
-        line-height: 80rpx;
-        margin-left: 40rpx;
-        color: #b2b2b2;
-    }
-    .big {
-        background: white;
-        .section {
-            margin: auto 40rpx;
-            textarea {
-                padding: 30rpx auto;
-                width: 100%;
-                font-size: 28rpx;
-                color: #888888;
-            }
-        }
-    }
-
-    .btn-box {
-        margin-top: 70rpx;
-        .save-btn{
-            width: 600rpx;
-            height: 64rpx;
-            background: #ff9e00;
-            color: white;
-            text-align: center;
-            line-height: 60rpx;
-            font-size: 36rpx;
-            border-radius: 10rpx;
-        }
-    }
-  }
+@import "../../styles/form.less";
 </style>
 <template>
-  <form bindsubmit="formSubmit">
-    <view class="biggest">
-        <view class="block">
-            <view class="list_item">
-                <view class="title">证书名称</view>
-                <view class="input">
-                    <input placeholder-class="phcolor" type="text" name="certname" value="{{certname}}" placeholder="请填写" />
-                </view>
-            </view>
-            <view class="list_item">
-                <view class="title">获得时间</view>
-                <picker name="gaintime" mode="date" value="{{gaintime}}" bindchange="bindDateChange2">
-                    <view class="picker">
-                        {{gaintime?gaintime:"请选择 >"}}
-                    </view>
-                </picker>
-            </view>
+  <view class="form container">
+
+    <view class="form_item bb">
+        <view class="form_label">证书名称</view>
+        <view class="form_content">
+            <input placeholder-class="phcolor" type="text" data-name="certname" value="{{certname}}" placeholder="请填写" bindinput="inputChange"/>
         </view>
     </view>
-    <view class="btn-box">
-      <button class="save-btn" formType="submit">保存</button>
+    <view class="form_item bb">
+        <view class="form_label">获得时间</view>
+        <picker start="{{start}}" end="{{end}}" name="gaintime" mode="date" value="{{gaintime}}" fields="month" bindchange="bindDateChange2">
+            <view class="form_content flex alignitems">
+                <view class="flex1">{{gaintime?gaintime:"请选择"}}</view>
+                <view class="form_arrow">
+                  <image src="../../images/icons/arrow_right.png"></image>
+                </view>
+            </view>
+        </picker>
     </view>
-  </form>
+
+    <view class="form_btn flex">
+      <button class="delbtn" @tap="del" wx:if="{{certid!=''&&length>1}}">删除</button>
+      <button class="mainbtn flex1" @tap="formSubmit">保存</button>
+    </view>
+  </view>
 </template>
 <script>
   import wepy from 'wepy'
   import api from '../../api/api';
   import tip from '../../utils/tip';
+  import moment from 'moment'
 
   export default class BaseInfo extends wepy.page {
-
     config = {
-        navigationBarTitleText: '证书',
+      navigationBarTitleText: '证书',
+      navigationBarBackgroundColor: "#fafafa",
     }
 
     data = {
-        certname:'',
-        gaintime:'',
-        certid:'',
-        token: "",
-        tokenKey: "",
-        resumeid:''
+      certname:'',
+      gaintime:'',
+      certid:'',
+      token: "",
+      tokenKey: "",
+      resumeid:'',
+      length:0,
+      start:'',
+      end:'',
     }
 
     onLoad(options) {
-        this.certid = options.certid;
-        this.resumeid = options.resumeid;
-        this.$apply();
-        const that = this;
-        // 获取登录信息
-        wx.getStorage({
-            key: 'loginData',
-            success: function(res) {
-                that.token = res.data.token;
-                that.tokenKey = res.data.tokenKey;
-                that.$apply();
-                if(options.resumeid==''){
-                  return false
-                }
-                //获取求职意向
-                that.getJobInfo(that.token,that.tokenKey,that.resumeid).then(json => {
-                    if (json.data.returnCode == "AAAAAAA") {
-                        var jobExper = JSON.parse(json.data.data);
-                        let resultArr = jobExper.find(item => item.certid == options.certid)
-                        that.certname = resultArr.certname;
-                        that.gaintime = resultArr.gaintime;
-                        that.$apply();
-                    } else {
-                        tip.error(json.returnMsg);
-                    }
-                })
-            }
-        })
+      const that = this;
+      let login = wx.getStorageSync('login')
+      that.certid = options.certid || '';
+      that.resumeid = options.resumeid;
+      that.token = login.token
+      that.tokenKey = login.tokenKey
 
+      that.end = moment().format("YYYY-MM")
+      that.start = moment().subtract(30, "years").format("YYYY-MM")
+      that.$apply();
+
+      if(that.certid) that.getData()
 
     }
 
     methods = {
+        del(){
+          this.delExperience()
+        },
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
-            wx.showLoading({
-                title: '加载中',
-            })
-            if(this.certid != "undefined"){
-                e.detail.value.certid = this.certid;
-            }
-            var obj2 = {
-                "token": this.token,
-                "tokenKey": this.tokenKey,
-                "resumeid": this.resumeid
-            }
-            if(!obj2.resumeid){
-                delete obj2['resumeid']
-            }
-            const that = this;
-            this.changeBaseInfo(e.detail.value, obj2).then(data=>{
-                if(data.data && data.data.returnCode == "AAAAAAA") {
-                   let pages = getCurrentPages();
-                    let prevPage = pages[pages.length - 2];
-                    prevPage.update(5)
-                    wx.navigateBack({
-                     delta: 1
-                   })
-                }else{
-                    console.log(data)
-                }
-                wx.hideLoading()
-            })
+          const that = this
+          if(!that.certname){
+            tip.error('证书名称不为空');
+            return false
+          }
+          if(!that.gaintime){
+            tip.error('获取时间不为空');
+            return false
+          }
+
+          let gaintime=that.gaintime
+
+          if(gaintime.indexOf('/')!=-1) gaintime = gaintime.replace(/\//g,"-")
+
+          if(moment(moment().format('YYYY-MM')).diff(moment(gaintime), 'months')<0){
+            tip.error('获得证书时间不能大于当前时间');
+            return false
+          }
+
+          this.changeData()
+        },
+        inputChange(e){
+          const name = e.currentTarget.dataset.name
+          this[name] = e.detail.value;
+          this.$apply();
         },
         bindDateChange1: function(e) {
             this.starttime = e.detail.value;
             this.$apply();
         },
         bindDateChange2: function(e) {
-            this.gaintime = e.detail.value;
+            this.gaintime = e.detail.value.replace(/-/g,"/");
             this.$apply();
         },
     }
 
     //获取证书
-    async getJobInfo(token,tokenKey,resumeid) {
-        const json = await api.getResumeInfo({
+    getData() {
+      const that = this
+      wx.showLoading({
+          title: '加载中',
+      })
+      api.getResumeInfo({
         query: {
-                head: {
-                    "transcode": "M0010",
-                    "type": "h"
-                },
-                data: {
-                    "token": token,
-                    "tokenKey": tokenKey,
-                    "resumeid": resumeid
-                }
+            head: {
+                "transcode": "M0010",
+                "type": "h"
+            },
+            data: {
+                "token": that.token,
+                "tokenKey": that.tokenKey,
+                "resumeid": that.resumeid
             }
+          }
+        }).then(res=>{
+          if (res.data.returnCode == "AAAAAAA") {
+              wx.hideLoading()
+              var jobExper = JSON.parse(res.data.data);
+              that.length = jobExper.length;
+              let resultArr = jobExper.find(item => item.certid == that.certid)
+              that.certname = resultArr.certname;
+              that.gaintime = resultArr.gaintime;
+              that.$apply();
+          } else {
+              tip.error(res.returnMsg);
+          }
         })
-        return json;
+
+    }
+
+    // 删除经历
+    delExperience() {
+      const that = this
+      api.delExperience({
+        query: {
+          head: {
+              "transcode": "M0031",
+              "type": "h"
+          },
+          data: {
+            token: that.token,
+            tokenKey: that.tokenKey,
+            resumeid:that.resumeid,
+            certid:that.certid
+          }
+        }
+      }).then(res=>{
+        if (res.data && res.data.returnCode == "AAAAAAA") {
+          tip.success('删除成功');
+          let pages = getCurrentPages();
+          let prevPage = pages[pages.length - 2];
+          prevPage.update(5)
+          wx.navigateBack({
+           delta: 1
+          })
+        } else {
+            tip.error(res.returnMsg);
+        }
+      }).catch(err=>{
+
+      })
     }
 
     //修改表单数据
-    async changeBaseInfo(obj,obj2) {
-        let data = obj2
-        let resultObj = Object.assign(data, obj);
-        const json = await api.getResumeInfo({
+    async changeData() {
+      const that = this
+      wx.showLoading({
+        title: '加载中',
+      })
+      let obj = {
+        token: that.token,
+        tokenKey: that.tokenKey,
+        resumeid: that.resumeid,
+        gaintime:that.gaintime,
+        certname:that.certname,
+        certid:that.certid
+      }
+      api.getResumeInfo({
         query: {
                 head: {
                     "transcode": "M0020",
                     "type": "h"
                 },
-                data: resultObj
+                data: obj
             }
+        }).then(res=>{
+          if(res.data && res.data.returnCode == "AAAAAAA") {
+             let pages = getCurrentPages();
+              let prevPage = pages[pages.length - 2];
+              prevPage.update(5)
+              wx.navigateBack({
+               delta: 1
+             })
+          }else{
+              console.log(data)
+          }
+          wx.hideLoading()
         })
-        return json;
     }
   }
 </script>

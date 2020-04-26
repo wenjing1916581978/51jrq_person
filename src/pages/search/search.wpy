@@ -154,8 +154,8 @@
             <search @searchFn.user="parentSearchFn"
                     @trShowCityFn.user="parentTrShowCityFn"
                     @trUnderSearchFn.user="parentUnderSearchFn"
-                    :isShowCityName.sync="isShowCityName"
-            ></search>
+                    :isShowCityName.sync="isShowCityName">
+            </search>
             <view class="search-bd">
                 <view class="peo-search" wx:if="{{!isUnderSearch}}">
                     <view class="wx-title">
@@ -163,12 +163,9 @@
                         <text>大家都在搜</text>
                     </view>
                     <view class="badges-container">
-                        <block wx:for="{{peoSearch}}" wx:for-index="index" wx:for-item="item">
-                            <text class="weui-badge"
-                                  data-peo-badge="{{item}}"
-                                  @tap="selPeoBadgeFn"
-                            >{{item}}</text>
-                        </block>
+                        <repeat for="{{peoSearch}}" key="item" index="index">
+                          <text class="weui-badge" data-peo-badge="{{item}}" @tap="selPeoBadgeFn">{{item}}</text>
+                        </repeat>
                     </view>
                 </view>
                 <view class="his-search" wx:if="{{!isUnderSearch}}">

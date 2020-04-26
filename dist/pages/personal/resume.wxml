@@ -1,169 +1,200 @@
 
-  <view class="resume-container">
-      <view class="head">
-        <image mode="aspectFill" src="{{tempPortraitFilePath}}"  wx:if="{{headimgStatus}}"/>
-        <image mode="aspectFill" src="/images/icons/upload_head.png"  wx:else="{{headimgStatus}}"/>
-        <view>{{baseInfo.username}}</view>
+  <view class="container">
+    <!-- 基本信息 S -->
+    <view class="flex alignitems baseinfo bb pb">
+      <view bindtap="edititem" data-url="/pages/personal/base_info?resumeid={{resumeid}}" class="flex1">
+        <view class="flex alignitems">
+          <text>{{baseInfo.username}}</text>
+        </view>
+        <view class="baseinfo_attr flex alignitems"  wx:if="{{edit}}">
+          <view class="editbase"><image src="../../images/icons/edit.png"/></view>
+          <text>我的基本信息</text>
+        </view>
+        <view  wx:else>
+          <view class="baseattr">{{baseInfo.address}} <text>|</text>  {{baseInfo.workyears}} <text>|</text>  {{baseInfo.educationbg}} <text>|</text>  {{baseInfo.age}}</view>
+          <view class="baseattr">{{baseInfo.jobstatus}}</view>
+        </view>
       </view>
-      <!-- 基本信息 -->
-      <view class="info-container">
-        <view class="title-container">
-          <view class="title">基本信息<text hidden="{{operateShow}}"> | 必填</text></view>
-          <view class="edit" bindtap="goBaseInfo" hidden="{{operateShow}}" data-wpygobaseinfo-a="{{resumeid}}">编辑</view>
+      <view class="baseinfo_img">
+        <view class="head">
+          <image mode="aspectFill" src="{{baseInfo.headimg}}" wx:if="{{baseInfo.headimg}}"/>
+          <image mode="aspectFill" src="/images/icons/upload_head.png" wx:else/>
         </view>
-        <view class="resume-gray-line"/>
-        <view class="name-container">
-          <view class="name">{{baseInfo.username}}</view>
-          <view hidden="{{sexStatus}}" wx:if="{{resumeid}}">
-            <image src="/images/icons/male.png" wx:if="{{sex}}"/>
-            <image src="/images/icons/female.png" wx:else="{{sex}}"/>
+        <view class="sex">
+          <image src="/images/icons/male.png" wx:if="{{sex}}"/>
+          <image src="/images/icons/female.png" wx:else/>
+        </view>
+      </view>
+    </view>
+    <!-- 基本信息 E -->
+
+    <!-- 附件 S -->
+    <navigator url="/pages/personal/annex?resumeid={{resumeid}}&name={{baseInfo.fileshowname?baseInfo.fileshowname:''}}&time={{baseInfo.filectime?baseInfo.filectime:''}}" hover-class="none" class="bb flex alignitems annex" wx:if="{{edit}}">
+        <image src="/images/icons/annex.png" class="annex_img"/>
+        <view class="annex_txt flex1">
+          <view class="ellipsis">{{baseInfo.fileshowname?baseInfo.fileshowname:'上传附件简历'}}</view>
+        </view>
+        <view class="item_edit" wx:if="{{edit}}">
+          <image src="../../images/icons/arrow_right.png"/>
+        </view>
+    </navigator>
+    <!-- 附件 E -->
+
+    <!-- 联系方式 S -->
+    <view class="bb pb" wx:else>
+      <view class="title flex alignitems">
+        <text>联系方式</text>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2"><image src="../../images/icons/edit.png"/></navigator>
+      </view>
+      <view class="content">
+        <view class="desc">
+          <view>手机：{{baseInfo.telephone}}</view>
+          <view>邮箱：{{baseInfo.email}}</view>
+        </view>
+
+      </view>
+    </view>
+    <!-- 联系方式 E -->
+
+    <!-- 自我评价 S -->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <text>自我评价</text>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2"><image src="../../images/icons/edit.png"/></navigator>
+      </view>
+      <view class="content" wx:if="{{jobApply.selfremark}}">
+        <view class="desc">
+          <text>{{jobApply.selfremark}}</text>
+        </view>
+      </view>
+    </view>
+    <!-- 自我评价 E -->
+
+    <!-- 求职意向 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">求职意向</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=1&functions={{jobApply.functions?jobApply.functions:''}}"><image src="../../images/icons/edit.png"/></navigator>
+      </view>
+      <view class="content" wx:if="{{jobApply.functions}}">
+        <view class="item">
+          <view class="item_tit">
+            {{jobApply.functions}}
+            <text wx:if="{{jobApply.functions}}">|</text> {{jobApply.postids}}
           </view>
-        </view>
-        <view class="small-info">{{baseInfo.livecityid}} <text wx:if="{{baseInfo.livecityid}}">|</text> {{baseInfo.workyears}}</view>
-        <view class="intro-container">
-          <view class="hukou"><view>户口：</view><view class="result">{{baseInfo.address}}</view></view>
-          <view class="hukou"><view>婚姻状况：</view><view class="result">{{baseInfo.marital}}</view></view>
-        </view>
-        <view class="intro-container">
-          <view>手机：</view>
-          <view class="color-word">{{baseInfo.telephone}}</view>
-        </view>
-        <view class="intro-container">
-          <view>邮箱：</view>
-          <view class="color-word">{{baseInfo.email}}</view>
-        </view>
-        <view class="resume-gray-line"/>
-        <view class="intro-container">
-          <view>工作状态：</view>
-          <view class="color-word">{{baseInfo.jobstatus}}</view>
+          <view class="item_time">
+            {{jobApply.jobnature}}
+            <text wx:if="{{jobApply.jobnature}}">/</text>
+            {{jobApply.sitecity}}
+            <text wx:if="{{jobApply.sitecity}}">/</text>
+            {{jobApply.expectsalarycode}}
+            <text wx:if="{{jobApply.expectsalarycode}}">/</text>
+            {{jobApply.poststime}}
+          </view>
         </view>
       </view>
 
-      <view class="noid">
-        <view wx:if="{{resumeid==''}}" class="noid_mask" bindtap="noidtips"/>
-        <!-- 求职意向 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">求职意向<text hidden="{{operateShow}}"> | 必填</text></view>
-            <view class="edit" bindtap="goJobWant" hidden="{{operateShow}}" data-wpygojobwant-a="{{resumeid}}">编辑</view>
-          </view>
-          <view class="resume-gray-line"/>
-          <view class="intro-container">
-            <view class="color-word">{{jobApply.functions}} <text wx:if="{{jobApply.functions}}">|</text> {{jobApply.postids}}</view>
-          </view>
-          <view class="small-info">{{jobApply.jobnature}} <text wx:if="{{jobApply.jobnature}}">/</text> {{jobApply.sitecity}} <text wx:if="{{jobApply.sitecity}}">/</text> {{jobApply.expectsalarycode}} <text wx:if="{{jobApply.expectsalarycode}}">/</text> {{jobApply.poststime}}</view>
-        </view>
-        <!-- 自我评价 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">自我评价<text hidden="{{operateShow}}"> | 必填</text></view>
-            <view class="edit" bindtap="goJobWant" hidden="{{operateShow}}" data-wpygojobwant-a="{{resumeid}}">编辑</view>
-          </view>
-          <view class="resume-gray-line"/>
-          <view class="intro-container">
-            <view>
-              {{jobApply.selfremark}}
-            </view>
-          </view>
-        </view>
-        <!-- 工作经历 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">工作经历<text hidden="{{operateShow}}"> | 必填</text></view>
-          </view>
-          <view class="resume-gray-line"/>
-          <block wx:for="{{workExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-            <view class="job-container">
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goWorkExper" hidden="{{operateShow}}" data-wpygoworkexper-a="{{item.workid}}" data-wpygoworkexper-b="{{resumeid}}">编辑</view>
-              </view>
-              <view class="yellow-title"> {{item.corpname}} </view>
-              <view class="small-info">{{item.postcode}}</view>
-              <view class="intro-container">
-                <view>
-                  {{item.workremark}}
-                </view>
-              </view>
-              <view class="resume-gray-line"/>
-            </view>
-          </block>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"/>
-            <view class="btn-word" bindtap="goWorkExper" data-wpygoworkexper-a="undefined" data-wpygoworkexper-b="{{resumeid}}">+ 添加工作经历</view>
-          </view>
-        </view>
-        <!-- 教育经历 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">教育经历<text hidden="{{operateShow}}"> | 必填</text></view>
-          </view>
-          <view class="resume-gray-line"/>
-          <block wx:for="{{eduExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-            <view class="job-container">
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goEduExper" hidden="{{operateShow}}" data-wpygoeduexper-a="{{item.educationid}}" data-wpygoeduexper-b="{{resumeid}}">编辑</view>
-              </view>
-              <view class="yellow-title"> {{item.school}} </view>
-              <view class="intro-container">
-                <view>{{item.specialtyid}} | {{item.educationbg}}</view>
-              </view>
-              <view class="resume-gray-line"/>
-            </view>
-          </block>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"/>
-            <view class="btn-word" bindtap="goEduExper" data-wpygoeduexper-a="undefined" data-wpygoeduexper-b="{{resumeid}}">+ 添加教育经历</view>
-          </view>
-        </view>
-        <!-- 项目经验 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">项目经验</view>
-          </view>
-          <view class="resume-gray-line"/>
-          <block wx:for="{{projectExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-            <view class="job-container">
-              <view class="yellow-title" style="margin-top:12rpx;"> {{item.projectname}} </view>
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time"> {{item.starttime}} - {{item.endtime}} </view>
-                <view class="edit" bindtap="goProjectExper" hidden="{{operateShow}}" data-wpygoprojectexper-a="{{item.projectid}}" data-wpygoprojectexper-b="{{resumeid}}">编辑</view>
-              </view>
-              <view class="intro-container">
-                <view>
-                  {{item.projectremark}}
-                </view>
-              </view>
-              <view class="resume-gray-line"/>
-            </view>
-          </block>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"/>
-            <view class="btn-word" bindtap="goProjectExper" data-wpygoprojectexper-a="undefined" data-wpygoprojectexper-b="{{resumeid}}">+ 添加项目经验</view>
-          </view>
-        </view>
-        <!-- 证书 -->
-        <view class="info-container">
-          <view class="title-container">
-            <view class="title">证书</view>
-          </view>
-          <view class="resume-gray-line"/>
-          <block wx:for="{{certificate}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-            <view class="job-container">
-              <view class="yellow-title" style="margin-top:12rpx;"> {{item.certname}} </view>
-              <view class="intro-container" style="justify-content:space-between">
-                <view class="time">{{item.gaintime}} 颁发</view>
-                <view class="edit" bindtap="goCert" hidden="{{operateShow}}" data-wpygocert-a="{{item.certid}}" data-wpygocert-b="{{resumeid}}">编辑</view>
-              </view>
-              <view class="resume-gray-line"/>
-            </view>
-          </block>
-          <view class="add-btn" hidden="{{operateShow}}">
-            <image src="/images/icons/long_btn.png"/>
-            <view class="btn-word" bindtap="goCert" data-wpygocert-a="undefined" data-wpygocert-b="{{resumeid}}">+ 添加资格证书</view>
-          </view>
-        </view>
+    </view>
+    <!-- 求职意向 E -->
+
+    <!-- 工作经历 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">工作经历</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/work_exper?resumeid={{resumeid}}">+</navigator>
       </view>
-      
+      <view class="content" wx:if="{{workExper.length}}">
+        <block wx:for="{{workExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <view class="item">
+            <view bindtap="edititem" class="flex alignitems" data-url="/pages/personal/work_exper?workid={{item.workid}}&resumeid={{resumeid}}">
+              <view class="item_tit ellipsis flex1"> {{item.corpname}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
+            </view>
+            <view class="item_post">{{item.postcode}}</view>
+            <view class="desc">
+              <text>{{item.workremark}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <!-- 工作经历 E-->
+
+    <!-- 教育经历 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">教育经历</view>
+        <navigator wx:if="{{edit}}" hover-class="none" url="/pages/personal/edu_exper?resumeid={{resumeid}}" class="newadd">+</navigator>
+      </view>
+      <view class="content" wx:if="{{eduExper.length}}">
+        <block wx:for="{{eduExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <view bindtap="edititem" data-url="/pages/personal/edu_exper?educationid={{item.educationid}}&resumeid={{resumeid}}" class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.school}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
+            </view>
+            <view class="item_post">
+              <view>{{item.specialtyid}} | {{item.educationbg}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+
+    </view>
+    <!-- 教育经历 E-->
+
+    <!-- 项目经验 S-->
+    <view class="bb pb">
+      <view class="title flex alignitems">
+        <view class="flex1">项目经验</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/project_exper?resumeid={{resumeid}}">+</navigator>
+      </view>
+      <view class="content" wx:if="{{projectExper.length}}">
+        <block wx:for="{{projectExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <view bindtap="edititem" data-url="/pages/personal/project_exper?projectid={{item.projectid}}&resumeid={{resumeid}}" class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.projectname}} </view>
+              <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
+            </view>
+            <view class="desc">
+              <text>{{item.projectremark}}</text>
+            </view>
+          </view>
+        </block>
+      </view>
+
+    </view>
+    <!-- 项目经验 E-->
+
+    <!-- 证书 S-->
+    <view class="pb">
+      <view class="title flex alignitems">
+        <view class="flex1">证书</view>
+        <navigator wx:if="{{edit}}" hover-class="none" class="newadd" url="/pages/personal/certificate?resumeid={{resumeid}}">+</navigator>
+      </view>
+      <view class="content" wx:if="{{certificate.length}}">
+        <block wx:for="{{certificate}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+          <view bindtap="edititem" data-url="/pages/personal/certificate?certid={{item.certid}}&resumeid={{resumeid}}" class="item">
+            <view class="flex alignitems">
+              <view class="item_tit flex1 ellipsis"> {{item.certname}} </view>
+              <view class="item_time">{{item.gaintime}} 颁发</view>
+              <view class="item_edit" wx:if="{{edit}}">
+                <image src="../../images/icons/arrow_right.png"/>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <!-- 证书 E-->
+
   </view>

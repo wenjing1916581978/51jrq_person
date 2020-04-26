@@ -40,7 +40,8 @@
 </style>
 
 <template>
-    <block wx:if='{{regions.length > 0}}' wx:for='{{regions}}' wx:for-index="index" wx:for-item="item">
+    <block wx:if='{{regions.length > 0}}'>
+      <repeat for='{{regions}}' index="index" key="item">
         <view class="cities-header">{{item.nameStr}}</view>
         <view class="cities-list">
             <view wx:for='{{item.cityList}}'
@@ -51,6 +52,7 @@
                     @tap='selectCityFn'
             >{{cityName}}</view>
         </view>
+      </repeat>
     </block>
 </template>
 

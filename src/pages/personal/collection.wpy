@@ -1,6 +1,6 @@
 <style lang='scss'>
     .collection-container{
-        padding: 0 32rpx;
+        // padding: 0 32rpx;
     }
     .no-collect-container {
         display: flex;
@@ -22,16 +22,16 @@
 
 <template>
     <view>
-        <view class="collection-container" wx:if="{{collectStatus}}">
-            <repeat for="{{collectData}}" key="index" index="index" item="item"> 
-                <commposi :syncPosidata.sync="item"></commposi> 
-            </repeat>
-        </view>
-        <view class="no-collect-container" wx:else="{{collectStatus}}">
-            <image src="/images/icons/no_collection.png"></image>
-            <view>{{warningWord}}</view>
-        </view>
-    </view>
+        <block wx:if="{{list.length}}">
+          <repeat for="{{list}}" key="index" index="index" item="item">
+              <commposi :syncPosidata.sync="item"></commposi>
+          </repeat>
+        </block>
+        <view class="no-collect-container" wx:else>
+            <image src="/images/icons_collection.png"></image>
+            <view>{{warningWord}}<iew>
+        <iew>
+    <iew>
 </template>
 
 <script>
@@ -40,76 +40,87 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 import utils from'../../utils/utils';
-import CommPosi from '../../components/commposi2';
+import CommPosi from '../../components/commposi';
 
 export default class CollectionPage extends wepy.page {
     config = {
         navigationBarTitleText: '我的收藏',
     }
     data = {
-        collectStatus: false,
-        warningWord: "",
-        collectData: [],
-        token:'',
-        tokenKey:''
+      warningWord: "",
+      list: [],
+      token:'',
+      tokenKey:'',
+      page:1,
+      noMoreData: false,
+      isLoading: false ,
     }
 
     components = {
-        commposi: CommPosi 
+        commposi: CommPosi
     };
-    onLoad() { 
-
-        // 获取收藏职位
-        this.getCollectJob()
-
+    onLoad() {
         // 获取登录信息
         const that = this;
-        wx.getStorage({
-            key: 'loginData',
-            success: function(res) {
-                that.token = res.data.token;
-                that.tokenKey = res.data.tokenKey;
-                that.$apply();
-                that.getCollectJob(res.data.token,res.data.tokenKey)
-            } 
-        })
+        let login = wx.getStorageSync('login')
+        that.token = login.token
+        that.tokenKey = login.tokenKey
+        that.$apply()
+        this.getList()
     }
 
-    async getCollectJob(token,tokenKey,currentPage) {
+    async onReachBottom () {
+      const that = this
+      console.log('onReachBottom','上拉触底')
+      if (that.noMoreData || that.isLoading) {
+        return
+      }
+      that.isLoading = true
+      that.page = that.page + 1
+      that.$apply()
+      await that.getList()
+      that.isLoading = false
+      that.$apply()
+    }
+
+
+    async getList() {
         wx.showLoading({
             title: '加载中',
         })
         const that = this;
-        const json = await api.getCollectJob({
+        api.getCollectJob({
             query: {
                 head: {
                     "transcode": "P0003",
                     "type": "h"
                 },
                 data: {
-                    "token": token,
-                    "tokenKey": tokenKey,
-                    "pageNo": currentPage || "1"
+                    "token": that.token,
+                    "tokenKey": that.tokenKey,
+                    "pageNo": that.page || "1"
                 }
             }
-        })
-        if (json.data.returnCode == "AAAAAAA") {
-            that.collectStatus = true;
-            that.collectData = JSON.parse(json.data.data);
-            that.collectData.forEach(element => {
-                element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
-            });
-            if(that.collectData.length==0){
-                that.collectStatus = false;
-                that.warningWord = "还没有收藏过职位哦";
+        }).then(res=>{
+          wx.hideLoading()
+          if (res.data.returnCode == "AAAAAAA") {
+
+            if(that.page>=Math.ceil(res.data.datanum/10)){
+              that.noMoreData = true
             }
-            that.$apply();
-        } else {
-            that.collectStatus = false;
-            that.warningWord = json.data.returnMsg;
-            that.$apply();
-        }
-        wx.hideLoading() 
+            let list = JSON.parse(res.data.data);
+            list = list.map(obj=>{
+              obj.refreshdate = utils.date('Y-m-d',(obj.refreshdate)/1000)
+              return obj
+            })
+            console.log('列表数据',list)
+            that.list = that.page==1?list:that.list.concat(list)
+            that.$apply()
+          } else {
+              that.warningWord = res.data.returnMsg;
+              that.$apply();
+          }
+        })
     }
 }
 </script>

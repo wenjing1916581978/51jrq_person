@@ -76,7 +76,7 @@
         }
     }
 }
-    
+
 </style>
 
 <template>
@@ -101,8 +101,8 @@
             </view>
         </view>
     </view>
-        
-    
+
+
 </template>
 
 <script>
@@ -210,12 +210,12 @@
             const json = await api.getCompanyjob({
                 query: {
                     head: {
-                        "transcode": "Q0003", 
+                        "transcode": "Q0003",
                         "type": "h"
                     },
                     data: {
                         "token": that.loginInfo.token,
-                        "tokenKey": that.loginInfo.tokenKey, 
+                        "tokenKey": that.loginInfo.tokenKey,
                         "jobid": jobid,
                         "resumeid": resumeid
                     }
@@ -223,13 +223,9 @@
             })
             if (json.data.returnCode == "AAAAAAA") {
                 console.log(percent)
-                if(percent < 70) {
-                    tip.error("请完善您的简历");
-                } else {
-                    that.isDelivery = !that.isDelivery;
-                    tip.success("投递成功");
-                    that.$apply();
-                }
+                that.isDelivery = !that.isDelivery;
+                tip.success("投递成功");
+                that.$apply();
             } else {
                 tip.error(json.data.returnMsg);
             }
@@ -237,5 +233,3 @@
         }
     }
 </script>
-
-

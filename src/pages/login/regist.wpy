@@ -152,23 +152,24 @@ export default class RegistPage extends wepy.page {
                 title: '注册中',
             })
             const that = this;
+            let phone = e.detail.value.phone
+            let pass = code.hex_md5(e.detail.value.password)
             let data = {
-                "phone": e.detail.value.phone,
+                "phone":phone,
                 "verifycode": e.detail.value.verifycode,
-                "password": code.hex_md5(e.detail.value.password)
+                "password": pass
             }
             this.getCode(data,"R0001").then(data=>{
                 if(data.data.returnCode == "AAAAAAA") {
                     tip.success("操作成功");
                     // 跳转到登录页
-                    wx.navigateTo({
-                        url: 'login'
-                    });
+                    that.login(phone,pass)
                 }else{
+                    wx.hideLoading()
                     that.warnword = data.data.returnMsg;
                     that.$apply();
                 }
-                wx.hideLoading()
+
             })
         },
         // 设置密码
@@ -219,6 +220,55 @@ export default class RegistPage extends wepy.page {
         })
         return json;
     }
+
+
+    // 登录
+    login(phone,pass){
+      const that = this
+      console.log('进入到登录界面')
+      api.loginIn({
+       query: {
+               head: {
+                   "transcode": "D0001",
+                   "type": "h"
+               },
+               data: {
+                 "username": phone,
+                 "passwd":pass,
+                 "loginType":'1',
+                 "vcode":'',
+                 "deviceToken":'',
+               }
+           }
+       }).then(res=>{
+         let json = res.data
+           wx.hideLoading()
+           if(json.returnCode == "AAAAAAA") {
+               wx.setStorage({
+                   key:'loginData',
+                   data:json
+               });
+               wx.setStorageSync('login',json)
+
+               if(json.data.userstatus==1){
+                 wx.switchTab({
+                     url: '/pages/personal/personal'
+                 });
+               }else{
+                 wx.navigateTo({
+                     url: '/pages/personal/base_edit?perfect=true'
+                 });
+               }
+           }else{
+               tip.error(json.returnMsg);
+               that.$apply();
+           }
+       }).catch(err=>{
+
+       })
+
+    }
+
     counttime(){
         const that = this
         var countdown = 60;

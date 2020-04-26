@@ -1,59 +1,42 @@
 
-    <view>
-        <view class="collection-container"  wx:if="{{collectStatus}}">
-            <block wx:for="{{collectData}}" wx:for-index="index" wx:for-item="item" wx:key="index"> 
-                
-    <view class="biggest">
-        <view class="posi-corp-container" bindtap="$commposi$goProcessView" data-com-index="{{index}}" data-wpygoprocessview-a="{{item.companyid}}" data-wpygoprocessview-b="{{item.jobid}}" data-wpygoprocessview-c="{{item.applyid}}">
-            <view class="posi-container">
-                <view class="posi-name-sal">
-                    <text class="posi-name">{{item.jobname}}</text>
-                    <text class="posi-sal {{item.status == 4?'posi-sal2':''}}">{{ item.status == 4 ? '已结束' : item.salary }}</text>
-                </view>
-                <view class="posi-duty">
-                    <text>{{item.jobcity}}</text>
-                    <!-- <text class="ver">|</text>
-                    <text>{{}}</text> -->
-                    <!-- <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text> -->
-                    <!-- <text>{{syncPosidata.workyears}}</text> -->
-                    <text class="ver"  wx:if="{{item.ebid}}">|</text>
-                    <text>{{item.ebid}}</text>
-                </view>
-            </view>
-            <view class="corp-brief">
-                <view class="logo">
-                    <image mode="aspectFit" src="{{item.mlogo ? item.mlogo : '/images/icons/upload_head.png'}}"/>
-                </view>
-                <view class="corp-info">
-                    <text class="corp-name">{{item.corpname}}</text>
-                    <view class="corp-size-type">
-                        <view class="corp-size">
-                        <text>{{item.industry?item.industry:'暂无'}}</text> 
-                        </view>
-                        <text class="up-date">{{item.createdate?item.createdate:'暂无'}}</text> 
-                    </view>
-                </view>
-            </view>
+    <view/>
+        <block  wx:if="{{list.length}}">
+          <block wx:for="{{list}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+              
+  <view class="posi-corp-container" bindtap="$commposi$goDetails" data-com-index="{{index}}">
+    <view class="posi-container">
+        <view class="posi-name-sal">
+            <text class="posi-name">{{item.jobname}}</text>
+            <text class="posi-sal">{{item.salary}}</text>
         </view>
-        <block wx:for="{{$commposi$processList}}" wx:for-index="$commposi$index" wx:for-item="$commposi$item" wx:key="$commposi$index">
-            <view class="status-box {{item.applyid == $commposi$applyid?'':'box-status'}}">
-                <view class="circle {{$commposi$index == 0?'cir2':''}}"/>
-                <view class="content-box">
-                    <view class="up">{{$commposi$item.msg}}</view>
-                    <view class="down">{{$commposi$item.data}}</view>
-                </view>
-            </view>
+        <view class="posi-duty">
+            <text>{{item.jobcity}}</text>
+            <text class="ver"  wx:if="{{item.workyears}}">|</text>
+            <text>{{item.workyears}}</text>
+            <text class="ver"  wx:if="{{item.ebid}}">|</text>
+            <text>{{item.ebid}}</text>
+        </view>
+    </view>
+      <view class="corp-brief flex">
+          <view class="logo">
+              <image mode="aspectFit" src="{{item.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : item.mlogo}}"/>
+          </view>
+          <view class="corp-info flex1">
+              <text class="corp-name ellipsis">{{item.corpname}}</text>
+              <view class="corp-size-type">
+                  <view class="corp-size">
+                    <text>{{item.industry?item.industry:'暂无'}}</text>
+                  </view>
+                  <text class="up-date">{{item.refreshdate ? item.refreshdate : item.updatedate}}</text>
+              </view>
+          </view>
+      </view>
+  </view>
+
+          </block>
         </block>
-        <view class="see-view {{item.applyid == $commposi$applyid?'':'box-status'}}" bindtap="$commposi$goToHomeView" data-com-index="{{index}}" data-wpygotohomeview-a="{{item.companyid}}" data-wpygotohomeview-b="{{item.jobid}}">
-            <image class="btn" src="/images/icons/long_btn.png"/>
-            <view>查看职位详情</view>
-        </view>
-    </view>
- 
-            </block>
-        </view>
-        <view class="no-collect-container"  wx:else="{{collectStatus}}">
-            <image src="/images/icons/no_collection.png"/>
-            <view>{{warningWord}}</view>
-        </view>
-    </view>
+        <view class="no-collect-container"  wx:else/>
+            <image src="/images/icons_collection.png"/>
+            <view/>{{warningWord}}<iew/>
+        <iew/>
+    <iew/>

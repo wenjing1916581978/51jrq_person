@@ -1,3 +1,3 @@
 @import "./../../components/bottomloadmore.wxss";
-@import "./../../components/commposi2.wxss";
+@import "./../../components/commposi.wxss";
 .collection-container .operate-container{padding:0 32rpx;display:flex;flex-direction:row;justify-content:space-around;border-bottom:2rpx solid #e1e1e1}.collection-container .operate-container .operate-btn{font-size:28rpx;padding:30rpx}.collection-container .operate-container .operate-btn-active{border-bottom:6rpx solid #FF9E00;color:#FF9E00}.collection-container .no-collect-container{padding:0 32rpx;display:flex;flex-direction:column;justify-content:center;height:800rpx;align-items:center}.collection-container .no-collect-container image{width:176rpx;height:220rpx}.collection-container .no-collect-container view{color:#A0A0A0;font-size:28rpx;margin-top:30rpx}

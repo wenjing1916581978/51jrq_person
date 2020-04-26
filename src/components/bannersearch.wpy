@@ -20,16 +20,16 @@
         flex-direction: row;
         align-items: center;
         margin: 0 auto;
-        padding: 12rpx 80rpx;
+        padding: 20rpx 80rpx;
         background-color: rgba(250, 250, 250, 0.4);
-        border-radius: 12rpx;
+        border-radius: 50rpx;
     }
     .search-img {
         margin-right: 12rpx;
     }
     .hint-text {
         width: 100%;
-        font-size: 24rpx;
+        font-size: 28rpx;
         color: #ffffff;
     }
  }

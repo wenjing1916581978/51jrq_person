@@ -2,9 +2,11 @@ import {
     wxRequest
 } from '../utils/wxrequest';
 
-// const apimall = 'http://192.168.1.251:8089/mobile';
-const apimall = 'https://m.51jrq.com/mobile2';
-const apiGps = 'https://apis.map.qq.com/ws/geocoder/v1';
+// const apimall = 'http://192.168.1.242:8080/mobile';
+const apimall = 'http://192.168.1.251:8089/mobile';
+
+// const apimall = 'https://m.51jrq.com/mobile';
+// const apiGps = 'https://apis.map.qq.com/ws/geocoder/v1';
 
 //得到首页banner图片列表
 const getMobileHomeBanner = (params) => wxRequest(params, apimall + '/api/ad_show/getMobileHomeBanner');
@@ -63,6 +65,13 @@ const  getProcessView = (params) => wxRequest(params, apimall + '/api/ai/deliver
 // 简历投递流程
 const  getLoginCode = (params) => wxRequest(params, apimall + '/api/sendVerificationCode');
 
+// 删除工作简历
+const  delExperience = (params) => wxRequest(params, apimall + '/api/my');
+
+// 附件简历预览
+const  rfile = (params) => wxRequest(params, apimall + '/api/rfile');
+
+
 module.exports = {
     apimall,
     getMobileHomeBanner,
@@ -83,5 +92,7 @@ module.exports = {
     changeHeadImg,
     resetPassword,
     getProcessView,
-    getLoginCode
+    getLoginCode,
+    delExperience,
+    rfile
 }
