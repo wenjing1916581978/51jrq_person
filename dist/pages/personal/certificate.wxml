@@ -20,7 +20,10 @@
     </view>
 
     <view class="form_btn flex">
-      <button class="delbtn" bindtap="del"  wx:if="{{certid!=''&&length>1}}">删除</button>
+      <button class="delbtn" bindtap="toggleM"  wx:if="{{certid!=''&&length>1}}">删除</button>
       <button class="mainbtn flex1" bindtap="formSubmit">保存</button>
     </view>
+    <i-modal title="删除" visible="{{ visible }}"  bind:ok="handleOk" bind:cancel="toggleM">
+      <view>是否确认删除？</view>
+    </i-modal>
   </view>

@@ -1,1 +1,73 @@
-{"pages":["pages/home/home","pages/home/url","pages/personal/delivery","pages/login/forgot","pages/index/index","pages/personal/import_resume","pages/login/login","pages/login/regist","pages/personal/personal","pages/personal/base_edit","pages/personal/resume_list","pages/personal/resume","pages/personal/annex","pages/personal/annexdetails","pages/personal/annexname","pages/personal/edu_exper","pages/personal/certificate","pages/personal/base_info","pages/personal/job_want","pages/personal/work_exper","pages/personal/project_exper","pages/search/search","pages/personal/collection","pages/home/homeview","pages/corporation/corporation","pages/corporation/corpview","pages/salary/salary"],"window":{"backgroundTextStyle":"light","navigationBarBackgroundColor":"#fff","navigationBarTitleText":"51金融圈","navigationBarTextStyle":"black","enablePullDownRefresh":true},"tabBar":{"color":"#a0a0a0","selectedColor":"#FFA315","backgroundColor":"#ffffff","list":[{"pagePath":"pages/home/home","text":"主页","iconPath":"images/icons/home.png","selectedIconPath":"images/icons/home_hl.png"},{"pagePath":"pages/corporation/corporation","text":"公司","iconPath":"images/icons/corp.png","selectedIconPath":"images/icons/corp_hl.png"},{"pagePath":"pages/salary/salary","text":"薪税","iconPath":"images/icons/xinshui.png","selectedIconPath":"images/icons/xinshui_hl.png"},{"pagePath":"pages/personal/personal","text":"我的","iconPath":"images/icons/pers.png","selectedIconPath":"images/icons/pers_hl.png"}]},"navigateToMiniProgramAppIdList":["wxd7928bf1898a30cd"]}
+{
+  "pages": [
+    "pages/home/home",
+    "pages/home/url",
+    "pages/personal/delivery",
+    "pages/login/forgot",
+    "pages/index/index",
+    "pages/personal/import_resume",
+    "pages/login/login",
+    "pages/login/regist",
+    "pages/personal/personal",
+    "pages/personal/base_edit",
+    "pages/personal/resume_list",
+    "pages/personal/resume",
+    "pages/personal/annex",
+    "pages/personal/annexdetails",
+    "pages/personal/annexname",
+    "pages/personal/edu_exper",
+    "pages/personal/certificate",
+    "pages/personal/base_info",
+    "pages/personal/job_want",
+    "pages/personal/work_exper",
+    "pages/personal/project_exper",
+    "pages/search/search",
+    "pages/personal/collection",
+    "pages/home/homeview",
+    "pages/corporation/corporation",
+    "pages/corporation/corpview",
+    "pages/salary/salary"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "51金融圈",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#a0a0a0",
+    "selectedColor": "#FFA315",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "主页",
+        "iconPath": "images/icons/home.png",
+        "selectedIconPath": "images/icons/home_hl.png"
+      },
+      {
+        "pagePath": "pages/corporation/corporation",
+        "text": "公司",
+        "iconPath": "images/icons/corp.png",
+        "selectedIconPath": "images/icons/corp_hl.png"
+      },
+      {
+        "pagePath": "pages/salary/salary",
+        "text": "薪税",
+        "iconPath": "images/icons/xinshui.png",
+        "selectedIconPath": "images/icons/xinshui_hl.png"
+      },
+      {
+        "pagePath": "pages/personal/personal",
+        "text": "我的",
+        "iconPath": "images/icons/pers.png",
+        "selectedIconPath": "images/icons/pers_hl.png"
+      }
+    ]
+  },
+  "navigateToMiniProgramAppIdList": [
+    "wxd7928bf1898a30cd"
+  ],
+  "sitemapLocation": "sitemap40.json"
+}

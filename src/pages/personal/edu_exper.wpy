@@ -53,9 +53,13 @@
     </view>
 
     <view class="form_btn flex">
-      <button class="delbtn" @tap="del" wx:if="{{educationid!=''&&length>1}}">删除</button>
+      <button class="delbtn" @tap="toggleM" wx:if="{{educationid!=''&&length>1}}">删除</button>
       <button class="mainbtn flex1" @tap="formSubmit">保存</button>
     </view>
+    <i-modal title="删除" visible="{{ visible }}" bind:ok="handleOk" bind:cancel="toggleM">
+      <view>是否确认删除？</view>
+    </i-modal>
+
   </view>
 </template>
 <script>
@@ -70,6 +74,9 @@
     config = {
       navigationBarTitleText: '教育经历',
       navigationBarBackgroundColor: "#fafafa",
+      usingComponents: {
+        "i-modal": "../../iview/modal/index"
+      }
     }
 
     data = {
@@ -93,6 +100,7 @@
       endtimeIndex: [0, 0],
       starttimeArray: [['至今'], []],
       starttimeIndex: [0, 0],
+      visible:false,
     }
 
     onLoad(options) {
@@ -132,6 +140,14 @@
     }
 
     methods = {
+      handleOk(){
+        this.delExperience()
+      },
+      toggleM(){
+        console.log('切换状态')
+        this.visible = !this.visible
+        this.$apply()
+      },
       endtimeChange: function (e) {
         const {endtimeArray} = this
         let v = e.detail.value
@@ -194,9 +210,6 @@
         this.$apply()
       },
 
-        del(){
-          this.delExperience()
-        },
         // 提交表单--基本信息编辑新增
         formSubmit: function(e) {
           const that = this

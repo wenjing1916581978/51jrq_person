@@ -256,7 +256,7 @@ export default class RegistPage extends wepy.page {
                  });
                }else{
                  wx.navigateTo({
-                     url: '/pages/personal/base_edit?perfect=true'
+                    url: '/pages/personal/base_edit?perfect=true'
                  });
                }
            }else{

@@ -120,7 +120,8 @@
 
 
     .bottom-operate {
-      width: 100%;
+      left: 0;
+      right: 0;
       height: 120rpx;
       border-top: 1rpx solid #E1E1E1;
       background: white;
@@ -128,9 +129,8 @@
       bottom: 0;
       left: 0;
       z-index: 8;
-
+      padding: 0 84rpx;
       .add-resume {
-        width: 280rpx;
         height: 80rpx;
         background: #FF9E00;
         color: white;
@@ -138,11 +138,10 @@
         border-radius: 50rpx;
         line-height: 80rpx;
         text-align: center;
-        margin-right: 20rpx;
-        margin-left: 84rpx;
+
       }
       .import-resume {
-        width: 280rpx;
+
         height: 80rpx;
         background: #F56666;
         color: white;
@@ -150,7 +149,7 @@
         border-radius: 50rpx;
         line-height: 80rpx;
         text-align: center;
-        margin-right: 84rpx;
+        margin-left: 20rpx;
       }
     }
     .num{

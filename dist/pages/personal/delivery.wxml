@@ -6,9 +6,10 @@
             <view data-num="3" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">已储备</view>
             <view data-num="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">面试邀约</view>
         </view>
-        <view  wx:if="{{collectStatus}}">
-            <block wx:for="{{collectData}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-                
+        <view  wx:if="{{listStatus}}">
+            <block wx:for="{{list}}" wx:for-index="index" wx:for-item="item" wx:key="index">
+                <view class="postitem" bindtap="getDynamic" data-wpygetdynamic-a="{{item.applyid}}" data-wpygetdynamic-b="{{index}}">
+                  
   <view class="posi-corp-container" bindtap="$commposi$goDetails" data-com-index="{{index}}">
     <view class="posi-container">
         <view class="posi-name-sal">
@@ -39,9 +40,23 @@
       </view>
   </view>
 
+                </view>
+                <view class="dynamicboxs"  wx:if="{{current===index}}">
+                  <block wx:for="{{status}}" wx:for-index="j" wx:for-item="obj" wx:key="j">
+
+                    <view class="flex alignitems dynamic">
+                      <view class="dot {{status.length-1==j?'last':''}}"/>
+                      <view class="flex1 content">
+                        <view>{{obj.msg}}</view>
+                        <view class="time">{{obj.data}}</view>
+                      </view>
+                    </view>
+                  </block>
+                  <navigator class="viewdetails" url="/pages/home/homeview?corpid={{item.companyid}}&jobid={{item.jobid}}">查看职位详情</navigator>
+                </view>
             </block>
         </view>
-        <view class="no-collect-container" wx:else="{{collectStatus}}">
+        <view class="no-collect-container"  wx:else="{{listStatus}}">
             <image src="/images/icons/no_delivery.png"/>
             <view>{{warningWord}}</view>
         </view>

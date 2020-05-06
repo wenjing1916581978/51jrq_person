@@ -1,4 +1,7 @@
 <style lang='scss'>
+  page{
+    background-color: #F0F1F2;
+  }
     .collection-container {
         .operate-container {
             padding: 0 32rpx;
@@ -6,9 +9,11 @@
             flex-direction: row;
             justify-content: space-around;
             border-bottom: 2rpx solid #e1e1e1;
+            background: #ffffff;
             .operate-btn {
                 font-size:28rpx;
                 padding: 30rpx;
+
             }
             .operate-btn-active {
                 border-bottom: 6rpx solid #FF9E00;
@@ -33,6 +38,59 @@
             }
         }
     }
+    .postitem{
+      position: relative;
+      background: #ffffff;
+      &:after{
+        position: absolute;
+        content: '';
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+      }
+    }
+    .dot{
+      width: 16rpx;
+      height: 16rpx;
+      border-radius: 50%;
+      background: #B2B2B2;
+      margin-right: 30rpx;
+    }
+    .last{
+      background: #FF9E00;
+    }
+    .content{
+      background: #ffffff;
+      border-radius: 16rpx;
+      padding:20rpx;
+      line-height: 40rpx;
+      font-size: 28rpx;
+      color: #333333;
+    }
+    .time{
+      color: #a0a0a0;
+      line-height: 34rpx;
+      font-size: 24rpx;
+    }
+    .viewdetails{
+      width: 220rpx;
+      height: 52rpx;
+      border-radius: 100rpx;
+      display: block;
+      margin:  0 auto;
+      color: #ffffff;
+      background: linear-gradient(to right, #FFBD00 0%,#FF9E00 100%);
+      text-align: center;
+      margin-top: 40rpx;
+    }
+    .dynamic{
+      margin-bottom: 20rpx;
+    }
+
+    .dynamicboxs{
+      padding: 40rpx 32rpx;;
+    }
 </style>
 
 <template>
@@ -43,12 +101,27 @@
             <view data-num="3" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">已储备</view>
             <view data-num="4" class="operate-btn {{_num==4?'operate-btn-active':''}}" bindtap="menuClick">面试邀约</view>
         </view>
-        <view wx:if="{{collectStatus}}">
-            <repeat for="{{collectData}}" key="index" index="index" item="item">
-                <commposi :syncPosidata.sync="item"></commposi>
+        <view wx:if="{{listStatus}}">
+            <repeat for="{{list}}" key="index" index="index" item="item">
+                <view class="postitem" @tap="getDynamic({{item.applyid}},{{index}})">
+                  <commposi :syncPosidata.sync="item"></commposi>
+                </view>
+                <view class="dynamicboxs" wx:if="{{current===index}}">
+                  <repeat for="{{status}}" key="j" index="j" item="obj" >
+
+                    <view class="flex alignitems dynamic">
+                      <view class="dot {{status.length-1==j?'last':''}}"></view>
+                      <view class="flex1 content">
+                        <view>{{obj.msg}}</view>
+                        <view class="time">{{obj.data}}</view>
+                      </view>
+                    </view>
+                  </repeat>
+                  <navigator class="viewdetails" url="/pages/home/homeview?corpid={{item.companyid}}&jobid={{item.jobid}}">查看职位详情</navigator>
+                </view>
             </repeat>
         </view>
-        <view class="no-collect-container" wx:else="{{collectStatus}}">
+        <view class="no-collect-container" wx:else="{{listStatus}}">
             <image src="/images/icons/no_delivery.png"></image>
             <view>{{warningWord}}</view>
         </view>
@@ -65,6 +138,7 @@ import tip from '../../utils/tip';
 import utils from'../../utils/utils';
 import CommPosi from '../../components/commposi';
 import BottomLoadMore from "../../components/bottomloadmore";
+import moment from 'moment'
 
 export default class DeliveryPage extends wepy.page {
     config = {
@@ -72,14 +146,16 @@ export default class DeliveryPage extends wepy.page {
     }
     data = {
         _num: "1",
-        collectData: [],
+        list: [],
         warningWord:"",
-        collectStatus: false,
+        listStatus: false,
         showLoading: false,
         totalPage: 0,    //总数
         currentPage: 1,
         token:'',
-        tokenKey:''
+        tokenKey:'',
+        current:'',
+        status:[],
     }
 
     components = {
@@ -101,8 +177,54 @@ export default class DeliveryPage extends wepy.page {
         menuClick (e) {
             this._num = e.target.dataset.num;
             this.getData(this._num);
+        },
+        getDynamic(id,index){
+          console.log('点击',id)
+
+          if(this.current!==index){
+            this.getState(id,index)
+          }
+          this.current = this.current===index?'':index
+          this.$apply()
         }
     };
+
+    async getState(id,index) {
+        wx.showLoading({
+            title: '加载中',
+        })
+        const that = this;
+        api.getProcessView({
+            query: {
+                head: {
+                    "transcode": "P00026",
+                    "type": "h"
+                },
+                data: {
+                    "token": that.token,
+                    "tokenKey": that.tokenKey,
+                    "applyid": id+''
+                }
+            }
+        }).then(json=>{
+          wx.hideLoading()
+          if (json.data.returnCode == "AAAAAAA") {
+            // console.log(json.data.list,'')
+            that.status = json.data.list.map(obj=>{
+              obj.data = moment(obj.data).format("YYYY/MM/DD hh:mm:ss")
+              return obj
+            })
+            console.log(that.status,'投递动态')
+          } else {
+              that.listStatus = false;
+              that.warningWord = json.data.returnMsg;
+          }
+
+          that.$apply();
+        })
+
+    }
+
 
     async getData( status, currentPage) {
         wx.showLoading({
@@ -125,18 +247,18 @@ export default class DeliveryPage extends wepy.page {
         }).then(json=>{
           wx.hideLoading()
           if (json.data.returnCode == "AAAAAAA") {
-              that.collectStatus = true;
-              that.collectData = JSON.parse(json.data.data);
-              that.collectData.forEach(element => {
+              that.listStatus = true;
+              that.list = JSON.parse(json.data.data);
+              that.list.forEach(element => {
                   element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
               });
               that.totalPage =parseInt(json.data.datanum/ 10);
-              if(that.collectData.length==0){
-                  that.collectStatus = false;
+              if(that.list.length==0){
+                  that.listStatus = false;
                   that.warningWord = "暂未查到更多信息";
               }
           } else {
-              that.collectStatus = false;
+              that.listStatus = false;
               that.warningWord = json.data.returnMsg;
           }
 

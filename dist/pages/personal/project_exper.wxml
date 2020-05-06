@@ -39,12 +39,16 @@
     <view class="form_item bb pb">
         <view class="form_label">项目描述/职责</view>
         <view class="form_content">
-            <textarea bindinput="inputChange" maxlength="500" data-name="projectremark" value="{{projectremark}}" placeholder="请输入项目描述、职责（500字以内）" placeholder-class="phcolor"/>
+          <textarea  wx:if="{{!visible}}" bindinput="inputChange" maxlength="500" data-name="projectremark" value="{{projectremark}}" placeholder="请输入项目描述、职责（500字以内）" placeholder-class="phcolor"/>
         </view>
     </view>
 
+
     <view class="form_btn flex">
-      <button class="delbtn" bindtap="del"  wx:if="{{projectid!=''&&length>1}}">删除</button>
+      <button class="delbtn" bindtap="toggleM"  wx:if="{{projectid!=''&&length>1}}">删除</button>
       <button class="mainbtn flex1" bindtap="formSubmit">保存</button>
     </view>
+    <i-modal title="删除" visible="{{ visible }}"  bind:ok="handleOk" bind:cancel="toggleM">
+      <view>是否确认删除？</view>
+    </i-modal>
   </view>

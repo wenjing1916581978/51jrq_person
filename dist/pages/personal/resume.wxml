@@ -11,8 +11,8 @@
           <text>我的基本信息</text>
         </view>
         <view  wx:else>
-          <view class="baseattr">{{baseInfo.address}} <text>|</text>  {{baseInfo.workyears}} <text>|</text>  {{baseInfo.educationbg}} <text>|</text>  {{baseInfo.age}}</view>
-          <view class="baseattr">{{baseInfo.jobstatus}}</view>
+          <view class="baseattr">{{baseInfo.address?baseInfo.address:'未填'}} <text>|</text>  {{baseInfo.workyears?baseInfo.workyears:'未填'}} <text>|</text>  {{baseInfo.educationbg?baseInfo.educationbg:'未填'}} <text>|</text>  {{baseInfo.age?baseInfo.age:'未填'}}</view>
+          <view class="baseattr">{{baseInfo.jobstatus?baseInfo.jobstatus:'未填'}}</view>
         </view>
       </view>
       <view class="baseinfo_img">
@@ -59,8 +59,8 @@
     <!-- 自我评价 S -->
     <view class="bb pb">
       <view class="title flex alignitems">
-        <text>自我评价</text>
-        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2"><image src="../../images/icons/edit.png"/></navigator>
+        <text class="flex1">自我评价</text>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=2&functions={{jobApply.functions?jobApply.functions:''}}&code={{jobApply.jobintentcode?jobApply.jobintentcode:''}}"><image src="../../images/icons/edit.png"/></navigator>
       </view>
       <view class="content" wx:if="{{jobApply.selfremark}}">
         <view class="desc">
@@ -74,7 +74,7 @@
     <view class="bb pb">
       <view class="title flex alignitems">
         <view class="flex1">求职意向</view>
-        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=1&functions={{jobApply.functions?jobApply.functions:''}}"><image src="../../images/icons/edit.png"/></navigator>
+        <navigator wx:if="{{edit}}" hover-class="none" class="toedit" url="/pages/personal/job_want?resumeid={{resumeid}}&type=1&functions={{jobApply.functions?jobApply.functions:''}}&code={{jobApply.jobintentcode?jobApply.jobintentcode:''}}"><image src="../../images/icons/edit.png"/></navigator>
       </view>
       <view class="content" wx:if="{{jobApply.functions}}">
         <view class="item">
@@ -105,8 +105,8 @@
       </view>
       <view class="content" wx:if="{{workExper.length}}">
         <block wx:for="{{workExper}}" wx:for-index="index" wx:for-item="item" wx:key="index">
-          <view class="item">
-            <view bindtap="edititem" class="flex alignitems" data-url="/pages/personal/work_exper?workid={{item.workid}}&resumeid={{resumeid}}">
+          <view class="item" bindtap="edititem" data-url="/pages/personal/work_exper?workid={{item.workid}}&resumeid={{resumeid}}">
+            <view class="flex alignitems">
               <view class="item_tit ellipsis flex1"> {{item.corpname}} </view>
               <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
               <view class="item_edit" wx:if="{{edit}}">

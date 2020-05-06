@@ -41,13 +41,17 @@
     <view class="form_item pb">
         <view class="form_label">工作内容</view>
         <view class="form_content">
-          <textarea bindinput="inputChange" maxlength="500" data-name="workremark" value="{{workremark}}" placeholder="请输入工作内容（500字以内）" placeholder-class="phcolor" />
+          <textarea wx:if="{{!visible}}" bindinput="inputChange" maxlength="500" data-name="workremark" value="{{workremark}}" placeholder="请输入工作内容（500字以内）" placeholder-class="phcolor" />
         </view>
     </view>
+
     <view class="form_btn flex">
-      <button class="delbtn" @tap="del" wx:if="{{workid!=''&&length>1}}">删除</button>
+      <button class="delbtn" @tap="toggleM" wx:if="{{workid!=''&&length>1}}">删除</button>
       <button class="mainbtn flex1" @tap="formSubmit">保存</button>
     </view>
+    <i-modal title="删除" visible="{{ visible }}" bind:ok="handleOk" bind:cancel="toggleM">
+      <view>是否确认删除？</view>
+    </i-modal>
   </view>
 </template>
 <script>
@@ -60,6 +64,9 @@
     config = {
       navigationBarTitleText: '工作经历',
       navigationBarBackgroundColor: "#fafafa",
+      usingComponents: {
+        "i-modal": "../../iview/modal/index"
+      }
     }
     data = {
       corpname:'',
@@ -78,6 +85,7 @@
       starttimeIndex: [0, 0],
       startinit:false,
       endtinit:false,
+      visible:false,
     }
 
     onLoad(options) {
@@ -177,8 +185,13 @@
           this.$apply()
         },
 
-        del(){
+        handleOk(){
           this.delExperience()
+        },
+        toggleM(){
+          console.log('切换状态')
+          this.visible = !this.visible
+          this.$apply()
         },
         formSubmit: function(e) {
           const that = this

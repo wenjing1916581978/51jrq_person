@@ -83,7 +83,7 @@
       </view>
     </view>
 
-    <view class="tips">附件简历可以以您编辑的版式呈现给用人单位，现阶段只能主动投递不会被搜索到，请放心创建</view>
+    <view class="tips">限定word、pdf、png、jpeg；大小不超过2M</view>
     <view class="bottom">
       <button @tap="upload">{{name?'重新上传':'上传附件'}}</button>
     </view>
@@ -95,7 +95,7 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 import utils from'../../utils/utils';
-
+import moment from 'moment'
 export default class Annex extends wepy.page {
   config = {
     navigationBarTitleText: '附件简历',
@@ -186,7 +186,7 @@ export default class Annex extends wepy.page {
     that.resumeid = options.resumeid
     if(options.time){
       var date = new Date(parseInt(options.time));
-      that.time = that.formatDate(date)
+      that.time = moment(date).format("YYYY-MM-DD hh:mm:ss")
     }
     let name = options.name
     if(name) that.getName(name)
@@ -203,15 +203,6 @@ export default class Annex extends wepy.page {
   changeName(name){
     this.name = name
     this.$apply()
-  }
-  formatDate(now) {
-    var year=now.getFullYear();
-    var month=now.getMonth()+1;
-    var date=now.getDate();
-    var hour=now.getHours();
-    var minute=now.getMinutes();
-    var second=now.getSeconds();
-    return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
   }
 }
 </script>

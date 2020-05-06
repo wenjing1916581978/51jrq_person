@@ -54,7 +54,7 @@
       </view>
       <view class="form_item pb">
           <view class="form_label">到岗时间</view>
-          <picker data-name="poststime" data-current="2" value="{{screen[2].index}}" bindchange="pickerChange" range="{{screen[2].list}}">
+          <picker data-name="poststime" data-current="4" value="{{screen[4].index}}" bindchange="pickerChange" range="{{screen[4].list}}">
             <view class="form_content flex alignitems">
               <view class="flex1">
                 {{form.poststime?form.poststime:'请选择'}}

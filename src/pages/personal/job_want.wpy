@@ -57,7 +57,7 @@
       </view>
       <view class="form_item pb">
           <view class="form_label">到岗时间</view>
-          <picker data-name="poststime" data-current="2" value="{{screen[2].index}}" bindchange="pickerChange" range="{{screen[2].list}}">
+          <picker data-name="poststime" data-current="4" value="{{screen[4].index}}" bindchange="pickerChange" range="{{screen[4].list}}">
             <view class="form_content flex alignitems">
               <view class="flex1">
                 {{form.poststime?form.poststime:'请选择'}}
@@ -110,6 +110,10 @@
         {
           list:[],
           index:[],
+        },
+        {
+          list:[],
+          index:[],
         }
       ],
       token: "",
@@ -135,6 +139,7 @@
       that.type = options.type;
       that.token = login.token
       that.tokenKey = login.tokenKey
+      that.form.jobintentcode = options.code
       that.$apply();
 
       if(options.functions) that.getData()
@@ -143,6 +148,10 @@
         for (var i = 0; i < arr.length; i++) {
           that.getDict(arr[i],i)
         }
+      }else {
+        wx.setNavigationBarTitle({
+              title: '自我评价'
+        })
       }
 
 

@@ -10,7 +10,7 @@
 <template>
   <view class="wrapper">
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <image src="http:{{item}}" mode="widthFix" data-src="http:{{item}}" @tap='previewMoreImage'></image>
+      <image src="{{item}}" mode="widthFix" data-src="{{item}}" @tap='previewMoreImage'></image>
   </repeat>
   </view>
 </template>
