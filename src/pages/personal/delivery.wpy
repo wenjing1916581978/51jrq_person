@@ -2,25 +2,25 @@
   page{
     background-color: #F0F1F2;
   }
-    .collection-container {
-        .operate-container {
-            padding: 0 32rpx;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            border-bottom: 2rpx solid #e1e1e1;
-            background: #ffffff;
-            .operate-btn {
-                font-size:28rpx;
-                padding: 30rpx;
+    .delivery {
+        .operate {
+          padding: 0 32rpx;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+          border-bottom: 2rpx solid #e1e1e1;
+          background: #ffffff;
+          &-btn {
+              font-size:28rpx;
+              padding: 30rpx;
 
-            }
-            .operate-btn-active {
-                border-bottom: 6rpx solid #FF9E00;
-                color: #FF9E00;
-            }
+          }
+          &-btn-active {
+              border-bottom: 6rpx solid #FF9E00;
+              color: #FF9E00;
+          }
         }
-        .no-collect-container {
+        .no-collect {
             padding: 0 32rpx;
             display: flex;
             flex-direction: column;
@@ -50,52 +50,11 @@
         top: 0;
       }
     }
-    .dot{
-      width: 16rpx;
-      height: 16rpx;
-      border-radius: 50%;
-      background: #B2B2B2;
-      margin-right: 30rpx;
-    }
-    .last{
-      background: #FF9E00;
-    }
-    .content{
-      background: #ffffff;
-      border-radius: 16rpx;
-      padding:20rpx;
-      line-height: 40rpx;
-      font-size: 28rpx;
-      color: #333333;
-    }
-    .time{
-      color: #a0a0a0;
-      line-height: 34rpx;
-      font-size: 24rpx;
-    }
-    .viewdetails{
-      width: 220rpx;
-      height: 52rpx;
-      border-radius: 100rpx;
-      display: block;
-      margin:  0 auto;
-      color: #ffffff;
-      background: linear-gradient(to right, #FFBD00 0%,#FF9E00 100%);
-      text-align: center;
-      margin-top: 40rpx;
-    }
-    .dynamic{
-      margin-bottom: 20rpx;
-    }
-
-    .dynamicboxs{
-      padding: 40rpx 32rpx;;
-    }
 </style>
 
 <template>
-    <view class="collection-container">
-        <view class="operate-container">
+    <view class="delivery">
+        <view class="operate">
             <view data-num="1" class="operate-btn {{_num==1?'operate-btn-active':''}}"  bindtap="menuClick">全部</view>
             <view data-num="2" class="operate-btn {{_num==2?'operate-btn-active':''}}" bindtap="menuClick">已查阅</view>
             <view data-num="3" class="operate-btn {{_num==3?'operate-btn-active':''}}" bindtap="menuClick">已储备</view>
@@ -103,25 +62,12 @@
         </view>
         <view wx:if="{{listStatus}}">
             <repeat for="{{list}}" key="index" index="index" item="item">
-                <view class="postitem" @tap="getDynamic({{item.applyid}},{{index}})">
+                <view class="postitem" @tap="getDynamic" data-applyid="{{item.applyid}}" data-inteid="{{item.inteid}}" data-id="{{item.jobid}}" data-company="{{item.companyid}}" data-name="{{item.jobname}}">
                   <commposi :syncPosidata.sync="item"></commposi>
-                </view>
-                <view class="dynamicboxs" wx:if="{{current===index}}">
-                  <repeat for="{{status}}" key="j" index="j" item="obj" >
-
-                    <view class="flex alignitems dynamic">
-                      <view class="dot {{status.length-1==j?'last':''}}"></view>
-                      <view class="flex1 content">
-                        <view>{{obj.msg}}</view>
-                        <view class="time">{{obj.data}}</view>
-                      </view>
-                    </view>
-                  </repeat>
-                  <navigator class="viewdetails" url="/pages/home/homeview?corpid={{item.companyid}}&jobid={{item.jobid}}">查看职位详情</navigator>
                 </view>
             </repeat>
         </view>
-        <view class="no-collect-container" wx:else="{{listStatus}}">
+        <view class="no-collect" wx:else="{{listStatus}}">
             <image src="/images/icons/no_delivery.png"></image>
             <view>{{warningWord}}</view>
         </view>
@@ -154,8 +100,6 @@ export default class DeliveryPage extends wepy.page {
         currentPage: 1,
         token:'',
         tokenKey:'',
-        current:'',
-        status:[],
     }
 
     components = {
@@ -178,52 +122,17 @@ export default class DeliveryPage extends wepy.page {
             this._num = e.target.dataset.num;
             this.getData(this._num);
         },
-        getDynamic(id,index){
-          console.log('点击',id)
-
-          if(this.current!==index){
-            this.getState(id,index)
-          }
-          this.current = this.current===index?'':index
-          this.$apply()
+        getDynamic(e){
+          const {applyid,inteid,id,company,name} = e.currentTarget.dataset
+          console.log(applyid,inteid);
+          // return  false;
+          let v = ''
+          if(inteid!='undefined') v = inteid
+          wx.navigateTo({
+            url:'/pages/personal/process?applyid='+applyid+'&inteid='+v+'&jobname='+name+'&jobid='+id+'&company='+company
+          })
         }
     };
-
-    async getState(id,index) {
-        wx.showLoading({
-            title: '加载中',
-        })
-        const that = this;
-        api.getProcessView({
-            query: {
-                head: {
-                    "transcode": "P00026",
-                    "type": "h"
-                },
-                data: {
-                    "token": that.token,
-                    "tokenKey": that.tokenKey,
-                    "applyid": id+''
-                }
-            }
-        }).then(json=>{
-          wx.hideLoading()
-          if (json.data.returnCode == "AAAAAAA") {
-            // console.log(json.data.list,'')
-            that.status = json.data.list.map(obj=>{
-              obj.data = moment(obj.data).format("YYYY/MM/DD hh:mm:ss")
-              return obj
-            })
-            console.log(that.status,'投递动态')
-          } else {
-              that.listStatus = false;
-              that.warningWord = json.data.returnMsg;
-          }
-
-          that.$apply();
-        })
-
-    }
 
 
     async getData( status, currentPage) {

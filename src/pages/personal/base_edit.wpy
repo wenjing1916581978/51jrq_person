@@ -53,9 +53,7 @@
             <view class="flex1">
                 {{form.sex?form.sex:'请选择'}}
             </view>
-            <view class="form_arrow">
-              <image src="../../images/icons/arrow_right.png"></image>
-            </view>
+            <van-icon name="arrow" size="18" color="#888888"/>
           </view>
         </picker>
       </view>
@@ -73,9 +71,7 @@
               <view class="flex1">
                   {{form.postids?form.postids:'请选择'}}
               </view>
-              <view class="form_arrow">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon name="arrow" size="18" color="#888888"/>
             </view>
           </picker>
       </view>
@@ -102,7 +98,11 @@ import tip from '../../utils/tip';
 import {LOGIN_INFO} from '../../utils/constants';
 
 export default class BaseEdit extends wepy.page {
-
+  config = {
+    "usingComponents": {
+      "van-icon": "../../vant/icon/index"
+    }
+  }
    data = {
       screen:[
         {

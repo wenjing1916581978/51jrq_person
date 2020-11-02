@@ -73,7 +73,7 @@
         <view class="search-content">
             <view wx:if="{{isShowCityName}}" @tap="trShowCityFn" class="city-cascade">
                 <text>{{city}}</text>
-                <image class="arrow-img" src="/images/icons/arrow-down.png"/>
+                <van-icon name="arrow-down" size="10" color="#888888" />
             </view>
             <view wx:else="{{isShowCityName}}" class="city-transparent"></view>
             <view wx:if="{{isShowCityName}}" class='ver'></view>

@@ -1,203 +1,124 @@
 <style lang='scss'>
-    .corp-view {
-        padding-bottom: 160rpx;
-        position: relative;
-        .head {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20rpx 32rpx 40rpx;
-            image {
-                height: 200rpx;
-                width: 200rpx;
-            }
-            .corp-name {
-                color: #5E5E5E;
-                font-size: 34rpx;
-                font-weight: bold;
-            }
-            .corp-type {
-                font-size: 26rpx;
-                color: #A0A0A0;
-                margin-top: 8rpx;
-            }
-        }
-        .gray-blank {
-            height: 20rpx;
-            width: 100%;
-            background-color: #F0F1F2;
-        }
-        .title {
-            font-size: 28rpx;
-            color: #353535;
-        }
-        .corp-intro {
-            display: flex;
-            flex-direction: column;
-            margin: 20rpx 30rpx;
-            .introduce {
-                font-size: 28rpx;
-                line-height: 40rpx;
-                color: #888888;
-            }
-            .fold-block {
-                margin: 20rpx 0;
-            }
-            .fold {
-
-            }
-            .foldbtn {
-                text-align: center;
-                color: #ff9e00;
-                font-size: 24rpx;
-            }
-            .mblog {
-                margin-top: 40rpx;
-                width: 100%;
-                height: 300rpx;
-                image {
-                    width: 100%;
-                    height: 300rpx;
-                }
-            }
-        }
-        .corp-address {
-            margin: 20rpx 30rpx;
-            .gray-line {
-                height: 3rpx;
-            }
-            .address {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                image {
-                    width: 24rpx;
-                    height: 36rpx;
-                }
-                .addr-info {
-                    color: #888888;
-                    font-size: 28rpx;
-                    margin-left: 12rpx;
-                }
-            }
-        }
-        .corp-jobs {
-            margin: 20rpx 30rpx;
-            .gray-line {
-                height: 3rpx;
-            }
-            .job-item {
-                .job-content {
-                    display: flex;
-                    flex-direction: column;
-                    //
-                    .one {
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        .position {
-                            color: #353535;
-                            font-size: 30rpx;
-                            font-weight: bold;
-                        }
-                        .salary {
-                            color: #FF9E00;
-                            font-size: 28rpx;
-                            font-weight: bold;
-                        }
-                    }
-                    .two {
-                        .corp-name {
-                            color: #888;
-                            font-size: 30rpx;
-                        }
-                    }
-                    .three {
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        .corp-type {
-                            color: #b2b2b2;
-                            font-size: 22rpx;
-                            margin-top: 8rpx;
-                        }
-                        .up-date {
-                            font-size: 26rpx;
-                            color: #a0a0a0;
-                        }
-                    }
-                }
-            }
-        }
+  .baseinfo {
+    padding: 20rpx 32rpx 40rpx;
+    image {
+      height: 200rpx;
+      width: 200rpx;
     }
+    &-name {
+      color: #5E5E5E;
+      font-size: 34rpx;
+      font-weight: bold;
+    }
+    &-type {
+      font-size: 26rpx;
+      color: #A0A0A0;
+      margin-top: 8rpx;
+    }
+  }
+  .space {
+    height: 20rpx;
+    width: 100%;
+    background-color: #F0F1F2;
+  }
+  .brief {
+    padding: 11rpx 28rpx;
+    &-txt {
+      line-height: 40rpx;
+      color: rgba(136, 136, 136, 1);
+      font-size: 28rpx;
+    }
+    &-btn {
+      margin: 20rpx 0;
+      text-align: center;
+      text{
+        color: #ff9e00;
+        font-size: 24rpx;
+      }
+    }
+    &-img {
+      margin-top: 40rpx;
+      width: 100%;
+      height: 300rpx;
+      image {
+        width: 100%;
+        height: 300rpx;
+      }
+    }
+  }
+  .address {
+    margin: 12rpx 28rpx;
+    padding-bottom: 10rpx;
+    image {
+      width: 24rpx;
+      height: 36rpx;
+    }
+    text {
+        margin-left: 12rpx;
+        width:100%;
+        color: #888888;
+        font-size: 28rpx;
+    }
+  }
+  .postlist {
+    padding: 11rpx 28rpx;
+  }
+
 </style>
 
 <template>
-  <view class="corp-view">
-        <view class="head">
-            <view class="corp-brief">
-                <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
-                <view class="corp-type">{{corpInfo.city}} | {{corpInfo.scope}} | {{corpInfo.industry}}</view>
+  <view>
+    <block  wx:if="{{init}}">
+      <view class="baseinfo flex alignitems">
+          <view class="flex1">
+              <view class="baseinfo-name">{{baseinfo.corpname?baseinfo.corpname:'暂无'}}</view>
+              <view class="baseinfo-type">{{baseinfo.city}} | {{baseinfo.scope}} | {{baseinfo.industry}}</view>
+          </view>
+          <image src="{{baseinfo.logo ? baseinfo.logo:'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"  mode="aspectFill"></image>
+      </view>
+
+      <view class="space"></view>
+
+      <van-panel title="公司简介">
+        <view class="brief">
+            <text class="brief-txt" wx:if="{{isFold}}">{{baseinfoBrief?baseinfoBrief:'暂无'}}</text>
+            <text class="brief-txt" wx:else>{{baseinfo.description}}</text>
+            <view class="brief-btn" wx:if="{{descFoldShow}}">
+                <text @tap.stop="foldFn" wx:if="{{isFold}}">展开</text>
+                <text @tap.stop="foldFn" wx:else>收起</text>
             </view>
-            <image src="{{corpInfo.logo ? corpInfo.logo:'https://www.51jrq.com/topics/images/51jrq_logo_gray.png'}}"  mode="aspectFill"></image>
-        </view>
-        <view class="gray-blank"></view>
-        <view class="corp-intro">
-            <view class="title">公司简介</view>
-            <view class="gray-line"></view>
-            <text class="introduce" wx:if="{{isFold}}">
-                {{corpInfoBrief}}
-            </text>
-            <text class="introduce" wx:else="{{isFold}}">
-                {{corpInfo.description}}
-            </text>
-            <view class="fold-block" wx:if="{{descFoldShow}}">
-                <view class="foldbtn"  @tap.stop="foldFn" wx:if="{{isFold}}">展开</view>
-                <view class="foldbtn"  @tap.stop="foldFn" wx:else>收起</view>
-            </view>
-            <view class="mblog" wx:if="{{corpInfo.mblog}}">
-                <image src="{{corpInfo.mblog}}" mode="aspectFill"></image>
+            <view class="brief-img" wx:if="{{baseinfo.mblog}}">
+                <image src="{{baseinfo.mblog}}" mode="aspectFill"></image>
             </view>
         </view>
-        <view class="gray-blank"></view>
-        <view class="corp-address">
-            <view class="title">公司地址</view>
-            <view class="gray-line"></view>
-            <view class="address" bindtap="goMap({{corpInfo.address}})">
-                <image src="/images/icons/location_blue.png"></image>
-                <view class="addr-info">{{corpInfo.address}}</view>
-            </view>
+      </van-panel>
+
+
+      <view class="space"></view>
+
+      <van-panel title="公司地址">
+        <view class="address flex alignitems" bindtap="goMap({{baseinfo.address}})">
+            <image src="/images/icons/location_blue.png"></image>
+            <text class="flex1">{{baseinfo.address}}</text>
         </view>
-        <view class="gray-blank"></view>
-        <view class="corp-jobs">
-            <view class="title">该公司发布的所有职位</view>
-            <view class="gray-line"></view>
-            <repeat for="{{companyJobs}}" key="index" index="index" item="item">
-                <view class="job-item" bindtap="goJobView({{item.corpid}},{{item.jobid}})">
-                    <view class="job-content">
-                        <view class="one">
-                            <view class="position">{{item.jobname}}</view>
-                            <view class="salary">{{item.salary}}</view>
-                        </view>
-                        <view class="two">
-                            <view class="corp-name">{{corpInfo.corpname?corpInfo.corpname:'暂无'}}</view>
-                        </view>
-                        <view class="three">
-                            <view class="corp-type">{{item.jobcity}} | {{item.workyears}} | {{item.ebid}}</view>
-                            <view class="up-date">{{item.createdate}}</view>
-                        </view>
-                    </view>
-                    <view class="gray-line"></view>
-                </view>
-            </repeat>
+      </van-panel>
+
+      <view class="space"></view>
+
+      <van-panel title="该公司发布的所有职位">
+        <view class="postlist">
+          <repeat for="{{companyJobs}}" item="item">
+            <relatedjob :syncRelatedJob="item"></relatedjob>
+          </repeat>
         </view>
-        <!-- <navigationload :syncLoadShow.sync="showPageLoading"></navigationload> -->
-        <shareminipro hidden="{{!showShareBtn}}"
-                :urlWithArgs.sync="urlWithArgs"
-                :currentUrl.sync="currentUrl"
-                :corpInfo.sync="corpInfo"
-                :dataOrg="dataOrg"></shareminipro>
+      </van-panel>
+      <shareminipro hidden="{{!showShareBtn}}" :urlWithArgs.sync="urlWithArgs" :currentUrl.sync="currentUrl" :baseinfo.sync="baseinfo" :dataOrg="dataOrg"></shareminipro>
+    </block>
+
+
+    <!-- 初始化加载 S -->
+    <loading :show.sync="init"></loading>
+    <!-- 初始化加载 S -->
   </view>
 
 </template>
@@ -208,16 +129,28 @@ import wepy from 'wepy';
 import api from '../../api/api';
 import tip from '../../utils/tip';
 import ShareMiniPro from '../../components/shareminipro';
-import NavigationLoad from '../../components/navigationload';
+import Loading from "../../components/loading";
+import RelatedJob from '../../components/relatedjob';
+
 import utils from '../../utils/utils';
 
 export default class CorpDatailsView extends wepy.page {
   config = {
       navigationBarTitleText: '公司详情',
+      enablePullDownRefresh:false,
+      "usingComponents": {
+          "van-icon": "../../vant/icon/index",
+          "van-image": "../../vant/image/index",
+          "van-overlay": "../../vant/overlay/index",
+          "van-dialog": "../../vant/dialog/index",
+          "van-action-sheet": "../../vant/action-sheet/index",
+          "van-panel": "../../vant/panel/index"
+      }
   }
 
   data = {
-    corpInfo: {},
+    init: false,
+    baseinfo: {},
     companyJobs: [],
     companyid:'',
     urlWithArgs: "",
@@ -226,8 +159,8 @@ export default class CorpDatailsView extends wepy.page {
     dataOrg: "corpview",
     isFold: true,
     descFoldShow: true,
-    corpInfoBrief: '',
-    showPageLoading: true
+    baseinfoBrief: '',
+    // showPageLoading: true
   }
 
   onLoad(options){
@@ -244,8 +177,9 @@ export default class CorpDatailsView extends wepy.page {
   }
 
   components = {
+    relatedjob: RelatedJob,
     shareminipro: ShareMiniPro,
-    navigationload: NavigationLoad
+    loading:Loading,
   }
 
   // 转发分享
@@ -262,11 +196,6 @@ export default class CorpDatailsView extends wepy.page {
   }
 
   methods = {
-        goJobView(corpid, jobid) {
-            wepy.navigateTo({
-                url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`
-            })
-        },
         // 查看地图
         goMap(address){
             this.getAddress(address).then(data=>{
@@ -279,10 +208,10 @@ export default class CorpDatailsView extends wepy.page {
                         address: address
                     })
                 }else{
-                    wx.showToast({
-                      title: `地址信息不全`,
-                      icon: 'none'
-                    })
+                    // wx.showToast({
+                    //   title: `地址信息不全`,
+                    //   icon: 'none'
+                    // })
                     console.log(data.data.message)
                 }
             });
@@ -294,11 +223,7 @@ export default class CorpDatailsView extends wepy.page {
 
 //获取公司详情数据
   async getCorpView(companyid) {
-    // wx.showLoading({
-    //     title: '加载中',
-    // })
     const that = this;
-    that.showPageLoading = true;
     const json = await api.getCompanyList({
       query: {
             head: {
@@ -311,25 +236,28 @@ export default class CorpDatailsView extends wepy.page {
             }
         }
     })
-    if (json.data.returnCode == "AAAAAAA") {
-      that.corpInfo = json.data.data.corpinfo;
-      if(that.corpInfo.description.length > 100) {
+
+    const {returnCode,data} = json.data
+    if (returnCode == "AAAAAAA") {
+      that.baseinfo = data.corpinfo;
+      if(that.baseinfo.description&&that.baseinfo.description.length > 100) {
         that.descFoldShow = true;
-        that.corpInfoBrief = that.corpInfo.description.substring(0, 100) + '......';
+        that.baseinfoBrief = that.baseinfo.description.substring(0, 100) + '......';
       } else {
         that.descFoldShow = false;
-        that.corpInfoBrief = that.corpInfo.description;
+        that.baseinfoBrief = that.baseinfo.description;
       }
-      that.companyJobs = json.data.data.companyJobs;
+      that.companyJobs = data.companyJobs;
       that.companyJobs.forEach(element => {
            element.createdate = utils.date('Y-m-d',(element.createdate)/1000)
       });
-      that.showPageLoading = false;
       that.$apply();
     } else {
       tip.error(json.returnMsg);
     }
-    // wx.hideLoading() //隐藏loading效果
+
+    that.init = true
+    that.$apply()
   }
 
   // 打开地图

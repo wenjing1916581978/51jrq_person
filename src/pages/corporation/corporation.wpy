@@ -3,11 +3,24 @@
 
 <template>
   <view>
-    <bannersearch></bannersearch>
-    <repeat for="{{corplist}}" key="index" index="index" item="item">
-      <corplist :syncCorpdata.sync="item"></corplist>
-    </repeat>
-    <!-- <navigationload :syncLoadShow.sync="showPageLoading"></navigationload> -->
+    <block wx:if="{{init}}">
+      <bannersearch></bannersearch>
+      <repeat for="{{corplist}}" key="index" index="index" item="item">
+        <corplist :syncCorpdata.sync="item"></corplist>
+      </repeat>
+      <!--加载更多时动画-->
+      <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+      <!--暂无数据显示-->
+      <placeholder :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
+    </block>
+
+    <!-- 返回顶部 S -->
+    <top wx:if="{{showtop}}"/>
+    <!-- 返回顶部 S -->
+
+    <!-- 初始化加载 S -->
+    <loading :show.sync="init"></loading>
+    <!-- 初始化加载 S -->
   </view>
 </template>
 
@@ -17,13 +30,26 @@ import api from '../../api/api';
 import tip from '../../utils/tip';
 import BannerSearch from '../../components/bannersearch';
 import CorpList from '../../components/corplist';
-import NavigationLoad from '../../components/navigationload';
+import BottomLoadMore from "../../components/bottomloadmore";
+import PlaceHolder from "../../components/placeholder";
+import Top from "../../components/top";
+import Loading from "../../components/loading";
 
 export default class CorpPage extends wepy.page {
+  config={
+    usingComponents: {
+      "van-icon": "../../vant/icon/index",
+      "van-image": "../../vant/image/index",
+      "van-overlay": "../../vant/overlay/index"
+    }
+  }
   components = {
     bannersearch: BannerSearch,
     corplist: CorpList,
-    navigationload: NavigationLoad
+    bottomloadmore: BottomLoadMore,
+    placeholder: PlaceHolder,
+    top:Top,
+    loading:Loading
   }
 
   data = {
@@ -32,7 +58,8 @@ export default class CorpPage extends wepy.page {
     isEmpty: false,
     currentPage: 1,   //当前页面
     totalPage: 0,    //总数
-    showPageLoading: true,
+    init:false,
+    showtop:false
   }
 
   onLoad (options) {
@@ -77,7 +104,15 @@ export default class CorpPage extends wepy.page {
   // 下拉刷新
   onPullDownRefresh(){
     wx.showNavigationBarLoading()
+    this.currentPage=1
+    this.$apply()
     this.onLoad()
+  }
+
+  // 界面滚动
+  onPageScroll (e) {
+    this.showtop = e.scrollTop>400?true:false
+    this.$apply()
   }
 
   async getCorpList(currentPage) {
@@ -85,7 +120,6 @@ export default class CorpPage extends wepy.page {
     //     title: '加载中',
     // })
     const that = this;
-    that.showPageLoading = true;
     const json = await api.getCompanyList({
       query: {
           head: {
@@ -106,7 +140,7 @@ export default class CorpPage extends wepy.page {
     } else {
       tip.error(json.returnMsg);
     }
-    that.showPageLoading = false;
+    that.init = true;
     // wx.hideLoading() //隐藏loading效果
     wx.hideNavigationBarLoading() //完成停止加载
     wx.stopPullDownRefresh() //停止下拉刷新

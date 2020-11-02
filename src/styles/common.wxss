@@ -7,7 +7,7 @@ page {
     margin: 20rpx auto;
     background-color: #F1F1F1;
 }
-.gray-blank {
+.space {
     height: 20rpx;
     width: 100%;
     background-color: #F0F1F2;
@@ -43,4 +43,9 @@ page {
 }
 textarea{
   width:100%;
+}
+.van-panel .van-cell__title{
+  font-size:28rpx;
+  color:#353535;
+  font-weight:bold;
 }

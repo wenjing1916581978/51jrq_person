@@ -20,21 +20,32 @@
 
 <template>
   <view>
-    <bannersearch></bannersearch>
-    <view class="comm-posis-container">
-      <view class="header-container">
-        <image src="/images/icons/comm-posi.png"></image>
-        <text>推荐职位</text>
+    <block wx:if="{{init}}">
+      <bannersearch></bannersearch>
+
+      <view class="comm-posis-container">
+        <view class="header-container">
+          <image src="/images/icons/comm-posi.png"></image>
+          <text>推荐职位</text>
+        </view>
+        <repeat for="{{hunterjobList}}" key="index" index="index" item="item">
+          <commposi :syncPosidata.sync="item"></commposi>
+        </repeat>
+
+        <!--加载更多时动画-->
+        <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
+        <!--暂无数据显示-->
+        <placeholder :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
       </view>
-      <repeat for="{{hunterjobList}}" key="index" index="index" item="item">
-        <commposi :syncPosidata.sync="item"></commposi>
-      </repeat>
-      <!-- <navigationload :syncLoadShow.sync="showPageLoading"></navigationload> -->
-      <!--加载更多时动画-->
-      <bottomloadmore :syncShow.sync="showLoading" message="正在加载"></bottomloadmore>
-      <!--暂无数据显示-->
-      <placeholder :syncShow.sync="isEmpty" message="暂无发现数据"></placeholder>
-    </view>
+    </block>
+
+    <!-- 返回顶部 S -->
+    <top wx:if="{{showtop}}"/>
+    <!-- 返回顶部 S -->
+
+    <!-- 初始化加载 S -->
+    <loading :show.sync="init"></loading>
+    <!-- 初始化加载 S -->
   </view>
 </template>
 
@@ -47,20 +58,24 @@ import BannerSearch from '../../components/bannersearch';
 import CommPosi from '../../components/commposi';
 import BottomLoadMore from "../../components/bottomloadmore";
 import PlaceHolder from "../../components/placeholder";
-import NavigationLoad from '../../components/navigationload';
+import Top from "../../components/top";
+import Loading from "../../components/loading";
 
 export default class HomePage extends wepy.page {
-
-  config = {
-
+  config={
+    usingComponents: {
+      "van-icon": "../../vant/icon/index",
+      "van-image": "../../vant/image/index",
+      "van-overlay": "../../vant/overlay/index"
+    }
   }
-
   components = {
     bannersearch: BannerSearch,
     commposi: CommPosi,
     bottomloadmore: BottomLoadMore,
     placeholder: PlaceHolder,
-    navigationload: NavigationLoad
+    top:Top,
+    loading:Loading
   }
 
   data ={
@@ -70,18 +85,25 @@ export default class HomePage extends wepy.page {
     isEmpty: false,
     currentPage: 1,   //当前页面
     totalPage: 0,    //总数
-    showPageLoading: true,
+    init:false,
+    showtop:false
   }
 
   onLoad (options) {
-    // tip.confirm()
     this.getCompanyjob(this.currentPage)
   }
 
   // 下拉刷新
   onPullDownRefresh(){
     wx.showNavigationBarLoading()
+    this.currentPage=1
+    this.$apply()
     this.onLoad()
+  }
+  // 界面滚动
+  onPageScroll (e) {
+    this.showtop = e.scrollTop>400?true:false
+    this.$apply()
   }
   // 转发分享
   onShareAppMessage() {
@@ -89,9 +111,9 @@ export default class HomePage extends wepy.page {
       var currentPage = pages[pages.length-1]    //获取当前页面的对象
       var url = currentPage.route    //当前页面url
       return {
-      title: '金融职业机会尽在51金融圈',
-      desc: '51金融圈丨金融人才求职招聘',
-      path: `/${url}`
+        title: '金融职业机会尽在51金融圈',
+        desc: '51金融圈丨金融人才求职招聘',
+        path: `/${url}`
       }
   }
 
@@ -119,7 +141,6 @@ export default class HomePage extends wepy.page {
   async getCompanyjob(currentPage) {
     // 开启loading效果
     const that = this;
-    that.showPageLoading = false;
     that.$apply()
     const json = await api.getCompanyjob({
       query: {
@@ -133,6 +154,8 @@ export default class HomePage extends wepy.page {
       }
     })
     console.log(typeof json.data)
+    that.init = true
+    that.$apply()
     if (json.data.returnCode == "AAAAAAA") {
       that.hunterjobList = [...that.hunterjobList, ...json.data.data.list];
       that.hunterjobList.forEach(element => {
@@ -142,7 +165,6 @@ export default class HomePage extends wepy.page {
       if(json.data.data.num == 0) {
         that.isEmpty = true;  //暂无数据
       }
-      that.showPageLoading = false;
       that.$apply()
     } else {
       tip.error(json);

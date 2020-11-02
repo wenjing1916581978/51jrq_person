@@ -1,0 +1,236 @@
+<style lang='scss'>
+page{
+  background: #f8f8f8;
+}
+.boxs{
+  background: #ffffff;
+  margin: 0 0 20rpx;
+  padding: 20rpx 30rpx;
+}
+
+.dot{
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #B2B2B2;
+  margin-right: 30rpx;
+}
+.last{
+  background: #FF9E00;
+}
+.time{
+  color: #a0a0a0;
+  line-height: 34rpx;
+  font-size: 24rpx;
+}
+.dynamic{
+  margin-bottom: 20rpx;
+}
+.info{
+  &-tit{
+    font-size: 36rpx;
+    margin-bottom: 12rpx;
+    line-height: 1.4;
+    border-bottom: 1rpx solid #f5f5f5;
+    line-height: 90rpx;
+  }
+}
+.line{
+  line-height: 70rpx;
+  &-label{
+    color: #999;
+    margin-right: 12rpx;
+  }
+}
+</style>
+
+<template>
+  <view class="">
+    <block wx:if="{{init2&&init1}}">
+      <view class="boxs">
+        <view class="flex line">
+          <view class="flex1 ellipsis" @tap="jumpto">{{jobname}}</view>
+          <van-icon name="arrow" size="18" color="#888888"/>
+        </view>
+      </view>
+      <!-- 面试邀请 S -->
+      <view class="boxs info" wx:if="{{info}}">
+        <view class="info-tit">{{info.corpname}}的面试邀请</view>
+        <view class="flex line">
+          <view class="line-label">时间</view>
+          <view class="flex1">{{info.interviewtime}}</view>
+        </view>
+        <view class="flex line">
+          <view class="line-label">地址</view>
+          <view class="flex1 ">{{info.address}}</view>
+
+        </view>
+        <view class="flex line" wx:if="{{info.remarks}}">
+          <view class="line-label">备注</view>
+          <view class="flex1">{{info.remarks}}</view>
+        </view>
+      </view>
+      <!-- 面试邀请 E -->
+
+      <!-- 投递流程 S -->
+      <view class="boxs">
+        <repeat for="{{process}}" key="j" index="j" item="obj" >
+          <view class="flex alignitems dynamic">
+            <view class="dot {{process.length-1==j?'last':''}}"></view>
+            <view class="flex1 content">
+              <view>{{obj.msg}}</view>
+              <view class="time">{{obj.date}}</view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+      <!-- 投递流程 E -->
+    </block>
+
+    <block wx:else>
+      <!-- 初始化加载 S -->
+      <loading :show.sync="init1"></loading>
+      <!-- 初始化加载 S -->
+    </block>
+
+
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import api from '../../api/api';
+import tip from '../../utils/tip';
+import utils from'../../utils/utils';
+import Loading from "../../components/loading";
+
+import moment from 'moment'
+export default class Annex extends wepy.page {
+  config = {
+    navigationBarTitleText: '流程',
+    navigationBarBackgroundColor: "#fafafa",
+    usingComponents: {
+      "van-icon": "../../vant/icon/index",
+      "van-overlay": "../../vant/overlay/index"
+    }
+  }
+  components = {
+
+    loading:Loading
+  }
+
+  data = {
+    token:'',
+    tokenKey:'',
+    applyid:'',
+    process:[],
+    info:null,
+    init1:false,
+    init2:false,
+    jobid:'',
+    companyid:'',
+    jobname:''
+  }
+
+
+  methods = {
+    jumpto(){
+      wx.navigateTo({
+        url:'/pages/home/homeview?corpid='+this.companyid+'&jobid='+this.jobid
+      })
+    }
+  }
+  onLoad(options){
+    const that = this
+    const {applyid,inteid,jobname,jobid,company} = options
+    // console.log('111111',options);
+    let login = wx.getStorageSync('login')
+    that.token = login.token
+    that.tokenKey = login.tokenKey
+    that.applyid = applyid
+    that.jobid=jobid
+    that.companyid=company
+    that.jobname=jobname
+    if(inteid) {
+      that.getDetails(inteid)
+    }else{
+      that.init2 = true
+    }
+    that.$apply()
+    that.getProcess()
+  }
+
+  getProcess() {
+    const that = this;
+    wx.showLoading({
+        title: '加载中',
+    })
+    api.getProcessView({
+        query: {
+            head: {
+                "transcode": "P00026",
+                "type": "h"
+            },
+            data: {
+                "token": that.token,
+                "tokenKey": that.tokenKey,
+                "applyid": that.applyid
+            }
+        }
+    }).then(res=>{
+      wx.hideLoading()
+      that.init1 = true
+      if (res.data.returnCode == "AAAAAAA") {
+        that.process = res.data.list.map(obj=>{
+          obj.date = moment(obj.data).format("YYYY/MM/DD HH:mm:ss")
+          return obj
+        })
+      } else {
+      }
+
+      that.$apply();
+    }).catch(err=>{
+      that.init1 = true
+      that.$apply()
+    })
+
+  }
+
+
+  getDetails(id) {
+    const that = this;
+    wx.showLoading({
+        title: '加载中',
+    })
+    api.interviewDetails({
+        query: {
+            head: {
+                "transcode": "W00001",
+                "type": "h"
+            },
+            data: {
+                "token": that.token,
+                "tokenKey": that.tokenKey,
+
+                "inteid": id
+            }
+        }
+    }).then(res=>{
+      wx.hideLoading()
+      that.init2 = true
+      if (res.data.returnCode == "AAAAAAA") {
+        that.info=res.data.data
+        that.$apply()
+      } else {
+
+      }
+
+      that.$apply();
+    }).catch(err=>{
+      that.init2 = true
+      that.$apply()
+    })
+
+  }
+}
+</script>

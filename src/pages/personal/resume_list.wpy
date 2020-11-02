@@ -1,121 +1,78 @@
 <style lang='scss'>
     page {
-        background: #F0F1F2;
-        .resumelist-container {
-          .blank {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            image {
-              width: 160rpx;
-              height: 200rpx;
-              margin-top: 200rpx;
+      background: #F0F1F2;
+    }
+    .resumelist {
+      .blank {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        image {
+          width: 160rpx;
+          height: 200rpx;
+          margin-top: 200rpx;
+        }
+        view {
+          margin-top: 20rpx;
+          font-size: 28rpx;
+          color: #353535;
+        }
+      }
+      .resume-list {
+          height: 240rpx;
+          width: 100%;
+          margin-top:20rpx;
+          background: white;
+          align-items: center;
+          .content {
+            margin: 0 36rpx;
+            height: 240rpx;
+            .up {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+              height: 160rpx;
+              border-bottom: #f1f1f1 solid 1rpx;
+              .title {
+                font-size: 34rpx;
+                color: #353535;
+              }
+              .percent {
+                width: 50%;
+              }
             }
-            view {
-              margin-top: 20rpx;
-              font-size: 28rpx;
-              color: #353535;
+            .down {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+              height: 80rpx;
+              .delete {
+                font-size: 28rpx;
+                color: #b2b2b2;
+                width: 50%;
+                text-align: center;
+                border-right: 1rpx solid #f1f1f1;
+              }
+              .edit {
+                font-size: 28rpx;
+                color: #FF9E00;
+                width: 50%;
+                text-align: center;
+              }
             }
           }
-            .resume-list {
-                height: 240rpx;
-                width: 100%;
-                margin-top:20rpx;
-                background: white;
-                align-items: center;
-                .content {
-                  margin: 0 36rpx;
-                  height: 240rpx;
-                  .up {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
-                    height: 160rpx;
-                    border-bottom: #f1f1f1 solid 1rpx;
-                    .title {
-                      font-size: 34rpx;
-                      color: #353535;
-                    }
-                    .date {
-                      font-size: 24rpx;
-                      color: #888888;
-                    }
-                    .percent {
-                      width: 50%;
-                    }
-                  }
-                  .down {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
-                    height: 80rpx;
-                    .delete {
-                      font-size: 28rpx;
-                      color: #b2b2b2;
-                      width: 50%;
-                      text-align: center;
-                      border-right: 1rpx solid #f1f1f1;
-                    }
-                    .edit {
-                      font-size: 28rpx;
-                      color: #FF9E00;
-                      width: 50%;
-                      text-align: center;
-                    }
-                  }
-                }
-            }
+      }
 
-            .alert-container {
-                position: fixed;
-                width: 100%;
-                height: 100vh;
-                background: black;
-                opacity: 0.5;
-                z-index: 1999;
-            }
-            .alert-box{
-                width: 560rpx;
-                height: 290rpx;
-                background: white;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                margin-left: -280rpx;
-                margin-top: -145rpx;
-                border-radius: 20rpx;
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                .sure {
-                    width: 100%;
-                    height: 190rpx;
-                    font-size: 36rpx;
-                    line-height: 190rpx;
-                    border-bottom: 1rpx solid #e5e5e5;
-                    text-align: center;
-                }
-                .yesno {
-                  display: flex;
-                  flex-direction: row;
-                  text-align: center;
-                  line-height: 100rpx;
-                  .no {
-                      width: 280rpx;
-                      color: #b2b2b2;
-                      border-right: 1rpx solid #e5e5e5;
-                  }
-                  .yes {
-                      width: 280rpx;
-                      color: #ff9e00;
-                  }
-                }
-            }
+        .alert-container {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            opacity: 0.5;
+            z-index: 1999;
         }
-
     }
 
 
@@ -141,7 +98,6 @@
 
       }
       .import-resume {
-
         height: 80rpx;
         background: #F56666;
         color: white;
@@ -166,10 +122,18 @@
       margin-left: 6rpx;
       vertical-align: middle;
     }
+    .tips {
+        width: 100%;
+        height: 190rpx;
+        font-size: 36rpx;
+        line-height: 190rpx;
+        border-bottom: 1rpx solid #e5e5e5;
+        text-align: center;
+    }
 </style>
 
 <template>
-  <view class="resumelist-container">
+  <view class="resumelist">
     <view class="blank" wx:if="{{no_resume}}">
       <image src="/images/icons/blank_resume.png"></image>
       <view>{{warnword}}</view>
@@ -186,9 +150,7 @@
                 </view>
                 <progress percent="{{item.percent}}" show-info activeColor="#FF9E00" border-radius="8" stroke-width="10" />
               </view>
-              <view>
-                <view class="date">></view>
-              </view>
+              <van-icon name="arrow" size="12" color="#888888" />
             </view>
             <view class="line"></view>
             <view class="down">
@@ -201,17 +163,13 @@
       <view class="num">简历数量{{resumelist.length}}/3</view>
     </block>
 
-    <view class="bottom-operate flex alignitems">
-      <view class="add-resume flex1" @tap="addResume" wx:if="{{no_resume || resumelist.length<3}}">添加简历</view>
-      <view class="import-resume flex1" @tap="importResume">导入简历</view>
+    <view class="bottom-operate flex alignitems" wx:if="{{no_resume || resumelist.length<3}}">
+      <view class="add-resume flex1" @tap="addResume">添加简历</view>
+      <!-- <view class="import-resume flex1" @tap="importResume">导入简历</view> -->
     </view>
-    <view class="alert-box" wx:if = "{{showbox}}">
-      <view class="sure">删除后不可恢复，是否确认删除？</view>
-      <view class="yesno">
-          <view class="no" @tap="cancel">取消</view>
-          <view class="yes" @tap="yes">确定</view>
-      </view>
-    </view>
+    <van-dialog use-slot title="提示" show="{{ showbox }}" show-cancel-button  bind:close="cancel" bind:confirm="yes" confirm-button-color="#ff9e00">
+      <view class="tips">删除后不可恢复，是否确认删除？</view>
+    </van-dialog>
   </view>
 </template>
 
@@ -222,6 +180,14 @@ import tip from '../../utils/tip';
 import utils from'../../utils/utils';
 
 export default class CorpPage extends wepy.page {
+
+  config={
+    navigationBarTitleText: '我的简历',
+    "usingComponents": {
+        "van-dialog": "../../vant/dialog/index",
+        "van-icon": "../../vant/icon/index"
+      }
+  }
 
   data = {
     resumelist: [],

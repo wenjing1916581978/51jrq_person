@@ -11,9 +11,7 @@
               <view class="flex1">
                   {{form.jobnature?form.jobnature:'请选择'}}
               </view>
-              <view class="form_arrow">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon name="arrow" size="18" color="#888888"/>
             </view>
           </picker>
       </view>
@@ -24,9 +22,7 @@
                 <view class="flex1">
                     {{form.postids?form.postids:'请选择'}}
                 </view>
-                <view class="form_arrow">
-                  <image src="../../images/icons/arrow_right.png"></image>
-                </view>
+                <van-icon name="arrow" size="18" color="#888888"/>
               </view>
           </picker>
       </view>
@@ -49,9 +45,7 @@
             <view class="flex1">
                 {{form.expectsalarycode?form.expectsalarycode:'请选择'}}
             </view>
-            <view class="form_arrow">
-              <image src="../../images/icons/arrow_right.png"></image>
-            </view>
+            <van-icon name="arrow" size="18" color="#888888"/>
           </view>
         </picker>
       </view>
@@ -62,9 +56,7 @@
               <view class="flex1">
                 {{form.poststime?form.poststime:'请选择'}}
               </view>
-              <view class="form_arrow">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon name="arrow" size="18" color="#888888"/>
             </view>
           </picker>
       </view>
@@ -91,6 +83,9 @@
     config = {
       navigationBarTitleText: '求职意向',
       navigationBarBackgroundColor: "#fafafa",
+      usingComponents: {
+        "van-icon": "../../vant/icon/index"
+      }
     }
 
     data = {

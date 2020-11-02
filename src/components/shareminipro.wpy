@@ -1,12 +1,12 @@
 <style lang="scss">
-    .share-container {
+    .share {
         position: fixed;
         bottom: 150rpx;
         right: 16rpx;
         width: 96rpx;
         height: 96rpx;
         z-index: 8;
-        .share-btn {
+        .share-button {
             width: 96rpx;
             height: 96rpx;
             &:after {
@@ -23,91 +23,62 @@
           height: 218rpx!important;
           width: 100%;
           background: #fff;
-        } 
-    }
-    .sheet-list {
-        action-sheet-item {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-around;
-            padding: 10px;
-            .sheet-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                font-size: 24rpx;
-                color: #656565;
-                &.sheet-btn:after {
-                    border: none;
-                }
-                &.sheet-btn {
-                    padding-left: 0;
-                    padding-right: 0;
-                    margin-left: 0;
-                    margin-right: 0;
-                    background-color: #fff;
-                    line-height: inherit;
-                }
-            }
-            .share-icon {
-                width: 100rpx;
-                height: 100rpx;
-            }
         }
-        action-sheet-cancel {
-            font-size: 36rpx;
-            color: #f16049;
+        &-icon{
+          width: 100rpx;
+          height: 100rpx;
+          display: block;
+          margin: 0 auto;
         }
-    }
-    .bomb-screen {
-        background-color: rgb(0, 0, 0);
-        position: fixed;
-        z-index: 2000;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        top: 0;
-        display: flex;
-        flex-direction: column;
-        align-items:center;/*垂直居中*/
-        justify-content: center;
+        &-item {
+          font-size: 24rpx;
+          color: #656565;
+          text-align: center;
+        }
+
+        &-btn {
+          padding-left: 0;
+          padding-right: 0;
+          margin-left: 0;
+          margin-right: 0;
+          background-color: #fff;
+          line-height: inherit;
+          &:after {
+              border: none;
+          }
+        }
+        &-list {
+          padding: 10px;
+        }
     }
 </style>
 
 <template>
     <view>
-        <view class="share-container {{isIpx?'fix-iphonex-button':''}}">
-            <image class="share-btn" @tap.stop="openActionSheet" src='/images/icons/share.png'></image>
+        <view class="share {{isIpx?'fix-iphonex-button':''}}">
+            <image class="share-button" @tap.stop="openActionSheet" src='/images/icons/share.png'></image>
         </view>
-        <action-sheet hidden="{{actionSheetHidden}}" bindchange="actionSheetbindchange" class="sheet-list">
-            <action-sheet-item>
-                <button class="sheet-btn sheet-item" open-type="share" @tap.stop="bindMenu0">
-                    <image src="/images/icons/friend-icon.png" class="share-icon"></image>
-                    <text open-type="share">转发给好友或群聊</text>
-                </button>
-                <view class="sheet-item" @tap.stop="bindMenu1">
-                    <image src="/images/icons/moments-icon.png" class="share-icon"></image>
-                    <text>生成朋友圈分享图</text>
-                </view>
-                <view class="sheet-item" @tap.stop="bindMenu2">
-                    <image src="/images/icons/public-icon.png" class="share-icon"></image>
-                    <text>生成公众号分享图</text>
-                </view>
-            </action-sheet-item>
-            <action-sheet-cancel>取消</action-sheet-cancel> 
-        </action-sheet>
+        <van-action-sheet round="{{false}}" show="{{ show }}" safe-area-inset-bottom bind:close="toggle" bind:cancel="toggle" cancel-text="取消">
+          <view class="flex share-list">
+            <button class="share-btn share-item flex1" open-type="share" @tap.stop="bindMenu0">
+                <image src="/images/icons/friend-icon.png" class="share-icon"></image>
+                <text open-type="share">转发给好友或群聊</text>
+            </button>
+            <view class="share-item flex1" @tap.stop="bindMenu1" wx:if="{{corpInfo.mlogo}}">
+                <image src="/images/icons/moments-icon.png" class="share-icon"></image>
+                <text>生成朋友圈分享图</text>
+            </view>
+            <view class="share-item flex1" @tap.stop="bindMenu2" wx:if="{{corpInfo.mlogo}}">
+                <image src="/images/icons/public-icon.png" class="share-icon"></image>
+                <text>生成公众号分享图</text>
+            </view>
+          </view>
+        </van-action-sheet>
         <view wx:if="{{isShowMyCanvasScreen}}">
-            <view class="bomb-screen"></view>
-            <canvas canvas-id="myCanvas" 
-                    hidden="{{true}}"
-                    style="width: {{ctxWidth}}px; height: {{ctxHeight}}px; background-color: #ffffff;"/>
-        </view>        
+            <canvas canvas-id="myCanvas" hidden="{{true}}" style="width: {{ctxWidth}}px; height: {{ctxHeight}}px; background-color: #ffffff;"/>
+        </view>
         <view wx:if="{{isShowPubCanvasScreen}}">
-            <view class="bomb-screen"></view>
-            <canvas canvas-id="pubCanvas" 
-                    hidden="{{true}}"
-                    style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>
+            <canvas canvas-id="pubCanvas" hidden="{{true}}" style="width: {{ctxPubWidth}}px; height: {{ctxPubHeight}}px; background-color: #ffffff;"/>
         </view>
     </view>
 </template>
@@ -125,7 +96,7 @@ import {
 
 export default class ShareMiniPro extends wepy.component {
     data = {
-        actionSheetHidden: true,
+        show: false,
         isShowMyCanvasScreen: false,
         isShowPubCanvasScreen: false,
         canvasRpx: 0,
@@ -171,22 +142,25 @@ export default class ShareMiniPro extends wepy.component {
         this.$apply();
     }
 
-    
+
     methods={
         openActionSheet() {
-            this.actionSheetHidden = false;
+          this.show = true;
         },
-        actionSheetbindchange() {//调取 “取消”按钮
-            this.actionSheetHidden = true;
+        toggle() {//调取 “取消”按钮
+          this.show = false;
+          this.$apply()
         },
         bindMenu0(){//转发给好友或群聊
-            this.actionSheetHidden = true;
+            this.show = false;
+            this.$apply()
         },
         bindMenu1(){//生成朋友圈分享图
             const that = this;
-            that.actionSheetHidden = true;
+            that.show = false;
             that.isShowMyCanvasScreen = true;
             that.isShowPubCanvasScreen = false;
+            this.$apply()
             wx.showLoading({
                 title: '正在生成图片',
                 mask: true,
@@ -203,30 +177,30 @@ export default class ShareMiniPro extends wepy.component {
             });
         },
         bindMenu2(){//生成公众号文章分享图
-            const that = this;
-            that.actionSheetHidden = true;
-            that.isShowMyCanvasScreen = false;
-            that.isShowPubCanvasScreen = true;
-            wx.showLoading({
-                title: '正在生成图片',
-                mask: true,
-            })
-            that.loadResources().then((resources) => {
-                that.generatePublicAccountImage(resources);
-                wx.hideLoading();
-            }).catch(err => {
-                console.log(err);
-                // tip.error('图片获取失败');
-                that.isShowPubCanvasScreen = false;
-                that.$apply();
-                wx.hideLoading();
-            });
+          const that = this;
+          that.show = false;
+          that.isShowMyCanvasScreen = false;
+          that.isShowPubCanvasScreen = true;
+          wx.showLoading({
+              title: '正在生成图片',
+              mask: true,
+          })
+          that.loadResources().then((resources) => {
+              that.generatePublicAccountImage(resources);
+              wx.hideLoading();
+          }).catch(err => {
+              console.log(err);
+              // tip.error('图片获取失败');
+              that.isShowPubCanvasScreen = false;
+              that.$apply();
+              wx.hideLoading();
+          });
         }
     }
-    
-    
-    previewMyCanvasImage(path) { 
-        const that = this; 
+
+
+    previewMyCanvasImage(path) {
+        const that = this;
         wx.previewImage({
             //current: that.myCanvasTempFilePath, // 当前显示图片的http链接
             urls: [path], // 需要预览的图片http链接列表
@@ -237,14 +211,14 @@ export default class ShareMiniPro extends wepy.component {
                 console.log(res)
             }
         })
-    }  
+    }
 
     loadResources() { //将在线路径转为本地临时路径
         let {mlogo} = this.corpInfo;
         if(mlogo == "") {
             mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
         }else {
-            mlogo = mlogo.replace(/http/, 'https');             
+            mlogo = mlogo.replace(/http/, 'https');
         }
         // 绑定数据记得去掉，这里做调试
         // let mlogo = `https://www.51jrq.com/topics/images/51jrq_logo_gray.png`;
@@ -253,7 +227,7 @@ export default class ShareMiniPro extends wepy.component {
         let args = this.urlWithArgs.slice(len).split('&');  //corpid=990003&jobid=1040013 || companyid=1010527
         let objs = new Object();
         for( let i = 0; i < args.length; i++) {
-            objs[args[i].split('=')[0]] = args[i].split('=')[1];    
+            objs[args[i].split('=')[0]] = args[i].split('=')[1];
         }
         let sceneArgs = '';
         switch (this.dataOrg) {
@@ -262,7 +236,7 @@ export default class ShareMiniPro extends wepy.component {
                 break;
             case "corpview":
                 sceneArgs = `cv*cpid=${objs["companyid"]}`;
-                break;    
+                break;
         }
         let params = JSON.stringify({head: {transcode: "P00016",type: "h"},data: {page: `pages/index/index`,width: 180, scene:`${sceneArgs}`}});
         let wxacodeurl = api.apimall + '/wx/createwxaqrcode?params=' + strEnc(`${params}`, DESKEY);
@@ -280,7 +254,7 @@ export default class ShareMiniPro extends wepy.component {
                 })
             })
         }
-        
+
         let promises = [getWxaCode(wxacodeurl), getWxaCode(mlogo)];
         return Promise.all(promises).then(values => {
             return {
@@ -289,7 +263,7 @@ export default class ShareMiniPro extends wepy.component {
             }
         })
      }
-    
+
 
     generateShareImage(resources) {//转发给好友或群聊
         const that = this;
@@ -298,7 +272,7 @@ export default class ShareMiniPro extends wepy.component {
         that.$apply();
         //创建 canvas 绘图上下文
         const ctx = wx.createCanvasContext('myCanvas');
-        
+
         const {
             corpname, scope, city, industry
         } = that.corpInfo;
@@ -359,9 +333,9 @@ export default class ShareMiniPro extends wepy.component {
             ctx.fillText(that.opHint2, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20));
             ctx.fillText(that.opHint3, CANVAS_W / 2, that.canvasRpx * (420 + 62 / 2 + 20) + that.canvasRpx * (14 + 5));
         }
-        
 
-        
+
+
 
         //draw footer;
         ctx.drawImage('/images/icons/foot-txt.png', CANVAS_W / 2 - that.canvasRpx * 428 / 2 / 2, that.canvasRpx * 564, that.canvasRpx * 428 / 2, that.canvasRpx * 26 / 2);
@@ -381,7 +355,7 @@ export default class ShareMiniPro extends wepy.component {
         ctx.save()
         ctx.beginPath()
         ctx.arc((CANVAS_W / 2), WXACODE_Y + WXACODE_SIZE / 2, MLOGO_SIZE / 2, 0, 2*Math.PI) ;
-        ctx.closePath() 
+        ctx.closePath()
         ctx.fill()
         ctx.clip()
         console.log(mlogoPath)
@@ -404,7 +378,7 @@ export default class ShareMiniPro extends wepy.component {
                 }, that)
             }, 300);
         });
-        
+
     }
 
     generatePublicAccountImage(resources){//生成公众号文章分享图
@@ -414,14 +388,14 @@ export default class ShareMiniPro extends wepy.component {
         that.$apply();
         //创建 canvas 绘图上下文
         const ctx = wx.createCanvasContext('pubCanvas');
-        
-        
+
+
         const CANVAS_W = that.ctxPubWidth;
         const CANVAS_H = that.ctxPubHeight;
         // draw background
         ctx.setFillStyle('#ffffff');
         ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-       
+
         if (that.dataOrg == "homeview" ) {
             const {
                 jobname, jobcity, workyears, ebid, salary
@@ -439,7 +413,7 @@ export default class ShareMiniPro extends wepy.component {
             ctx.setFillStyle('#ff9e00');
             ctx.fillText(salary, CANVAS_W - that.canvasRpx * (16 + that.mesureText(salary)), that.canvasRpx * 28);
 
-            
+
 
             //draw hint
             ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -460,7 +434,7 @@ export default class ShareMiniPro extends wepy.component {
             ctx.setFillStyle('#888888');
             ctx.fillText(`${scope} | ${industry} | ${city}`, that.canvasRpx * 16, that.canvasRpx * (28 + 18 + 6));
 
-            
+
 
             //draw hint
             ctx.drawImage('/images/icons/finger.png', that.canvasRpx * 16, that.canvasRpx * 82, that.canvasRpx * 40 / 2, that.canvasRpx * 62 / 2);
@@ -469,7 +443,7 @@ export default class ShareMiniPro extends wepy.component {
             ctx.fillText(that.opHint2, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90));
             ctx.fillText(that.opHint3, that.canvasRpx * (16 + 40 / 2 + 10), that.canvasRpx * (90 + 12 + 10));
         }
-        
+
 
         //draw footer;
         ctx.drawImage('/images/icons/foot-txt.png', that.canvasRpx * 16, CANVAS_H - that.canvasRpx * (14 + 26 / 2), that.canvasRpx * 428 / 2, that.canvasRpx * 26 / 2);
@@ -532,5 +506,3 @@ export default class ShareMiniPro extends wepy.component {
     }
 }
 </script>
-
-

@@ -17,13 +17,13 @@
 </style>
 <template>
   <view class="form container">
-    <view  @tap="changePortrait">
+    <!-- <view  @tap="changePortrait">
       <view class="headimg">
         <image mode="aspectFill"  class="icon-upload" wx:if="{{form.headimg}}" src="{{base64?'data:image/jpg;base64,':''}}{{form.headimg}}"></image>
         <image mode="aspectFill"  class="icon-upload" wx:else src="/images/icons/upload_head.png"></image>
       </view>
-      <!-- <text>点击更换头像（图片大小不宜超过1M）</text> -->
-    </view>
+      <text>点击更换头像（图片大小不宜超过1M）</text>
+    </view> -->
     <view class="form_item bb pb">
         <view class="form_label">简历名称</view>
         <view class="form_content">
@@ -43,9 +43,7 @@
           <view class="flex1">
               {{form.sex?form.sex:'请选择'}}
           </view>
-          <view class="form_arrow">
-            <image src="../../images/icons/arrow_right.png"></image>
-          </view>
+          <van-icon name="arrow" size="18" color="#888888"/>
         </view>
       </picker>
     </view>
@@ -54,9 +52,7 @@
       <picker data-name="borndate" mode="date" value="{{form.borndate}}" bindchange="dateChange" start="{{start}}" end="{{end}}">
           <view class="form_content flex alignitems">
               <view class="flex1">{{form.borndate?form.borndate:"请选择"}}</view>
-              <view class="form_arrow">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon name="arrow" size="18" color="#888888"/>
           </view>
       </picker>
     </view>
@@ -73,9 +69,7 @@
           <view class="flex1">
               {{form.educationbg?form.educationbg:'请选择'}}
           </view>
-          <view class="form_arrow">
-            <image src="../../images/icons/arrow_right.png"></image>
-          </view>
+          <van-icon name="arrow" size="18" color="#888888"/>
         </view>
       </picker>
     </view>
@@ -86,9 +80,7 @@
           <view class="flex1">
               {{form.workyears?form.workyears:'请选择'}}
           </view>
-          <view class="form_arrow">
-            <image src="../../images/icons/arrow_right.png"></image>
-          </view>
+          <van-icon name="arrow" size="18" color="#888888"/>
         </view>
       </picker>
     </view>
@@ -111,9 +103,7 @@
           <view class="flex1">
               {{form.jobstatus?form.jobstatus:'请选择'}}
           </view>
-          <view class="form_arrow">
-            <image src="../../images/icons/arrow_right.png"></image>
-          </view>
+          <van-icon name="arrow" size="18" color="#888888"/>
         </view>
       </picker>
     </view>
@@ -130,9 +120,7 @@
           <view class="flex1">
               {{form.marital?form.marital:'请选择'}}
           </view>
-          <view class="form_arrow">
-            <image src="../../images/icons/arrow_right.png"></image>
-          </view>
+          <van-icon name="arrow" size="18" color="#888888"/>
         </view>
       </picker>
     </view>
@@ -149,9 +137,13 @@
   import moment from 'moment'
   export default class BaseInfo extends wepy.page {
 
+
       config = {
         navigationBarTitleText: '基本信息',
         navigationBarBackgroundColor: "#fafafa",
+        "usingComponents": {
+          "van-icon": "../../vant/icon/index"
+        }
       }
 
      data = {

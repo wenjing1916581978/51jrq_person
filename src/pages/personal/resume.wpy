@@ -62,11 +62,6 @@
       }
       &_edit{
         margin-left: 6rpx;
-        image{
-          width: 10rpx;
-          height: 16rpx;
-          display: block;
-        }
       }
     }
     .desc{
@@ -155,9 +150,7 @@
         <view class="annex_txt flex1">
           <view class="ellipsis">{{baseInfo.fileshowname?baseInfo.fileshowname:'上传附件简历'}}</view>
         </view>
-        <view class="item_edit" wx:if="{{edit}}">
-          <image src="../../images/icons/arrow_right.png"></image>
-        </view>
+        <van-icon size="10" custom-class="item_edit" color="#A0A0A0" name="arrow" wx:if="{{edit}}"/>
     </navigator>
     <!-- 附件 E -->
 
@@ -230,9 +223,7 @@
             <view  class="flex alignitems" >
               <view class="item_tit ellipsis flex1"> {{item.corpname}} </view>
               <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="item_edit" wx:if="{{edit}}">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon size="10" custom-class="item_edit" color="#A0A0A0" name="arrow" wx:if="{{edit}}"/>
             </view>
             <view class="item_post">{{item.postcode}}</view>
             <view class="desc">
@@ -256,9 +247,7 @@
             <view class="flex alignitems">
               <view class="item_tit flex1 ellipsis"> {{item.school}} </view>
               <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="item_edit" wx:if="{{edit}}">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon size="10" custom-class="item_edit" color="#A0A0A0" name="arrow" wx:if="{{edit}}"/>
             </view>
             <view class="item_post">
               <view>{{item.specialtyid}} | {{item.educationbg}}</view>
@@ -282,9 +271,7 @@
             <view class="flex alignitems">
               <view class="item_tit flex1 ellipsis"> {{item.projectname}} </view>
               <view class="item_time"> {{item.starttime}} - {{item.endtime}} </view>
-              <view class="item_edit" wx:if="{{edit}}">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon size="10" custom-class="item_edit" color="#A0A0A0" name="arrow" wx:if="{{edit}}"/>
             </view>
             <view class="desc">
               <text>{{item.projectremark}}</text>
@@ -308,9 +295,7 @@
             <view class="flex alignitems">
               <view class="item_tit flex1 ellipsis"> {{item.certname}} </view>
               <view class="item_time">{{item.gaintime}} 颁发</view>
-              <view class="item_edit" wx:if="{{edit}}">
-                <image src="../../images/icons/arrow_right.png"></image>
-              </view>
+              <van-icon size="10" custom-class="item_edit" color="#A0A0A0" name="arrow" wx:if="{{edit}}"/>
             </view>
           </view>
         </repeat>
@@ -331,7 +316,11 @@ export default class resumePage extends wepy.page {
   config = {
     navigationBarTitleText: '我的简历',
     navigationBarBackgroundColor: "#fafafa",
+    "usingComponents": {
+      "van-icon": "../../vant/icon/index"
+    }
   }
+
 
   data = {
     edit:false,

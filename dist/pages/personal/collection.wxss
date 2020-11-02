@@ -1,2 +1,0 @@
-@import "./../../components/commposi.wxss";
-.no-collect-container{display:flex;flex-direction:column;justify-content:center;height:800rpx;align-items:center}.no-collect-container image{width:176rpx;height:168rpx}.no-collect-container view{color:#A0A0A0;font-size:28rpx;margin-top:30rpx}

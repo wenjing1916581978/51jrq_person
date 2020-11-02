@@ -15,9 +15,7 @@
         <picker start="{{start}}" end="{{end}}" name="gaintime" mode="date" value="{{gaintime}}" fields="month" bindchange="bindDateChange2">
             <view class="form_content flex alignitems">
                 <view class="flex1">{{gaintime?gaintime:"请选择"}}</view>
-                <view class="form_arrow">
-                  <image src="../../images/icons/arrow_right.png"></image>
-                </view>
+                <van-icon name="arrow" size="18" color="#888888"/>
             </view>
         </picker>
     </view>
@@ -26,9 +24,9 @@
       <button class="delbtn" @tap="toggleM" wx:if="{{certid!=''&&length>1}}">删除</button>
       <button class="mainbtn flex1" @tap="formSubmit">保存</button>
     </view>
-    <i-modal title="删除" visible="{{ visible }}" bind:ok="handleOk" bind:cancel="toggleM">
-      <view>是否确认删除？</view>
-    </i-modal>
+    <van-dialog title="删除"  use-slot  show="{{ visible }}" show-cancel-button  bind:confirm="handleOk" bind:cancel="toggleM" confirm-button-color="#ff9e00">
+      <view class="deltips">是否确认删除？</view>
+    </van-dialog>
   </view>
 </template>
 <script>
@@ -42,7 +40,8 @@
       navigationBarTitleText: '证书',
       navigationBarBackgroundColor: "#fafafa",
       usingComponents: {
-        "i-modal": "../../iview/modal/index"
+        "van-dialog": "../../vant/dialog/index",
+        "van-icon": "../../vant/icon/index"
       }
     }
 

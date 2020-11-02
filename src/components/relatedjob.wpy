@@ -32,10 +32,8 @@
 </style>
 
 <template>
-    <view class="recomm-container"
-            @tap="goToHomeView({{syncRelatedJob.corpid}}, {{syncRelatedJob.id}})"
-    >
-        <view class="gray-line"></view>
+    <view class="recomm-container" @tap="goToHomeView({{syncRelatedJob}})">
+
         <view class="posi-name-sal">
             <text class="posi-name">{{syncRelatedJob.jobname}}</text>
             <text class="posi-sal">{{syncRelatedJob.salary}}</text>
@@ -50,6 +48,7 @@
             <text class="ver" wx:if="{{syncRelatedJob.workyears}}">|</text>
             <text>{{syncRelatedJob.ebid}}</text>
         </view>
+        <view class="gray-line"></view>
     </view>
 </template>
 
@@ -65,16 +64,18 @@
         }
 
         methods = {
-            goToHomeView(corpid, jobid) {
+            goToHomeView(info) {
+              // goToHomeView({{syncRelatedJob.corpid}},{{syncRelatedJob.id}})
+              let corpid = info.corpid
+              let jobid = info.corpname?info.id:info.jobid
+
                 if (jobid.length && corpid.length == 0) {
                     return;
                 }
                 wepy.navigateTo({
-                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`    
+                    url: `/pages/home/homeview?corpid=${corpid}&jobid=${jobid}`
                 })
             }
         }
     }
 </script>
-
-

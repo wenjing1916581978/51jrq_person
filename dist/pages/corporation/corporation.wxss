@@ -1,3 +1,0 @@
-@import "./../../components/navigationload.wxss";
-@import "./../../components/corplist.wxss";
-@import "./../../components/bannersearch.wxss";

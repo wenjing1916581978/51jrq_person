@@ -1,0 +1,44 @@
+<style lang="scss">
+.backTop{
+  position: fixed;
+  bottom: 120rpx;
+  right: 20rpx;
+  z-index: 2;
+  width: 77rpx;
+  height: 77rpx;
+  border-radius: 50%;
+  border: 1rpx solid #e1e1e1;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx 0 rgba(0,0,0,.1);
+  background: #ffffff;
+  &-txt{
+    color: #171717;
+    font-size: 22rpx;
+    position: relative;
+    top: -18rpx;
+  }
+  &-icon{
+    display: block;
+    padding-top: 6rpx;
+  }
+}
+</style>
+<template>
+    <view class="backTop" @tap="goTop">
+      <van-icon name="arrow-up" color="#595959" size="18" custom-class="backTop-icon"/>
+      <view class="backTop-txt">顶部</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Top extends wepy.component {
+  methods={
+    goTop(){
+      wx.pageScrollTo({
+        scrollTop: 0
+      })
+    }
+
+  }
+}
+</script>

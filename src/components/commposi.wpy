@@ -1,123 +1,89 @@
 <style lang="scss">
-    .posi-corp-container {
+    .post {
+      padding-top: 20rpx;
+      padding-bottom: 24rpx;
+      margin: 0 32rpx;
+      border-bottom: 1rpx solid #F1F1F1;
+      &-attr{
+        font-size: 24rpx;
+        color: #B2B2B2;
+      }
+      &-salary{
+        color: #FF9E00;
+      }
+      &-name{
+        font-weight: bold;
+        font-family: PingFangSC-Medium;
+        color: #353535;
+        flex: 1;
+        font-size: 30rpx;
+      }
+      .ver {
+          margin: 0 12rpx;
+      }
+    }
+    .postcorp {
+      &-name {
+        font-size: 28rpx;
+        color: #888;
+      }
+      &-attr {
         display: flex;
-        flex-direction: column;
-        padding-top: 20rpx;
-        padding-bottom: 24rpx;
-        margin: 0 32rpx;
-        border-bottom: 1rpx solid #F1F1F1;
-        .ver {
-            margin: 0 12rpx;
-        }
-        .corp-brief {
-
-            align-items: center;
-            .logo {
-                margin-right: 22rpx;
-                width: 90rpx;
-                height: 90rpx;
-                image {
-                    width: 90rpx;
-                    height: 90rpx;
-                    border-radius: 100%;
-                }
-            }
-            .corp-info {
-                width: 100%;
-                .corp-name {
-                    font-size: 30rpx;
-                    color: #888;
-                }
-                .corp-size-type {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    font-size: 24rpx;
-                    color: #b2b2b2;
-                    .up-date {
-                        font-size: 26rpx;
-                        color: #a0a0a0;
-                    }
-                }
-            }
-        }
-        .posi-container {
-            display: flex;
-            flex-direction: column;
-            .ver {
-                margin: 0 12rpx;
-            }
-            .posi-name-sal {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                font-size: 30rpx;
-                .posi-name {
-                    font-weight: bold;
-                    font-family: PingFangSC-Medium;
-                    color: #353535;
-                    flex: 1;
-                }
-                .posi-sal {
-                    color: #FF9E00;
-                }
-            }
-            .posi-duty {
-                font-size: 24rpx;
-                color: #B2B2B2;
-            }
-        }
+        flex-direction: row;
+        justify-content: space-between;
+        font-size: 24rpx;
+        color: #b2b2b2;
+      }
+      &-logo{
+        margin-right: 22rpx;
+        width: 90rpx;
+        height: 90rpx;
+      }
+    }
+    .update{
+      font-size: 26rpx;
+      color: #a0a0a0;
     }
 </style>
 
 <template>
-  <view class="posi-corp-container" @tap="goDetails">
-    <view class="posi-container">
-        <view class="posi-name-sal">
-            <text class="posi-name">{{syncPosidata.jobname}}</text>
-            <text class="posi-sal">{{syncPosidata.salary}}</text>
-        </view>
-        <view class="posi-duty">
-            <text>{{syncPosidata.jobcity}}</text>
-            <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text>
-            <text>{{syncPosidata.workyears}}</text>
-            <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
-            <text>{{syncPosidata.ebid}}</text>
-        </view>
+  <view class="post" @tap="goDetails">
+    <view class="flex">
+      <text class="post-name flex1">{{syncPosidata.jobname}}</text>
+      <text class="post-salary">{{syncPosidata.salary}}</text>
     </view>
-      <view class="corp-brief flex">
-          <view class="logo">
-              <image mode="aspectFit" src="{{syncPosidata.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : syncPosidata.mlogo}}"></image>
-          </view>
-          <view class="corp-info flex1">
-              <text class="corp-name ellipsis">{{syncPosidata.corpname}}</text>
-              <view class="corp-size-type">
-                  <view class="corp-size">
-                    <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text>
-                  </view>
-                  <text class="up-date">{{syncPosidata.refreshdate ? syncPosidata.refreshdate : syncPosidata.updatedate}}</text>
+    <view class="post-attr">
+      <text>{{syncPosidata.jobcity}}</text>
+      <text class="ver" wx:if="{{syncPosidata.workyears}}">|</text>
+      <text>{{syncPosidata.workyears}}</text>
+      <text class="ver" wx:if="{{syncPosidata.ebid}}">|</text>
+      <text>{{syncPosidata.ebid}}</text>
+    </view>
+    <view class="postcorp flex alignitems">
+      <van-image custom-class="postcorp-logo" fit="cover" lazy-load round src="{{syncPosidata.mlogo == 'http://m.51jrq.com/null' ? 'https://www.51jrq.com/topics/images/51jrq_logo_gray.png' : syncPosidata.mlogo}}" />
+      <view class=" flex1">
+          <text class="postcorp-name ellipsis">{{syncPosidata.corpname}}</text>
+          <view class="postcorp-attr">
+              <view class="postcorp-size">
+                <text>{{syncPosidata.industry?syncPosidata.industry:'暂无'}}</text>
               </view>
+              <text class="update">{{syncPosidata.refreshdate ? syncPosidata.refreshdate : syncPosidata.updatedate}}</text>
           </view>
       </view>
+    </view>
   </view>
 </template>
 
 <script>
     import wepy from 'wepy';
     import utils from '../utils/utils';
-
     export default  class CommPosi extends wepy.component {
-
         props = {
             syncPosidata: {
                 type: Object,
                 default: null
             }
         }
-
-        onLoad(){
-        }
-
         methods = {
             goDetails() {
               let obj = this.syncPosidata
