@@ -61,6 +61,10 @@ page{
           <view class="flex1">{{info.interviewtime}}</view>
         </view>
         <view class="flex line">
+          <view class="line-label">电话</view>
+          <view class="flex1">{{info.cphone}}</view>
+        </view>
+        <view class="flex line">
           <view class="line-label">地址</view>
           <view class="flex1 ">{{info.address}}</view>
 
