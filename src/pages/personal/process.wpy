@@ -60,9 +60,10 @@ page{
           <view class="line-label">时间</view>
           <view class="flex1">{{info.interviewtime}}</view>
         </view>
-        <view class="flex line">
+        <view class="flex line" @tap="tel">
           <view class="line-label">电话</view>
           <view class="flex1">{{info.cphone}}</view>
+          <van-icon name="phone-o" size="20" color="#FF9E00"/>
         </view>
         <view class="flex line">
           <view class="line-label">地址</view>
@@ -80,7 +81,7 @@ page{
       <view class="boxs">
         <repeat for="{{process}}" key="j" index="j" item="obj" >
           <view class="flex alignitems dynamic">
-            <view class="dot {{process.length-1==j?'last':''}}"></view>
+            <view class="dot {{j==0?'last':''}}"></view>
             <view class="flex1 content">
               <view>{{obj.msg}}</view>
               <view class="time">{{obj.date}}</view>
@@ -138,6 +139,11 @@ export default class Annex extends wepy.page {
 
 
   methods = {
+    tel(){
+      wx.makePhoneCall({
+        phoneNumber: this.info.cphone,
+      })
+    },
     jumpto(){
       wx.navigateTo({
         url:'/pages/home/homeview?corpid='+this.companyid+'&jobid='+this.jobid

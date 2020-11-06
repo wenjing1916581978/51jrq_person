@@ -119,6 +119,7 @@ export default class CorpPage extends wepy.page {
     // wx.showLoading({
     //     title: '加载中',
     // })
+    let p = currentPage || 1
     const that = this;
     const json = await api.getCompanyList({
       query: {
@@ -127,14 +128,15 @@ export default class CorpPage extends wepy.page {
               "type": "h"
           },
           data: {
-              "p": currentPage || 1
+              "p": p
           }
       }
     })
-    if (json.data.returnCode == "AAAAAAA") {
-      that.corplist = [...that.corplist, ...json.data.data.list];
-      that.totalPage =parseInt(json.data.data.num / 10);
-      if(json.data.data.num == 0) {
+    const {returnCode,data}=json.data
+    if (returnCode == "AAAAAAA") {
+      that.corplist = p==1?data.list:[...that.corplist, ...data.list]
+      that.totalPage =parseInt(data.num / 10);
+      if(data.num == 0) {
         that.isEmpty = true;  //暂无数据
       }
     } else {
