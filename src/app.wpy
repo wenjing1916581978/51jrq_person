@@ -68,12 +68,14 @@ export default class extends wepy.app {
         'text': '公司',
         'iconPath': 'images/icons/corp.png',
         'selectedIconPath': 'images/icons/corp_hl.png'
-      }, {
-        'pagePath': 'pages/salary/salary',
-        'text': '薪税',
-        'iconPath': 'images/icons/xinshui.png',
-        'selectedIconPath': 'images/icons/xinshui_hl.png'
-      }, {
+      },
+      //  {
+      //   'pagePath': 'pages/salary/salary',
+      //   'text': '薪税',
+      //   'iconPath': 'images/icons/xinshui.png',
+      //   'selectedIconPath': 'images/icons/xinshui_hl.png'
+      // },
+       {
         'pagePath': 'pages/personal/personal',
         'text': '我的',
         'iconPath': 'images/icons/pers.png',
